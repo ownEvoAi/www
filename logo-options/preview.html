@@ -24,6 +24,10 @@
   }
   .label { font-weight: 600; }
   .label small { display: block; color: #94a3b8; font-weight: 400; margin-top: 0.3rem; font-size: 0.85rem; }
+  .verdict { font-size: 0.78rem; margin-top: 0.5rem; max-width: 36ch; line-height: 1.4; }
+  .verdict.good { color: #4ade80; }
+  .verdict.warn { color: #fbbf24; }
+  .verdict.bad  { color: #f87171; }
   .sizes { display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; }
   .size-block { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
   .size-block img { display: block; image-rendering: pixelated; }
@@ -39,11 +43,13 @@
 </head>
 <body>
 <h1>ownEvo logo candidates</h1>
-<p class="sub">Each row: 180 px master · 32 px (browser tab) · 16 px (smallest favicon) · light-bg tab.</p>
+<p class="sub">Each row: 180 px master · 32 px (browser tab) · 16 px (smallest favicon) · light-bg tab. Verdicts reflect the latest legibility + risk scan (commodity / political / anatomical / brand-collision).</p>
 
 <h2>Reference (currently shipped)</h2>
 <div class="row">
-  <div class="label">Current — up-arrow<small>What's in <code>www/logo-shield.svg</code> right now.</small></div>
+  <div class="label">Current — up-arrow<small>What's in <code>www/logo-shield.svg</code> right now.</small>
+    <div class="verdict warn">Clear at favicon size, communicates improvement/growth. Weakness: doesn't say "loop / continual learning"; looks like generic SaaS growth/security icons.</div>
+  </div>
   <div class="sizes">
     <div class="size-block"><img src="loop-candidate-0-current-180.png" width="180"><span class="px">180</span></div>
     <div class="size-block"><img src="loop-candidate-0-current-32.png" width="32"><span class="px">32</span></div>
@@ -54,7 +60,9 @@
 
 <h2>Loop candidates</h2>
 <div class="row">
-  <div class="label">#1 Pure ring<small>Closed loop, no direction cue. Simplest.</small></div>
+  <div class="label">#1 Pure ring<small>Closed loop, no direction cue. Simplest.</small>
+    <div class="verdict good">Best overall for enterprise: simple, serious, neutral, legible at 16–32 px, suggests a controlled improvement loop. Weakness: a little generic; doesn't say "growth" or "ownership."</div>
+  </div>
   <div class="sizes">
     <div class="size-block"><img src="loop-candidate-1-ring-180.png" width="180"><span class="px">180</span></div>
     <div class="size-block"><img src="loop-candidate-1-ring-32.png" width="32"><span class="px">32</span></div>
@@ -63,7 +71,9 @@
   </div>
 </div>
 <div class="row">
-  <div class="label">#A Up-chevron inside ring at top<small>Loop opens at top, ↑ inside points into the gap. "Closed loop + upward growth."</small></div>
+  <div class="label">#A Up-chevron inside ring at top<small>Loop opens at top, ↑ inside points into the gap. "Closed loop + upward growth."</small>
+    <div class="verdict bad">Tries loop + growth, but the arrow protruding from the ring drifts into keyhole / biological / gender-symbol readings at small sizes. Highest unintended-association risk in the set.</div>
+  </div>
   <div class="sizes">
     <div class="size-block"><img src="loop-candidate-A-up-inside-180.png" width="180"><span class="px">180</span></div>
     <div class="size-block"><img src="loop-candidate-A-up-inside-32.png" width="32"><span class="px">32</span></div>
@@ -72,7 +82,9 @@
   </div>
 </div>
 <div class="row">
-  <div class="label">#B Leading-edge arrow<small>Arrowhead at top of loop pointing right (CW), gap continues forward. iOS reload pattern.</small></div>
+  <div class="label">#B Leading-edge arrow<small>Arrowhead at top of loop pointing right (CW), gap continues forward. iOS reload pattern.</small>
+    <div class="verdict warn">Closed-ish cycle, forward motion, continuous iteration. Weakness: strongly resembles refresh/reload/sync icons — feels more like a browser utility than enterprise AI.</div>
+  </div>
   <div class="sizes">
     <div class="size-block"><img src="loop-candidate-B-tangent-180.png" width="180"><span class="px">180</span></div>
     <div class="size-block"><img src="loop-candidate-B-tangent-32.png" width="32"><span class="px">32</span></div>
@@ -81,7 +93,9 @@
   </div>
 </div>
 <div class="row">
-  <div class="label">#C Triangle flag on top &nbsp;<span style="background:#38bdf8;color:#07090e;padding:0.15rem 0.5rem;border-radius:3px;font-size:0.65rem;letter-spacing:0.04em;text-transform:uppercase;">Shipped</span><small>Closed ring with ownership flag above. Currently live in www/.</small></div>
+  <div class="label">#C Triangle flag on top &nbsp;<span style="background:#38bdf8;color:#07090e;padding:0.15rem 0.5rem;border-radius:3px;font-size:0.65rem;letter-spacing:0.04em;text-transform:uppercase;">Shipped</span><small>Closed ring with ownership flag above. Currently live in www/.</small>
+    <div class="verdict good">Strongest conceptual mark: shield + loop + ownership claim. Good for "own the loop." Weakness: triangle a bit abstract at 16 px; mild flag/territory/conquest associations.</div>
+  </div>
   <div class="sizes">
     <div class="size-block"><img src="loop-candidate-C-flag-180.png" width="180"><span class="px">180</span></div>
     <div class="size-block"><img src="loop-candidate-C-flag-32.png" width="32"><span class="px">32</span></div>
@@ -90,12 +104,14 @@
   </div>
 </div>
 <div class="row">
-  <div class="label">#D 3-arrow flywheel<small>Three curved arrows in a triangular flywheel inside the shield. Most "data flywheel" feel.</small></div>
+  <div class="label">#G Orbit dot<small>Closed ring with a single dot on the path. Reads as a living eval loop / satellite on orbit.</small>
+    <div class="verdict good">Strong: as enterprise-neutral as #1, more distinctive (dot anchors it). Suggests living loop without gimmick. No political, anatomical, commodity, or brand-collision risk.</div>
+  </div>
   <div class="sizes">
-    <div class="size-block"><img src="loop-candidate-D-flywheel-180.png" width="180"><span class="px">180</span></div>
-    <div class="size-block"><img src="loop-candidate-D-flywheel-32.png" width="32"><span class="px">32</span></div>
-    <div class="size-block"><img src="loop-candidate-D-flywheel-32.png" width="16"><span class="px">16</span></div>
-    <div class="size-block"><div class="light"><img src="loop-candidate-D-flywheel-32.png" width="32"></div><span class="px">tab</span></div>
+    <div class="size-block"><img src="loop-candidate-G-orbit.svg" width="180" height="180"><span class="px">180</span></div>
+    <div class="size-block"><img src="loop-candidate-G-orbit.svg" width="32" height="32"><span class="px">32</span></div>
+    <div class="size-block"><img src="loop-candidate-G-orbit.svg" width="16" height="16"><span class="px">16</span></div>
+    <div class="size-block"><div class="light"><img src="loop-candidate-G-orbit.svg" width="32" height="32"></div><span class="px">tab</span></div>
   </div>
 </div>
 
