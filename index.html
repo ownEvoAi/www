@@ -5,11 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ownEvo — Own the improvement loop</title>
 <meta name="description" content="Core agents for the workflows that define your business. Self-improving, sovereign, owned by you.">
+<meta name="theme-color" content="#07090e">
+
+<!-- Open Graph / social share -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ownEvo">
+<meta property="og:title" content="ownEvo — Own the improvement loop">
+<meta property="og:description" content="Core agents for the workflows that define your business. Self-improving, sovereign, owned by you.">
+<meta property="og:url" content="https://ownevo.ai/">
+<meta property="og:image" content="https://ownevo.ai/apple-touch-icon.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ownEvo — Own the improvement loop">
+<meta name="twitter:description" content="Core agents for the workflows that define your business. Self-improving, sovereign, owned by you.">
+<meta name="twitter:image" content="https://ownevo.ai/apple-touch-icon.png">
+
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+  /* ════════════════════════════════════════════════════════════════════
+     ownEvo design system — see BRAND.md for the canonical specification.
+     Tokens, type scale, components, and motion are defined there.
+     ════════════════════════════════════════════════════════════════════ */
   :root {
     --bg: #07090e;
     --surface: #0c0f16;
@@ -99,6 +118,12 @@
     display: flex;
     align-items: center;
     gap: 0.12em;
+  }
+  .nav-logo-mark {
+    width: 22px;
+    height: 22px;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
   }
   .nav-logo .logo-own { color: var(--grey-300); }
   .nav-logo .logo-evo { color: var(--accent); font-style: italic; }
@@ -679,6 +704,11 @@
 <!-- ═══ NAV ═══ -->
 <nav id="nav">
   <a href="/" class="nav-logo">
+    <svg class="nav-logo-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#38bdf8"/>
+      <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+      <path d="M9.6 8 L12 5.5 L14.4 8 Z" fill="#07090e"/>
+    </svg>
     <span class="logo-own">own</span><span class="logo-evo">Evo</span>
   </a>
   <a href="https://forms.gle/S8t84kVA5mLfP6jUA" target="_blank" class="nav-cta">Talk to us</a>
