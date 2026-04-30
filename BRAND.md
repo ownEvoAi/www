@@ -78,7 +78,7 @@ Properties:
 
 ### 3.2 Mark — shield icon (`logo-shield.svg`)
 
-A solid sky-blue shield containing a dark two-headed loop: two semicircular
+A solid blue shield containing a dark two-headed loop: two semicircular
 arcs, each ending in an arrowhead pointing into the next arc, with a small
 gap between tip and arc start. Combines both pillars in one glyph:
 
@@ -102,10 +102,10 @@ size or square aspect ratio:
 
 Two SVG variants are checked in:
 
-- `logo-shield.svg` — **filled** (sky-blue shield, dark two-headed loop).
+- `logo-shield.svg` — **filled** (blue shield, dark two-headed loop).
   Use for favicons, app icons, and any context with a non-brand background.
 - `logo-shield-outline.svg` — **outline only** with `currentColor`. Use inline
-  on the dark site (nav, footer) so it adopts the site's accent color via CSS.
+  on the site (nav, footer) so it adopts the site's accent color via CSS.
 
 ### 3.3 Lockup (TBD)
 
@@ -132,34 +132,34 @@ wordmark in the same `Outfit 600` typography.
 
 | Token | Value | Role |
 |---|---|---|
-| `--bg` | `#07090e` | Page background, primary surface |
-| `--surface` | `#0c0f16` | Cards, nav (scrolled), feed |
-| `--surface-2` | `#101520` | Elevated surface (core column, inset blocks) |
-| `--border` | `#151a24` | Default divider, card border |
-| `--border-light` | `#1e2533` | Hover / focus border, subtle separator |
-| `--accent` | `#38bdf8` | The single accent — italic Evo, links, primary CTAs, icons |
-| `--accent-hover` | `#7dd3fc` | Hover state of `--accent` only |
-| `--accent-dim` | `#38bdf808` | Pull-quote backgrounds, faint glow blocks |
-| `--accent-glow` | `#38bdf812` | Hero radial glow |
-| `--accent-muted` | `rgba(56,189,248,0.12)` | Icon backgrounds, soft fills |
-| `--white` | `#f1f5f9` | Headlines, primary copy |
-| `--grey-100` | `#cbd5e1` | Secondary copy |
-| `--grey-200` | `#b0bec5` | Lists, supporting copy |
-| `--grey-300` | `#94a3b8` | Body text default; the `own` of the wordmark |
+| `--bg` | `#ffffff` | Page background, primary surface |
+| `--surface` | `#f8fafc` | Cards, nav (scrolled) |
+| `--surface-2` | `#f1f5f9` | Elevated surface (core column, inset blocks) |
+| `--border` | `#e2e8f0` | Default divider, card border |
+| `--border-light` | `#cbd5e1` | Hover / focus border, subtle separator |
+| `--accent` | `#3b82f6` | The single accent — italic Evo, links, primary CTAs, icons |
+| `--accent-hover` | `#2563eb` | Hover state of `--accent` only |
+| `--accent-dim` | `#3b82f60d` | Pull-quote backgrounds, faint accent fills |
+| `--accent-glow` | `#3b82f614` | Hero radial glow / soft accent overlay |
+| `--accent-muted` | `rgba(59,130,246,0.10)` | Icon backgrounds, soft fills |
+| `--white` | `#0f172a` | Headlines, primary copy (semantic name preserved; value flips per theme) |
+| `--grey-100` | `#1e293b` | Secondary copy |
+| `--grey-200` | `#334155` | Lists, supporting copy |
+| `--grey-300` | `#475569` | Body text default; the `own` of the wordmark |
 | `--grey-500` | `#64748b` | Captions, fine print |
-| `--grey-700` | `#334155` | Disabled, deepest non-bg copy, footer text |
-| `--grey-900` | `#0f172a` | Reserved for future depth |
-| `--green` | `#34d399` | "Good" / `ownEvo alternative` semantic |
-| `--red` | `#f87171` | "Bad" / `the current deal` semantic |
+| `--grey-700` | `#94a3b8` | Faintest readable copy, footer text |
+| `--grey-900` | `#cbd5e1` | Reserved (currently unused on light theme) |
+| `--green` | `#059669` | "Good" / `ownEvo alternative` semantic |
+| `--red` | `#dc2626` | "Bad" / `the current deal` semantic |
 
 ### Rules
 
-- **One accent.** `#38bdf8` is the only saturated color on the site. Do not
+- **One accent.** `#3b82f6` is the only saturated color on the site. Do not
   introduce purple, orange, magenta, or teal as additional accents.
 - **Green and red are semantic-only** — used for problem/solution juxtaposition
   and validation states. Never decorative.
-- **Backgrounds are dark by default.** Light-mode is not currently supported;
-  if it becomes needed, design as a separate spec.
+- **Backgrounds are light by default** — institutional white on grey-blue
+  scale. A dark variant is not currently shipped; design separately if needed.
 - **Borders are flat and tight.** No glowing borders except the hero glow and
   the primary CTA hover.
 
@@ -326,7 +326,7 @@ ffmpeg -y -i favicon-32.png favicon.ico
 
 ## 12. Open questions / future work
 
-- **Light-mode** — not currently supported; design separately if needed.
+- **Dark-mode variant** — not currently shipped; design separately if needed.
 - **Lockup SVG** — needed for OG images, slide footers, and printed collateral.
 - **Brand mark variants** — single-color knockout (white on accent), reverse
   (accent on white) versions of `logo-shield.svg` for partner co-branding.
