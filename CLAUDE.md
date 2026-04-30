@@ -188,9 +188,10 @@ new component pattern, the answer is almost always to reuse what's already
 there.
 
 The single accent color is `#38bdf8` (sky blue). The brand mark is the shield
-SVG (ownership = shield silhouette, evolution = up-arrow inside). The text
-wordmark in the nav is the **primary** brand expression on the web; the shield
-is supporting it, not replacing it.
+SVG (ownership = shield silhouette, evolution = two-headed continuous loop
+inside — two arcs each ending in an arrowhead, with a gap before the next
+arc). The text wordmark in the nav is the **primary** brand expression on
+the web; the shield is supporting it, not replacing it.
 
 ---
 

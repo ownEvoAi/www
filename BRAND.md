@@ -78,12 +78,14 @@ Properties:
 
 ### 3.2 Mark — shield icon (`logo-shield.svg`)
 
-A solid sky-blue shield containing a dark closed ring with a small triangular
-flag perched on top of the ring. Combines both pillars in one glyph:
+A solid sky-blue shield containing a dark two-headed loop: two semicircular
+arcs, each ending in an arrowhead pointing into the next arc, with a small
+gap between tip and arc start. Combines both pillars in one glyph:
 
 - **Shield** = ownership / sovereignty / institutional protection.
-- **Closed ring** = the improvement loop, continuous, self-contained.
-- **Flag on top** = a claim of ownership over the loop (the loop is yours).
+- **Two-headed loop** = the improvement cycle, continuously running.
+- **Gap before each arc** = the loop is *active*, not static — every
+  iteration leaves a discontinuity that the next cycle closes.
 
 Together, the mark reads as *"Own the loop"* — the brand's tagline rendered
 into a single glyph: a sovereign, continuously running, owned-by-you loop.
@@ -100,8 +102,8 @@ size or square aspect ratio:
 
 Two SVG variants are checked in:
 
-- `logo-shield.svg` — **filled** (sky-blue shield, dark arrow). Use for
-  favicons, app icons, and any context with a non-brand background.
+- `logo-shield.svg` — **filled** (sky-blue shield, dark two-headed loop).
+  Use for favicons, app icons, and any context with a non-brand background.
 - `logo-shield-outline.svg` — **outline only** with `currentColor`. Use inline
   on the dark site (nav, footer) so it adopts the site's accent color via CSS.
 
