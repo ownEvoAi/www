@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ownEvo — Own the improvement loop</title>
 <meta name="description" content="Core agents for the workflows that define your business. Self-improving, sovereign, owned by you.">
-<meta name="theme-color" content="#07090e">
+<meta name="theme-color" content="#ffffff">
 
 <!-- Open Graph / social share -->
 <meta property="og:type" content="website">
@@ -23,32 +23,32 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   /* ════════════════════════════════════════════════════════════════════
      ownEvo design system — see BRAND.md for the canonical specification.
      Tokens, type scale, components, and motion are defined there.
      ════════════════════════════════════════════════════════════════════ */
   :root {
-    --bg: #07090e;
-    --surface: #0c0f16;
-    --surface-2: #101520;
-    --border: #151a24;
-    --border-light: #1e2533;
-    --accent: #38bdf8;
-    --accent-hover: #7dd3fc;
-    --accent-dim: #38bdf808;
-    --accent-glow: #38bdf812;
-    --accent-muted: rgba(56,189,248,0.12);
-    --white: #f1f5f9;
-    --grey-100: #cbd5e1;
-    --grey-200: #b0bec5;
-    --grey-300: #94a3b8;
+    --bg: #ffffff;
+    --surface: #f8fafc;
+    --surface-2: #f1f5f9;
+    --border: #e2e8f0;
+    --border-light: #cbd5e1;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --accent-dim: #3b82f60d;
+    --accent-glow: #3b82f614;
+    --accent-muted: rgba(59,130,246,0.10);
+    --white: #0f172a;
+    --grey-100: #1e293b;
+    --grey-200: #334155;
+    --grey-300: #475569;
     --grey-500: #64748b;
-    --grey-700: #334155;
-    --grey-900: #0f172a;
-    --green: #34d399;
-    --red: #f87171;
+    --grey-700: #94a3b8;
+    --grey-900: #cbd5e1;
+    --green: #059669;
+    --red: #dc2626;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -61,32 +61,6 @@
     color: var(--white);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
-  }
-
-  /* ═══ GRID BG ═══ */
-  .grid-bg {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    background-image:
-      linear-gradient(rgba(56,189,248,0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(56,189,248,0.025) 1px, transparent 1px);
-    background-size: 64px 64px;
-    mask-image: radial-gradient(ellipse 60% 50% at 50% 30%, black 5%, transparent 70%);
-    -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 30%, black 5%, transparent 70%);
-  }
-
-  .top-glow {
-    position: fixed;
-    top: -300px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 800px;
-    height: 400px;
-    background: radial-gradient(ellipse, rgba(56,189,248,0.05) 0%, transparent 65%);
-    pointer-events: none;
-    z-index: 0;
   }
 
   /* ═══ NAV ═══ */
@@ -104,13 +78,13 @@
     transition: border-color 0.3s, background 0.3s;
   }
   nav.scrolled {
-    background: rgba(7,9,14,0.92);
+    background: rgba(255,255,255,0.85);
     backdrop-filter: blur(12px);
     border-color: var(--border);
   }
   .nav-logo {
     font-family: 'Outfit', sans-serif;
-    font-size: 1.05rem;
+    font-size: 2.4rem;
     font-weight: 600;
     letter-spacing: -0.03em;
     color: var(--white);
@@ -120,9 +94,9 @@
     gap: 0.12em;
   }
   .nav-logo-mark {
-    width: 22px;
-    height: 22px;
-    margin-right: 0.5rem;
+    width: 64px;
+    height: 64px;
+    margin-right: 0.7rem;
     flex-shrink: 0;
   }
   .nav-logo .logo-own { color: var(--grey-300); }
@@ -135,7 +109,7 @@
     text-transform: uppercase;
     color: var(--accent);
     text-decoration: none;
-    border: 1px solid rgba(56,189,248,0.3);
+    border: 1px solid rgba(59,130,246,0.3);
     padding: 0.5rem 1.2rem;
     border-radius: 3px;
     transition: all 0.2s;
@@ -163,18 +137,16 @@
   }
 
   .hero-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.22em;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--accent);
+    color: var(--grey-300);
     margin-bottom: 2rem;
     opacity: 0;
     animation: up 0.6s 0.1s cubic-bezier(0.16,1,0.3,1) forwards;
-    border: 1px solid rgba(56,189,248,0.2);
-    padding: 0.35rem 0.9rem;
-    border-radius: 2px;
-    background: rgba(56,189,248,0.04);
+    max-width: 640px;
+    line-height: 1.5;
   }
 
   .hero-headline {
@@ -233,7 +205,7 @@
   }
   .btn-primary:hover {
     background: var(--accent-hover);
-    box-shadow: 0 0 28px rgba(56,189,248,0.25);
+    box-shadow: 0 0 28px rgba(59,130,246,0.25);
   }
   .btn-primary svg { transition: transform 0.2s; }
   .btn-primary:hover svg { transform: translateX(3px); }
@@ -253,72 +225,8 @@
   }
   .btn-ghost:hover { border-color: var(--grey-500); color: var(--white); }
 
-  /* ═══ FEED ═══ */
-  .hero-feed {
-    width: 100%;
-    max-width: 680px;
-    opacity: 0;
-    animation: up 0.7s 0.65s cubic-bezier(0.16,1,0.3,1) forwards;
-  }
-  .feed-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-bottom: none;
-    border-radius: 4px 4px 0 0;
-  }
-  .feed-dot { width: 8px; height: 8px; border-radius: 50%; }
-  .fd-r { background: #ff5f57; }
-  .fd-y { background: #febc2e; }
-  .fd-g { background: #28c840; }
-  .feed-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.58rem;
-    color: var(--grey-700);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-left: 0.2rem;
-  }
-  .feed-body {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 0 0 4px 4px;
-    padding: 1rem 1.2rem;
-    min-height: 2.8rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-    text-align: left;
-  }
-  .feed-prompt {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--grey-700);
-    flex-shrink: 0;
-    line-height: 1.5;
-    user-select: none;
-  }
-  .feed-text {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--accent);
-    line-height: 1.5;
-    word-break: break-word;
-  }
-  .feed-cursor {
-    display: inline-block;
-    width: 6px;
-    height: 0.95em;
-    background: var(--accent);
-    margin-left: 1px;
-    vertical-align: text-bottom;
-    opacity: 0.7;
-    animation: blink 0.8s step-end infinite;
-  }
-  @keyframes blink { 0%,100% { opacity: 0.7; } 50% { opacity: 0; } }
+  .is-disabled { cursor: not-allowed; opacity: 0.55; pointer-events: none; }
+  .is-disabled:hover { box-shadow: none; }
 
   /* ═══ SECTION SHARED ═══ */
   .section-inner {
@@ -327,7 +235,6 @@
     padding: 6rem 2rem;
   }
   .section-label {
-    font-family: 'JetBrains Mono', monospace;
     font-size: 0.58rem;
     letter-spacing: 0.22em;
     text-transform: uppercase;
@@ -370,7 +277,6 @@
     padding: 2rem;
   }
   .problem-card-label {
-    font-family: 'JetBrains Mono', monospace;
     font-size: 0.56rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -393,8 +299,8 @@
     color: var(--grey-300);
     line-height: 1.65;
   }
-  .problem-card.bad { border-color: rgba(248,113,113,0.2); }
-  .problem-card.good { border-color: rgba(52,211,153,0.2); background: rgba(52,211,153,0.03); }
+  .problem-card.bad { border-color: rgba(220,38,38,0.25); }
+  .problem-card.good { border-color: rgba(5,150,105,0.25); background: rgba(5,150,105,0.04); }
   .pullquote {
     margin-top: 3.5rem;
     padding: 2rem 2.5rem;
@@ -429,7 +335,6 @@
   }
   .cvo-col.core { background: var(--surface-2); }
   .cvo-col-label {
-    font-family: 'JetBrains Mono', monospace;
     font-size: 0.56rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -499,7 +404,6 @@
   .loop-step:last-child { border-bottom: none; }
   .loop-step.active { opacity: 1; }
   .step-num {
-    font-family: 'JetBrains Mono', monospace;
     font-size: 0.65rem;
     color: var(--accent);
     letter-spacing: 0.1em;
@@ -548,7 +452,6 @@
     letter-spacing: -0.01em;
   }
   .proof-detail {
-    font-family: 'JetBrains Mono', monospace;
     font-size: 0.56rem;
     color: var(--grey-500);
     letter-spacing: 0.08em;
@@ -606,7 +509,6 @@
     background: var(--surface);
   }
   .persona-role {
-    font-family: 'JetBrains Mono', monospace;
     font-size: 0.56rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -643,7 +545,6 @@
   }
   .final-cta .hero-ctas { justify-content: center; margin-bottom: 1.25rem; }
   .final-cta-note {
-    font-family: 'JetBrains Mono', monospace;
     font-size: 0.54rem;
     color: var(--grey-700);
     letter-spacing: 0.1em;
@@ -659,7 +560,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: 'JetBrains Mono', monospace;
     font-size: 0.52rem;
     color: var(--grey-700);
     letter-spacing: 0.08em;
@@ -698,25 +598,24 @@
 </head>
 <body>
 
-<div class="grid-bg"></div>
-<div class="top-glow"></div>
-
 <!-- ═══ NAV ═══ -->
 <nav id="nav">
   <a href="/" class="nav-logo">
     <svg class="nav-logo-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#38bdf8"/>
-      <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
-      <path d="M9.6 8 L12 5.5 L14.4 8 Z" fill="#07090e"/>
+      <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" style="fill: var(--accent)"/>
+      <path d="M14.55 9.0 A4.0 4.0 0 0 1 14.05 15.5" stroke="#07090e" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M9.45 15.0 A4.0 4.0 0 0 1 9.95 8.5" stroke="#07090e" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M9.95 6.0 L12.95 8.5 L9.95 11.0 Z" fill="#07090e"/>
+      <path d="M14.05 13.0 L11.05 15.5 L14.05 18.0 Z" fill="#07090e"/>
     </svg>
     <span class="logo-own">own</span><span class="logo-evo">Evo</span>
   </a>
-  <a href="https://forms.gle/S8t84kVA5mLfP6jUA" target="_blank" class="nav-cta">Talk to us</a>
+  <a aria-disabled="true" tabindex="-1" class="nav-cta is-disabled">Talk to us</a>
 </nav>
 
 <!-- ═══ HERO ═══ -->
 <div class="hero" id="hero">
-  <div class="hero-label">Post-AGI Enterprise Intelligence</div>
+  <div class="hero-label">Agents that move the business — trusted without sacrifice</div>
 
   <h1 class="hero-headline">
     Your agents. Your edge.<br><em>Nobody else's.</em>
@@ -727,27 +626,13 @@
   </p>
 
   <div class="hero-ctas">
-    <a href="https://forms.gle/S8t84kVA5mLfP6jUA" target="_blank" class="btn-primary">
+    <a aria-disabled="true" tabindex="-1" class="btn-primary is-disabled">
       Talk to us about your core workflow
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
     <a href="#how-it-works" class="btn-ghost">See how it works</a>
   </div>
 
-  <div class="hero-feed">
-    <div class="feed-header">
-      <div class="feed-dot fd-r"></div>
-      <div class="feed-dot fd-y"></div>
-      <div class="feed-dot fd-g"></div>
-      <span class="feed-title">ownevo · improvement loop · live</span>
-    </div>
-    <div class="feed-body">
-      <span class="feed-prompt">&gt;</span>
-      <div class="feed-text">
-        <span id="feed-text"></span><span class="feed-cursor"></span>
-      </div>
-    </div>
-  </div>
 </div>
 
 <!-- ═══ PROBLEM ═══ -->
@@ -762,7 +647,7 @@
     <div class="problem-grid">
       <div class="problem-card bad">
         <div class="problem-card-label label-bad">
-          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="#f87171"/><path d="M4 4l4 4M8 4l-4 4" stroke="#f87171" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="#dc2626"/><path d="M4 4l4 4M8 4l-4 4" stroke="#dc2626" stroke-width="1.2" stroke-linecap="round"/></svg>
           The current deal
         </div>
         <h3>Your failures train their model. Your competitors benefit.</h3>
@@ -770,7 +655,7 @@
       </div>
       <div class="problem-card good">
         <div class="problem-card-label label-good">
-          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="#34d399"/><path d="M3.5 6l2 2 3-3.5" stroke="#34d399" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="#059669"/><path d="M3.5 6l2 2 3-3.5" stroke="#059669" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           The ownEvo alternative
         </div>
         <h3>Your failures feed your loop. The lesson stays yours.</h3>
@@ -990,7 +875,7 @@
     That's where we start. Not a generic demo — a conversation about the one process where your institutional knowledge is your edge, and what it would mean if that process never stopped improving.
   </p>
   <div class="hero-ctas">
-    <a href="https://forms.gle/S8t84kVA5mLfP6jUA" target="_blank" class="btn-primary">
+    <a aria-disabled="true" tabindex="-1" class="btn-primary is-disabled">
       Tell us about your core workflow
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
@@ -1017,42 +902,6 @@
   }, { passive: true });
 })();
 
-// Hero feed typer
-(function() {
-  const lines = [
-    'supply-chain-agent: markdown timing model → Q3 promotional lift +18% vs baseline',
-    'risk-agent: 847 prior eval cases checked → improvement validated → deploying',
-    'clinical-agent: 3 new eval cases added from trial cycle · regression gate passed',
-    'supply-chain-agent: demand forecast error down 12% after supplier cost update',
-    'finance-agent: credit spread signal detected 6 days before model flag → new eval case',
-    'clinical-agent: trial design rejected · fails 2 prior resolution cases · returning to draft',
-    'supply-chain-agent: inventory reallocation pattern promoted → permanent skill update',
-    'risk-agent: through-cycle recalibration · 14 behavioral signals re-weighted · approved',
-    'clinical-agent: patient stratification criteria updated · zero prior regressions · live'
-  ];
-  const el = document.getElementById('feed-text');
-  let wi = 0, ci = 0;
-
-  function tick() {
-    const line = lines[wi];
-    ci++;
-    el.textContent = line.slice(0, ci);
-    if (ci === line.length) {
-      const hold = Math.max(2200, line.split(' ').length * 320) + 800;
-      setTimeout(function() {
-        el.textContent = '';
-        ci = 0;
-        wi = (wi + 1) % lines.length;
-        setTimeout(tick, 250);
-      }, hold);
-      return;
-    }
-    setTimeout(tick, 16);
-  }
-
-  setTimeout(tick, 1600);
-})();
-
 // Loop step animation
 (function() {
   const steps = document.querySelectorAll('.loop-step');
@@ -1067,6 +916,7 @@
 
   setInterval(advance, 2200);
 })();
+
 </script>
 </body>
 </html>

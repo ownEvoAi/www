@@ -187,7 +187,7 @@ visual element.** If you're tempted to introduce a new color, a new font, or a
 new component pattern, the answer is almost always to reuse what's already
 there.
 
-The single accent color is `#38bdf8` (sky blue). The brand mark is the shield
+The single accent color is `#3b82f6` (Tailwind blue-500). The brand mark is the shield
 SVG (ownership = shield silhouette, evolution = two-headed continuous loop
 inside — two arcs each ending in an arrowhead, with a gap before the next
 arc). The text wordmark in the nav is the **primary** brand expression on
@@ -278,7 +278,7 @@ Tracked here so they aren't lost. Cross-reference `BRAND.md` §12.
   footers, and printed collateral. Once it exists, generate a real
   1200×630 `og.png` and update the `og:image` / `twitter:image` meta tags
   (currently fall back to `apple-touch-icon.png`).
-- **Light-mode** — not currently supported; requires a separate spec if needed.
+- **Dark-mode variant** — not currently shipped; requires a separate spec if needed.
 - **Vertical landings** — supply-chain.html, finance.html, healthcare.html
   variants if/when one buyer type dominates pipeline.
 - **Privacy / Security pages** — footer links currently `href="#"`. Should
