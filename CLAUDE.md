@@ -188,10 +188,10 @@ new component pattern, the answer is almost always to reuse what's already
 there.
 
 The single accent color is `#3b82f6` (Tailwind blue-500). The brand mark is the shield
-SVG (ownership = shield silhouette, evolution = two-headed continuous loop
-inside — two arcs each ending in an arrowhead, with a gap before the next
-arc). The text wordmark in the nav is the **primary** brand expression on
-the web; the shield is supporting it, not replacing it.
+SVG (ownership = shield silhouette + ownership-flag triangle planted on top of
+the inner loop, evolution = the closed ring inside the shield). The text
+wordmark in the nav is the **primary** brand expression on the web; the
+shield is supporting it, not replacing it.
 
 ---
 
