@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>own evo — Observability that evolves with your AI infrastructure</title>
+<title>ownEvo — Own the improvement loop</title>
+<meta name="description" content="Core agents for the workflows that define your business. Self-improving, sovereign, owned by you.">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -12,177 +13,280 @@
   :root {
     --bg: #07090e;
     --surface: #0c0f16;
+    --surface-2: #101520;
     --border: #151a24;
     --border-light: #1e2533;
     --accent: #38bdf8;
     --accent-hover: #7dd3fc;
     --accent-dim: #38bdf808;
     --accent-glow: #38bdf812;
+    --accent-muted: rgba(56,189,248,0.12);
     --white: #f1f5f9;
     --grey-100: #cbd5e1;
+    --grey-200: #b0bec5;
     --grey-300: #94a3b8;
     --grey-500: #64748b;
     --grey-700: #334155;
     --grey-900: #0f172a;
+    --green: #34d399;
+    --red: #f87171;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
 
   body {
     font-family: 'Outfit', sans-serif;
     background: var(--bg);
     color: var(--white);
     -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
     overflow-x: hidden;
   }
 
   /* ═══ GRID BG ═══ */
-  body::before {
-    content: '';
+  .grid-bg {
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 0;
     background-image:
-      linear-gradient(rgba(56,189,248,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(56,189,248,0.03) 1px, transparent 1px);
+      linear-gradient(rgba(56,189,248,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(56,189,248,0.025) 1px, transparent 1px);
     background-size: 64px 64px;
-    mask-image: radial-gradient(ellipse 55% 45% at 50% 40%, black 10%, transparent 70%);
-    -webkit-mask-image: radial-gradient(ellipse 55% 45% at 50% 40%, black 10%, transparent 70%);
+    mask-image: radial-gradient(ellipse 60% 50% at 50% 30%, black 5%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 30%, black 5%, transparent 70%);
   }
 
-  /* ═══ TOP GLOW ═══ */
-  body::after {
-    content: '';
+  .top-glow {
     position: fixed;
-    top: -250px;
+    top: -300px;
     left: 50%;
     transform: translateX(-50%);
-    width: 700px;
-    height: 350px;
-    background: radial-gradient(ellipse, rgba(56,189,248,0.06) 0%, transparent 70%);
+    width: 800px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(56,189,248,0.05) 0%, transparent 65%);
     pointer-events: none;
     z-index: 0;
   }
 
-  main {
-    flex: 1;
+  /* ═══ NAV ═══ */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 3rem;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  nav.scrolled {
+    background: rgba(7,9,14,0.92);
+    backdrop-filter: blur(12px);
+    border-color: var(--border);
+  }
+  .nav-logo {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--white);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.12em;
+  }
+  .nav-logo .logo-own { color: var(--grey-300); }
+  .nav-logo .logo-evo { color: var(--accent); font-style: italic; }
+  .nav-cta {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid rgba(56,189,248,0.3);
+    padding: 0.5rem 1.2rem;
+    border-radius: 3px;
+    transition: all 0.2s;
+  }
+  .nav-cta:hover {
+    background: var(--accent-muted);
+    border-color: var(--accent);
+  }
+
+  /* ═══ SECTIONS ═══ */
+  section, .hero {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ═══ HERO ═══ */
+  .hero {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: relative;
-    z-index: 1;
-    padding: 3rem 2rem;
+    padding: 7rem 2rem 5rem;
     text-align: center;
   }
 
-  /* ═══ LOGO ═══ */
-  .logo-mark {
-    margin-bottom: 1.8rem;
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
     opacity: 0;
     animation: up 0.6s 0.1s cubic-bezier(0.16,1,0.3,1) forwards;
+    border: 1px solid rgba(56,189,248,0.2);
+    padding: 0.35rem 0.9rem;
+    border-radius: 2px;
+    background: rgba(56,189,248,0.04);
   }
-  .logo-monogram {
-    font-family: 'Outfit', sans-serif;
-    font-size: clamp(3.2rem, 9vw, 5.5rem);
-    font-weight: 600;
-    color: var(--white);
-    line-height: 0.9;
-    letter-spacing: -0.12em;
-    text-transform: lowercase;
+
+  .hero-headline {
+    font-size: clamp(2.6rem, 6vw, 4.8rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    max-width: 800px;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: up 0.7s 0.2s cubic-bezier(0.16,1,0.3,1) forwards;
   }
-  .logo-monogram .oe-e {
+  .hero-headline em {
     font-style: italic;
     color: var(--accent);
   }
 
-  /* ═══ WORDMARK ═══ */
-  .wordmark {
+  .hero-sub {
     font-size: clamp(1rem, 1.8vw, 1.25rem);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1;
-    margin-bottom: 3rem;
-    opacity: 0;
-    animation: up 0.6s 0.2s cubic-bezier(0.16,1,0.3,1) forwards;
-    text-transform: lowercase;
-  }
-  .wordmark .evo { font-style: italic; color: var(--accent); }
-  .wordmark .dot {
-    display: inline-block;
-    width: 0.14em;
-    height: 0.14em;
-    background: var(--accent);
-    border-radius: 50%;
-    margin: 0 0.06em;
-    vertical-align: 0.14em;
-  }
-
-  /* ═══ DECLARATION ═══ */
-  .declaration {
-    font-family: 'Outfit', sans-serif;
-    font-size: 0.68rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--grey-500);
+    color: var(--grey-300);
     font-weight: 400;
-    margin-bottom: 2.5rem;
-    opacity: 0;
-    animation: up 0.6s 0.3s cubic-bezier(0.16,1,0.3,1) forwards;
-  }
-
-  /* ═══ RULE ═══ */
-  .rule {
-    width: 48px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    margin-bottom: 2.5rem;
-    opacity: 0;
-    animation: up 0.6s 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
-  }
-
-  /* ═══ TYPER ═══ */
-  .typer-wrap {
+    line-height: 1.6;
+    max-width: 560px;
     margin-bottom: 3rem;
     opacity: 0;
-    animation: up 0.6s 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
-    width: 100%;
-    max-width: 620px;
-    min-height: 3.5em;
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
+    animation: up 0.7s 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
   }
-  .terminal-body {
+
+  .hero-ctas {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 4rem;
+    opacity: 0;
+    animation: up 0.7s 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn-primary {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    padding: 0.8rem 2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 0 28px rgba(56,189,248,0.25);
+  }
+  .btn-primary svg { transition: transform 0.2s; }
+  .btn-primary:hover svg { transform: translateX(3px); }
+  .btn-ghost {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--grey-300);
+    background: transparent;
+    border: 1px solid var(--border-light);
+    padding: 0.8rem 2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    border-radius: 3px;
+  }
+  .btn-ghost:hover { border-color: var(--grey-500); color: var(--white); }
+
+  /* ═══ FEED ═══ */
+  .hero-feed {
+    width: 100%;
+    max-width: 680px;
+    opacity: 0;
+    animation: up 0.7s 0.65s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .feed-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+  }
+  .feed-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .fd-r { background: #ff5f57; }
+  .fd-y { background: #febc2e; }
+  .fd-g { background: #28c840; }
+  .feed-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--grey-700);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-left: 0.2rem;
+  }
+  .feed-body {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0 0 4px 4px;
+    padding: 1rem 1.2rem;
+    min-height: 2.8rem;
     display: flex;
     align-items: flex-start;
+    gap: 0.6rem;
     text-align: left;
   }
-  .terminal-prompt {
+  .feed-prompt {
     font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(0.7rem, 1vw, 0.78rem);
-    color: var(--grey-500);
-    margin-right: 8px;
+    font-size: 0.68rem;
+    color: var(--grey-700);
     flex-shrink: 0;
+    line-height: 1.5;
     user-select: none;
-    line-height: 1.6;
   }
-  .typer {
+  .feed-text {
     font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(0.7rem, 1vw, 0.78rem);
-    font-weight: 400;
+    font-size: 0.68rem;
     color: var(--accent);
-    line-height: 1.6;
+    line-height: 1.5;
+    word-break: break-word;
   }
-  .typer-text { word-break: break-word; }
-  .typer-cursor {
+  .feed-cursor {
     display: inline-block;
-    width: 7px;
-    height: 1.05em;
+    width: 6px;
+    height: 0.95em;
     background: var(--accent);
     margin-left: 1px;
     vertical-align: text-bottom;
@@ -191,55 +295,329 @@
   }
   @keyframes blink { 0%,100% { opacity: 0.7; } 50% { opacity: 0; } }
 
-  /* ═══ TAGLINE ═══ */
-  .tagline {
-    font-weight: 500;
-    font-size: clamp(1.4rem, 2.8vw, 2rem);
-    color: var(--white);
-    line-height: 1.3;
-    max-width: 500px;
-    letter-spacing: -0.02em;
-    margin-bottom: 3.5rem;
-    opacity: 0;
-    animation: up 0.6s 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+  /* ═══ SECTION SHARED ═══ */
+  .section-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
   }
-  .tagline em {
-    font-style: italic;
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
     color: var(--accent);
-    font-weight: 500;
+    margin-bottom: 1.25rem;
+  }
+  .section-heading {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    max-width: 640px;
+    margin-bottom: 1.25rem;
+  }
+  .section-heading em { font-style: italic; color: var(--accent); }
+  .section-body {
+    font-size: 1.05rem;
+    color: var(--grey-300);
+    line-height: 1.7;
+    max-width: 580px;
+  }
+  .section-body + .section-body { margin-top: 1rem; }
+
+  hr.section-rule {
+    border: none;
+    border-top: 1px solid var(--border);
   }
 
-  /* ═══ CTA ═══ */
-  .cta-area {
-    opacity: 0;
-    animation: up 0.6s 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+  /* ═══ PROBLEM SECTION ═══ */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 4rem;
+  }
+  .problem-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem;
+  }
+  .problem-card-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.56rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .label-bad { color: var(--red); }
+  .label-good { color: var(--green); }
+  .problem-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+  }
+  .problem-card p {
+    font-size: 0.88rem;
+    color: var(--grey-300);
+    line-height: 1.65;
+  }
+  .problem-card.bad { border-color: rgba(248,113,113,0.2); }
+  .problem-card.good { border-color: rgba(52,211,153,0.2); background: rgba(52,211,153,0.03); }
+  .pullquote {
+    margin-top: 3.5rem;
+    padding: 2rem 2.5rem;
+    border-left: 2px solid var(--accent);
+    background: var(--accent-dim);
+  }
+  .pullquote p {
+    font-size: 1.15rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.5;
+    color: var(--white);
+  }
+  .pullquote p em { font-style: italic; color: var(--accent); }
+
+  /* ═══ CORE VS OPS ═══ */
+  .cvo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 3.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .cvo-col {
+    padding: 2.5rem;
+  }
+  .cvo-col.ops {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+  }
+  .cvo-col.core { background: var(--surface-2); }
+  .cvo-col-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.56rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .cvo-col.ops .cvo-col-label { color: var(--grey-500); }
+  .cvo-col.core .cvo-col-label { color: var(--accent); }
+  .cvo-col h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.25rem;
+    line-height: 1.3;
+  }
+  .cvo-col.ops h3 { color: var(--grey-500); }
+  .cvo-col.core h3 { color: var(--white); }
+  .cvo-list {
+    list-style: none;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-  }
-  .cta-btn {
-    display: inline-flex;
-    align-items: center;
     gap: 0.6rem;
-    font-family: 'Outfit', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    color: var(--bg);
-    background: var(--accent);
-    border: none;
-    padding: 0.7rem 1.8rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-decoration: none;
-    border-radius: 3px;
   }
-  .cta-btn:hover { background: var(--accent-hover); box-shadow: 0 0 24px rgba(56,189,248,0.2); }
-  .cta-btn svg { transition: transform 0.2s ease; }
-  .cta-btn:hover svg { transform: translateX(3px); }
-  .cta-note {
+  .cvo-list li {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    padding-left: 1.2em;
+    position: relative;
+  }
+  .cvo-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+  }
+  .cvo-col.ops .cvo-list li { color: var(--grey-700); }
+  .cvo-col.ops .cvo-list li::before { color: var(--grey-700); }
+  .cvo-col.core .cvo-list li { color: var(--grey-200); }
+  .cvo-col.core .cvo-list li::before { color: var(--accent); }
+  .cvo-footer {
+    font-size: 0.78rem;
+    margin-top: 1.75rem;
+    font-style: italic;
+    line-height: 1.5;
+  }
+  .cvo-col.ops .cvo-footer { color: var(--grey-700); }
+  .cvo-col.core .cvo-footer { color: var(--grey-300); }
+
+  /* ═══ LOOP SECTION ═══ */
+  .loop-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .loop-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 3.5rem;
+  }
+  .loop-step {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1.5rem;
+    align-items: flex-start;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border);
+    opacity: 0.45;
+    transition: opacity 0.4s;
+  }
+  .loop-step:last-child { border-bottom: none; }
+  .loop-step.active { opacity: 1; }
+  .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    padding-top: 0.2rem;
+    text-align: right;
+  }
+  .step-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
+  }
+  .step-content p {
+    font-size: 0.88rem;
+    color: var(--grey-300);
+    line-height: 1.6;
+    max-width: 500px;
+  }
+
+  /* ═══ PROOF ═══ */
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+  .proof-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem;
+  }
+  .proof-stat {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .proof-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+  }
+  .proof-detail {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.56rem;
+    color: var(--grey-500);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.6;
+  }
+
+  /* ═══ SOVEREIGNTY ═══ */
+  .sov-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+  .sov-card {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem;
+    background: var(--surface);
+  }
+  .sov-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--accent-muted);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+    color: var(--accent);
+  }
+  .sov-card h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.6rem;
+  }
+  .sov-card p {
+    font-size: 0.85rem;
+    color: var(--grey-300);
+    line-height: 1.65;
+  }
+
+  /* ═══ WHO IT'S FOR ═══ */
+  .persona-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+  .persona-card {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem;
+    background: var(--surface);
+  }
+  .persona-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.56rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .persona-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+  }
+  .persona-card p {
+    font-size: 0.85rem;
+    color: var(--grey-300);
+    line-height: 1.65;
+  }
+
+  /* ═══ FINAL CTA ═══ */
+  .final-cta {
+    text-align: center;
+    padding: 7rem 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .final-cta .section-heading {
+    max-width: 640px;
+    margin: 0 auto 1.25rem;
+  }
+  .final-cta .section-body {
+    max-width: 480px;
+    margin: 0 auto 3rem;
+  }
+  .final-cta .hero-ctas { justify-content: center; margin-bottom: 1.25rem; }
+  .final-cta-note {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.54rem;
     color: var(--grey-700);
@@ -252,7 +630,7 @@
     position: relative;
     z-index: 1;
     border-top: 1px solid var(--border);
-    padding: 1.5rem 2rem;
+    padding: 1.75rem 3rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -261,102 +639,403 @@
     color: var(--grey-700);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    opacity: 0;
-    animation: fade 0.6s 1s ease forwards;
   }
   footer a { color: var(--grey-700); text-decoration: none; transition: color 0.15s; }
   footer a:hover { color: var(--grey-300); }
   .footer-links { display: flex; gap: 2rem; }
 
+  /* ═══ ANIMATIONS ═══ */
   @keyframes up {
     from { opacity: 0; transform: translateY(14px); }
     to { opacity: 1; transform: translateY(0); }
   }
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 
-  @media (max-width: 640px) {
-    footer { flex-direction: column; gap: 0.8rem; text-align: center; }
+  /* ═══ RESPONSIVE ═══ */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .section-inner { padding: 4rem 1.5rem; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .cvo-grid { grid-template-columns: 1fr; }
+    .cvo-col.ops { border-right: none; border-bottom: 1px solid var(--border); }
+    .proof-grid { grid-template-columns: 1fr; }
+    .sov-grid { grid-template-columns: 1fr; }
+    .persona-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 0.8rem; text-align: center; padding: 1.5rem; }
     .footer-links { justify-content: center; }
-    main { padding: 2.5rem 1.5rem; }
+    .hero-headline { letter-spacing: -0.03em; }
+  }
+
+  @media (max-width: 500px) {
+    .loop-step { grid-template-columns: 2.2rem 1fr; gap: 1rem; }
   }
 </style>
 </head>
 <body>
 
-<main>
-  <div class="logo-mark">
-    <div class="logo-monogram">o<span class="oe-e">e</span></div>
+<div class="grid-bg"></div>
+<div class="top-glow"></div>
+
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <span class="logo-own">own</span><span class="logo-evo">Evo</span>
+  </a>
+  <a href="https://forms.gle/S8t84kVA5mLfP6jUA" target="_blank" class="nav-cta">Talk to us</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero" id="hero">
+  <div class="hero-label">Post-AGI Enterprise Intelligence</div>
+
+  <h1 class="hero-headline">
+    Your agents. Your edge.<br><em>Nobody else's.</em>
+  </h1>
+
+  <p class="hero-sub">
+    Models are ready. The question now is who owns the intelligence running on top of them — and whether it keeps getting better on <em>your</em> data.
+  </p>
+
+  <div class="hero-ctas">
+    <a href="https://forms.gle/S8t84kVA5mLfP6jUA" target="_blank" class="btn-primary">
+      Talk to us about your core workflow
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <a href="#how-it-works" class="btn-ghost">See how it works</a>
   </div>
 
-  <div class="wordmark">own<span class="dot"></span><span class="evo">evo</span></div>
-
-  <div class="rule"></div>
-
-  <div class="typer-wrap">
-    <div class="terminal-body">
-      <span class="terminal-prompt">&gt;</span>
-      <div class="typer">
-        <span class="typer-text" id="typer"></span><span class="typer-cursor"></span>
+  <div class="hero-feed">
+    <div class="feed-header">
+      <div class="feed-dot fd-r"></div>
+      <div class="feed-dot fd-y"></div>
+      <div class="feed-dot fd-g"></div>
+      <span class="feed-title">ownevo · improvement loop · live</span>
+    </div>
+    <div class="feed-body">
+      <span class="feed-prompt">&gt;</span>
+      <div class="feed-text">
+        <span id="feed-text"></span><span class="feed-cursor"></span>
       </div>
     </div>
   </div>
+</div>
 
-  <p class="tagline">Observability, evolved<br><em>for the GPU era.</em></p>
+<!-- ═══ PROBLEM ═══ -->
+<section id="problem">
+  <div class="section-inner">
+    <div class="section-label">The Problem</div>
+    <h2 class="section-heading">The data-for-improvement bargain you didn't agree to</h2>
+    <p class="section-body">
+      Every time your agent fails, that failure is a signal. A signal about your customers, your process, your edge cases. Most platforms capture that signal — and use it to improve their model for everyone, including your competitors.
+    </p>
 
-  <div class="cta-area">
-    <a href="https://forms.gle/S8t84kVA5mLfP6jUA" target="_blank" class="cta-btn">
-      Request Early Access
+    <div class="problem-grid">
+      <div class="problem-card bad">
+        <div class="problem-card-label label-bad">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="#f87171"/><path d="M4 4l4 4M8 4l-4 4" stroke="#f87171" stroke-width="1.2" stroke-linecap="round"/></svg>
+          The current deal
+        </div>
+        <h3>Your failures train their model. Your competitors benefit.</h3>
+        <p>Your demand forecast misses. Your agent logs the failure. The platform ingests it. Their model improves — for all their customers. Your edge case becomes their product roadmap.</p>
+      </div>
+      <div class="problem-card good">
+        <div class="problem-card-label label-good">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="#34d399"/><path d="M3.5 6l2 2 3-3.5" stroke="#34d399" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          The ownEvo alternative
+        </div>
+        <h3>Your failures feed your loop. The lesson stays yours.</h3>
+        <p>Failures are captured, clustered, and converted into eval cases inside your infrastructure. The improvement loop is yours. The knowledge compounds. No signal leaves your walls.</p>
+      </div>
+    </div>
+
+    <div class="pullquote">
+      <p>You paid for the failure. <em>They captured the lesson.</em></p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ═══ CORE VS OPS ═══ -->
+<section id="core-vs-ops">
+  <div class="section-inner">
+    <div class="section-label">Core vs. Ops</div>
+    <h2 class="section-heading">Ops agents are a commodity.<br><em>Core agents are your identity.</em></h2>
+    <p class="section-body">
+      Every vendor sells ops automation. Only you can build core agents — the ones that encode how your business actually competes.
+    </p>
+
+    <div class="cvo-grid">
+      <div class="cvo-col ops">
+        <div class="cvo-col-label">Ops Agents — anyone can buy these</div>
+        <h3>Table stakes. Interchangeable. No durable advantage here.</h3>
+        <ul class="cvo-list">
+          <li>HR onboarding workflows</li>
+          <li>Sales outreach sequences</li>
+          <li>Marketing campaign automation</li>
+          <li>Expense approvals</li>
+          <li>Meeting summaries</li>
+        </ul>
+        <p class="cvo-footer">Every vendor sells these. They're generic by design. Your competitive moat is not here.</p>
+      </div>
+      <div class="cvo-col core">
+        <div class="cvo-col-label">Core Agents — only you can build these</div>
+        <h3>Your competitive edge. The institutional know-how not in any document.</h3>
+        <ul class="cvo-list">
+          <li>How you forecast demand at SKU-location granularity</li>
+          <li>How your underwriters price risk through a credit cycle</li>
+          <li>How your clinical teams design trials that get approved</li>
+          <li>How your buyers push back on supplier cost-builds</li>
+          <li>How your network right-times spectrum reallocation</li>
+        </ul>
+        <p class="cvo-footer">This knowledge lives in outcomes — decisions that worked and those that didn't, accumulated across years. It can only be learned from running. And it must be owned by you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section id="how-it-works" class="loop-section">
+  <div class="section-inner">
+    <div class="section-label">The Loop</div>
+    <h2 class="section-heading">Deploy once. Improve forever. <em>Regress never.</em></h2>
+    <p class="section-body">
+      Deploying an agent is not the goal — it's the starting line. The question that matters is what it knows on day 365, and whether that improvement is yours or someone else's.
+    </p>
+
+    <div class="loop-steps" id="loop-steps">
+      <div class="loop-step active">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h4>Deploy on your core workflow</h4>
+          <p>The agent runs on your real process — real decisions, real outcomes, real data. Not a demo environment. Not synthetic events.</p>
+        </div>
+      </div>
+      <div class="loop-step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h4>Failures are captured automatically</h4>
+          <p>Every time the agent gets it wrong, the trace is captured, analyzed, and clustered into a root-cause pattern. No manual labeling, no incident tickets, no retrospectives.</p>
+        </div>
+      </div>
+      <div class="loop-step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h4>A live eval set grows with you</h4>
+          <p>Failure clusters become reusable eval cases. Not a static benchmark — a living test suite that reflects how your specific process actually fails. It compounds with every cycle.</p>
+        </div>
+      </div>
+      <div class="loop-step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h4>Improvements proposed and regression-tested</h4>
+          <p>Each proposed improvement must pass two gates: does it fix the new failure, and does it leave every previously resolved case intact? No step forward that loses a step already gained.</p>
+        </div>
+      </div>
+      <div class="loop-step">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <h4>Domain expert approves in plain language</h4>
+          <p>Not a developer. The person who knows the work reads a plain-language description and approves or rejects. If you can describe what went wrong in a meeting, you can fix it.</p>
+        </div>
+      </div>
+      <div class="loop-step">
+        <div class="step-num">06</div>
+        <div class="step-content">
+          <h4>The agent that runs today is measurably better than six months ago</h4>
+          <p>Full history: every improvement, the eval set it was validated against, the regression cases it had to satisfy. Not a black box — a compound. Auditable, exportable, yours.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROOF ═══ -->
+<section id="proof">
+  <div class="section-inner">
+    <div class="section-label">Validation</div>
+    <h2 class="section-heading">The improvement loop works.<br><em>Empirically, across domains.</em></h2>
+    <p class="section-body">
+      Self-evolution validated across 3 domains, 19+ models, 400+ real test cases. Not benchmark numbers on a research paper — accuracy improvement on representative production workflows.
+    </p>
+
+    <div class="proof-grid">
+      <div class="proof-card">
+        <div class="proof-stat">+50.7%</div>
+        <div class="proof-label">Accuracy lift — SRE incident response</div>
+        <div class="proof-detail">100 incidents · 14 patterns · 18 models tested<br>claude-opus; best local: qwen3:32b +33.8%<br>all 18 models showed positive lift</div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-stat">72–78%</div>
+        <div class="proof-label">Accuracy — personal productivity agents</div>
+        <div class="proof-detail">200 events · 4 agent types · 19 models<br>finance, health, task, learning<br>all models flat or positive after fix sweep</div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-stat">95.2%</div>
+        <div class="proof-label">Trap detection — legal case management</div>
+        <div class="proof-detail">100 cases · 10 legal domains · 13 models<br>claude-opus warm accuracy 68.7%<br>CaseMind plaintiff agent</div>
+      </div>
+    </div>
+
+    <div class="pullquote" style="margin-top:3rem">
+      <p>Even the smallest model tested (llama3.2:3b, 2 GB) achieves <em>+21.2% lift</em>. The improvement loop works across model sizes — because the moat is the eval set, not the model.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ═══ SOVEREIGNTY ═══ -->
+<section id="sovereignty">
+  <div class="section-inner">
+    <div class="section-label">Ownership</div>
+    <h2 class="section-heading">Run anywhere. Own everything.<br><em>Lock in to nothing.</em></h2>
+    <p class="section-body">
+      Owning your agents is not a philosophical position. It is a set of concrete properties that either your system has or it doesn't.
+    </p>
+
+    <div class="sov-grid">
+      <div class="sov-card">
+        <div class="sov-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M17.5 14v6M14.5 17h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Any model, any provider</h3>
+        <p>Claude, GPT, Llama, Mistral — or any open-weight model you choose. Swap models without rebuilding. The institutional knowledge travels with the agent, not the model provider. Switch tomorrow. Take everything.</p>
+      </div>
+      <div class="sov-card">
+        <div class="sov-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Local if you need it</h3>
+        <p>Regulated data that can't leave your walls? Run fully local. 80–90% of routine decisions handled by local models at near-zero cost. Cloud inference reserved for the complexity that genuinely needs it.</p>
+      </div>
+      <div class="sov-card">
+        <div class="sov-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Export any time</h3>
+        <p>Memory, eval set, improvement history, skill layer — all export in an open format. The lock-in is the institutional knowledge you've accumulated. That belongs to you, not to us.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ═══ WHO IT'S FOR ═══ -->
+<section id="who">
+  <div class="section-inner">
+    <div class="section-label">Who It's For</div>
+    <h2 class="section-heading">Not for ops automation buyers.<br><em>For the people who own the core.</em></h2>
+    <p class="section-body">
+      We are not building for the team that wants to automate HR or sales outreach. Those are solved problems. We're building for the people whose core business process encodes decades of institutional knowledge that is not in any document, cannot be bought from any vendor, and must get better every year — or the business falls behind.
+    </p>
+
+    <div class="persona-grid">
+      <div class="persona-card">
+        <span class="persona-role">Supply Chain VP</span>
+        <h3>The margin is in decisions that happen 10 million times a week.</h3>
+        <p>Tired of rebuilding demand models every planning cycle. Wants an agent that compounds — one that knows your category, your suppliers, your seasonal patterns, and gets better at it every quarter without starting over.</p>
+      </div>
+      <div class="persona-card">
+        <span class="persona-role">Chief Risk Officer</span>
+        <h3>Your edge is in proprietary signal. Don't share it to improve their model.</h3>
+        <p>Knows the competitive advantage is in the feedback loop running on their claims and transaction data. Won't share loss development factors with any vendor. Needs the improvement loop to stay inside the institution.</p>
+      </div>
+      <div class="persona-card">
+        <span class="persona-role">Chief Medical Officer</span>
+        <h3>The most expensive mistake is the one that already happened once.</h3>
+        <p>Watched clinical knowledge walk out the door when senior researchers retired. Wants a system where every trial design decision, every formulary outcome, every adverse event pattern leaves something behind — permanently.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FINAL CTA ═══ -->
+<section class="final-cta" id="contact">
+  <h2 class="section-heading" style="margin:0 auto 1.25rem">Which workflow defines your business?</h2>
+  <p class="section-body" style="margin:0 auto 3rem">
+    That's where we start. Not a generic demo — a conversation about the one process where your institutional knowledge is your edge, and what it would mean if that process never stopped improving.
+  </p>
+  <div class="hero-ctas">
+    <a href="https://forms.gle/S8t84kVA5mLfP6jUA" target="_blank" class="btn-primary">
+      Tell us about your core workflow
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
-    <p class="cta-note">Private beta · GPU-first teams only</p>
   </div>
-</main>
+  <p class="final-cta-note">Supply chain · Finance · Healthcare · Legal · Any core workflow</p>
+</section>
 
+<!-- ═══ FOOTER ═══ -->
 <footer>
-  <span>© 2026 Own Evo, Inc.</span>
+  <span>© 2026 ownEvo, Inc.</span>
   <div class="footer-links">
-    <a href="#">Security</a>
     <a href="#">Privacy</a>
-    <a href="#">Docs</a>
+    <a href="#">Security</a>
+    <a href="mailto:jit.ray.c@gmail.com">Contact</a>
   </div>
 </footer>
 
 <script>
+// Nav scroll
 (function() {
-  const words = [
-    'switch-5101 buffer overflow → 34% token throughput drop on prod-llm; critical in 9 min',
-    'gpu-14 thermal trend will trigger throttle in 6 min; rerouting inference to gpu-22',
-    '$41K/day in idle H100 compute detected across us-east; 3 nodes reclaimable now',
-    'NFS write stall on /checkpoint caused training job 7b3f to silently checkpoint-corrupt',
-    'TTFT jumped 220ms → 1.1s; root cause: KV cache eviction from co-located batch job',
-    'spine-02 congestion rippling into rack-07 and rack-12; 5 training jobs at risk',
-    'gpu-31 ECC error rate 12x baseline; predicted DIMM failure within 48 hours',
-    'driver v535.129 on node-22 silently dropping 8% FLOPS vs fleet on v535.161',
-    'correlated: RDMA retry storm on switch-04 + 3x inference latency on downstream nodes',
-    'model serving cost per token up 23% this week; root cause: fragmented GPU scheduling'
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', function() {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+})();
+
+// Hero feed typer
+(function() {
+  const lines = [
+    'supply-chain-agent: markdown timing model → Q3 promotional lift +18% vs baseline',
+    'risk-agent: 847 prior eval cases checked → improvement validated → deploying',
+    'clinical-agent: 3 new eval cases added from trial cycle · regression gate passed',
+    'supply-chain-agent: demand forecast error down 12% after supplier cost update',
+    'finance-agent: credit spread signal detected 6 days before model flag → new eval case',
+    'clinical-agent: trial design rejected · fails 2 prior resolution cases · returning to draft',
+    'supply-chain-agent: inventory reallocation pattern promoted → permanent skill update',
+    'risk-agent: through-cycle recalibration · 14 behavioral signals re-weighted · approved',
+    'clinical-agent: patient stratification criteria updated · zero prior regressions · live'
   ];
-  const el = document.getElementById('typer');
+  const el = document.getElementById('feed-text');
   let wi = 0, ci = 0;
 
   function tick() {
-    const w = words[wi];
+    const line = lines[wi];
     ci++;
-    el.textContent = w.slice(0, ci);
-    if (ci === w.length) {
-      const wordCount = w.split(' ').length;
-      const holdTime = Math.max(2000, wordCount * 333) + 1000;
-      setTimeout(() => {
+    el.textContent = line.slice(0, ci);
+    if (ci === line.length) {
+      const hold = Math.max(2200, line.split(' ').length * 320) + 800;
+      setTimeout(function() {
         el.textContent = '';
         ci = 0;
-        wi = (wi + 1) % words.length;
-        setTimeout(tick, 200);
-      }, holdTime);
+        wi = (wi + 1) % lines.length;
+        setTimeout(tick, 250);
+      }, hold);
       return;
     }
-    setTimeout(tick, 18);
+    setTimeout(tick, 16);
   }
 
-  setTimeout(tick, 1400);
+  setTimeout(tick, 1600);
+})();
+
+// Loop step animation
+(function() {
+  const steps = document.querySelectorAll('.loop-step');
+  if (!steps.length) return;
+  let current = 0;
+
+  function advance() {
+    steps[current].classList.remove('active');
+    current = (current + 1) % steps.length;
+    steps[current].classList.add('active');
+  }
+
+  setInterval(advance, 2200);
 })();
 </script>
 </body>
