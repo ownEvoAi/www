@@ -1,0 +1,11 @@
+# GitHub Pages / Jekyll configuration.
+#
+# The site is plain HTML — Jekyll does no templating here. The only purpose
+# of this file is to keep tracked-but-internal documents out of the deployed
+# build. Files listed below are committed to the repo (so collaborators can
+# see them on github.com) but are NOT served at ownevo.ai.
+exclude:
+  - CLAUDE.md
+  - BRAND.md
+  - README.md
+  - .bak
