@@ -110,12 +110,15 @@ through review; reuse rather than reinvent:
 | Hero | Headline + subhead + dual CTA + auto-typing terminal feed | `#hero` |
 | Problem | "The data-for-improvement bargain you didn't agree to" — bad/good card pair + pull-quote | `#problem` |
 | Core vs. Ops | Side-by-side comparison; the central framing | `#core-vs-ops` |
+| Use Cases | Three vertical deep-dives: Supply Chain · Finance & Insurance · Healthcare & Pharma | `#use-cases` |
 | How It Works (The Loop) | 6-step auto-cycling loop | `#how-it-works` |
-| Proof | Three stat cards from internal validation runs (+50.7%, 72–78%, 95.2%) | `#proof` |
+| IK Problem | "The most valuable things in your business aren't in any document." — institutional knowledge closing argument | `#ik-problem` |
 | Sovereignty | Three cards: any model · local if you need it · export any time | `#sovereignty` |
 | Who It's For | Three personas: Supply Chain VP · CRO · CMO | `#who` |
 | Final CTA | "Which workflow defines your business?" | `#contact` |
 | Footer | Copyright + privacy/security/contact stubs | — |
+
+**Removed section:** Proof / Validation (three stat cards: +50.7% SRE, 72–78% productivity, 95.2% legal) — pulled because numbers are not yet manually validated and the personal productivity / small-model framing is wrong for the enterprise audience. Full removal note with restoration checklist is in `../ownevo_docs/pitch/ownevo-landing-copy.md` (Staged / Removed section).
 
 **Single CTA destination:** all `Talk to us` / `Tell us about your core
 workflow` buttons currently route to `https://forms.gle/EgVikAcwzQwXszyUA`. If
@@ -125,9 +128,7 @@ that ever changes, search-and-replace across `index.html`.
 
 ## 6. Alternate landing-page directions (not yet shipped)
 
-These come from `../../startup_mono/docs/pitch/ownevo-landing-ideas.md`. They
-exist as living alternatives. If the current frame underperforms or a specific
-audience needs a different opening, pull from here:
+These come from `../ownevo_docs/pitch/ideas-scratchpad.md` (formerly `ownevo-landing-ideas.md`, now merged into the scratchpad). They exist as living alternatives. If the current frame underperforms or a specific audience needs a different opening, pull from here:
 
 **Hero variants on file (currently shipping option close to A):**
 
@@ -150,16 +151,15 @@ audience needs a different opening, pull from here:
 **Section ideas not yet on the page (worth considering):**
 
 - **Visual loop diagram** — the 6-step loop currently uses text + numbers.
-  An animated/interactive version was sketched in landing-ideas.md.
+  An animated/interactive version was sketched in `ideas-scratchpad.md`.
 - **Vertical-specific landing variants** — supply-chain-focused, finance,
-  healthcare. The current page is horizontal across all three. Consider
-  spinning vertical landings if/when one buyer type dominates pipeline.
-- **Competitive contrast table** — landing-ideas.md has a 6-row "What others
-  offer / What ownEvo offers" table that is *not* on the page. It was held
-  back as too direct.
-- **Institutional Knowledge Problem** — a section explicitly named "The most
-  valuable things in your business aren't in any document." Currently
-  surfaced through the Core-vs-Ops framing rather than its own block.
+  healthcare. The current page has a Use Cases section covering all three.
+  Consider spinning vertical landings if/when one buyer type dominates pipeline.
+- **Competitive contrast table** — `ideas-scratchpad.md` has a 6-row "What
+  others offer / What ownEvo offers" table that is *not* on the page. It was
+  held back as too direct.
+- **Proof / Validation** — removed May 2026; can be restored once numbers are
+  manually validated. See removal note in `../ownevo_docs/pitch/ownevo-landing-copy.md`.
 
 ---
 

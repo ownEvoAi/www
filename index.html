@@ -579,6 +579,81 @@
   }
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 
+  /* ═══ USE CASES ═══ */
+  .vertical-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+  .vertical-block {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.5rem;
+    background: var(--surface);
+  }
+  .vertical-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent-muted);
+    border-radius: 4px;
+    padding: 0.25rem 0.6rem;
+    margin-bottom: 1rem;
+  }
+  .vertical-block h3 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    margin-bottom: 1.2rem;
+    line-height: 1.3;
+  }
+  .vertical-block p {
+    font-size: 0.975rem;
+    line-height: 1.75;
+    color: var(--grey-200);
+    margin-bottom: 1rem;
+  }
+  .vertical-block p:last-of-type { margin-bottom: 0; }
+  .vertical-proof {
+    margin-top: 1.5rem;
+    padding: 1.1rem 1.4rem;
+    border-left: 3px solid var(--accent);
+    background: var(--accent-glow);
+    border-radius: 0 8px 8px 0;
+    font-size: 0.875rem;
+    color: var(--grey-200);
+    line-height: 1.65;
+  }
+
+  /* ═══ IK PROBLEM ═══ */
+  .ik-section {
+    background: var(--surface);
+  }
+  .ik-body {
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .ik-body p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--grey-200);
+    margin-bottom: 1.4rem;
+  }
+  .ik-body p:last-child { margin-bottom: 0; }
+  .ik-closing {
+    margin-top: 2.5rem;
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1.5;
+  }
+
   /* ═══ RESPONSIVE ═══ */
   @media (max-width: 768px) {
     nav { padding: 1rem 1.5rem; }
@@ -712,6 +787,53 @@
 
 <hr class="section-rule">
 
+<!-- ═══ USE CASES ═══ -->
+<section id="use-cases">
+  <div class="section-inner">
+    <div class="section-label">Use Cases</div>
+    <h2 class="section-heading">Built for the workflows that <em>define your business.</em></h2>
+    <p class="section-body">
+      Not ops automation. Core intelligence — the kind that took decades to accumulate and cannot be rented from anyone.
+    </p>
+
+    <div class="vertical-blocks">
+
+      <div class="vertical-block">
+        <div class="vertical-tag">Retail · Distribution · Manufacturing</div>
+        <h3>The margin is in the decisions that happen <em>10 million times a week.</em></h3>
+        <p>When to mark down a seasonal SKU. Which store gets the constrained inventory. Whether that supplier's cost-build has slack or not.</p>
+        <p>These aren't questions a generic agent can answer. They require the lift curves calibrated to your promotions, the markdown timing signals from your category history, the supplier cost models your buyers built over 20 years of negotiations.</p>
+        <p>An ownEvo supply chain agent starts with what you know and gets better with every decision cycle. The live eval set grows. Failures cluster automatically. Every improvement is regression-tested before it reaches production.</p>
+        <p>Your demand forecasting model doesn't have to be rebuilt every planning cycle. It compounds.</p>
+        <div class="vertical-proof">Companies using continuous improvement loops on supply chain agents have seen 40–50% reductions in forecast error and 30–40% reductions in excess inventory — not from better models, but from better institutional knowledge captured in the loop.</div>
+      </div>
+
+      <div class="vertical-block">
+        <div class="vertical-tag">Banking · Insurance · Asset Management</div>
+        <h3>Your risk models are only as good as what happened <em>after the last cycle.</em></h3>
+        <p>Probability-of-default models go stale. Catastrophe pricing needs to absorb new loss patterns. Credit spreads shift faster than any static model can track.</p>
+        <p>The edge in finance has always been the proprietary signal — the 60 years of claims development factors, the behavioral payment velocity data, the through-cycle recalibration methodology that nobody else has.</p>
+        <p>An ownEvo finance agent captures that recalibration as it happens. Every cycle that diverges from the model becomes a new eval case. Every improvement is validated against every prior fix. The model that priced your portfolio last year isn't the model pricing it today — and you can see exactly what changed and why.</p>
+        <p>No vendor has your loss history. No vendor should own the loop that learns from it.</p>
+        <div class="vertical-proof">JPMorgan, Berkshire, and Allianz have each invested in proprietary ML systems for underwriting and credit that are not and will never be available to competitors. The advantage is not the algorithm — it's the feedback loop running on proprietary claims and transaction data.</div>
+      </div>
+
+      <div class="vertical-block">
+        <div class="vertical-tag">Payers · Providers · Life Sciences</div>
+        <h3>The most expensive mistakes in healthcare are the ones that <em>already happened once.</em></h3>
+        <p>A clinical trial that fails at Phase III because the patient stratification was wrong. A formulary decision that shifted utilization in ways nobody modeled. A drug interaction that showed up in post-market surveillance but not in the label.</p>
+        <p>The institutional knowledge that prevents these failures lives in outcomes — 1,000 past trials, 150M member claims, years of dispensing records. It's not in any protocol document. It walks out the door when people retire.</p>
+        <p>An ownEvo healthcare agent captures that knowledge as the work happens. Trial design decisions become eval cases. Formulary outcomes feed the next negotiation. Adverse event patterns build a regression suite that grows with every case.</p>
+        <p>Your clinical knowledge doesn't have to be recreated from scratch every time a senior researcher leaves. It compounds.</p>
+        <div class="vertical-proof">Pfizer, UnitedHealth, and CVS each maintain proprietary AI systems for trial design, formulary management, and drug interaction triage that are explicitly not shareable — because the training data is the moat. The algorithm is secondary.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
 <!-- ═══ HOW IT WORKS ═══ -->
 <section id="how-it-works" class="loop-section">
   <div class="section-inner">
@@ -768,35 +890,18 @@
   </div>
 </section>
 
-<!-- ═══ PROOF ═══ -->
-<section id="proof">
+<!-- ═══ IK PROBLEM ═══ -->
+<section id="ik-problem" class="ik-section">
   <div class="section-inner">
-    <div class="section-label">Validation</div>
-    <h2 class="section-heading">The improvement loop works.<br><em>Empirically, across domains.</em></h2>
-    <p class="section-body">
-      Self-evolution validated across 3 domains, 19+ models, 400+ real test cases. Not benchmark numbers on a research paper — accuracy improvement on representative production workflows.
-    </p>
+    <div class="section-label">The Problem</div>
+    <h2 class="section-heading">The most valuable things in your business<br><em>aren't in any document.</em></h2>
 
-    <div class="proof-grid">
-      <div class="proof-card">
-        <div class="proof-stat">+50.7%</div>
-        <div class="proof-label">Accuracy lift — SRE incident response</div>
-        <div class="proof-detail">100 incidents · 14 patterns · 18 models tested<br>claude-opus; best local: qwen3:32b +33.8%<br>all 18 models showed positive lift</div>
-      </div>
-      <div class="proof-card">
-        <div class="proof-stat">72–78%</div>
-        <div class="proof-label">Accuracy — personal productivity agents</div>
-        <div class="proof-detail">200 events · 4 agent types · 19 models<br>finance, health, task, learning<br>all models flat or positive after fix sweep</div>
-      </div>
-      <div class="proof-card">
-        <div class="proof-stat">95.2%</div>
-        <div class="proof-label">Trap detection — legal case management</div>
-        <div class="proof-detail">100 cases · 10 legal domains · 13 models<br>claude-opus warm accuracy 68.7%<br>CaseMind plaintiff agent</div>
-      </div>
-    </div>
-
-    <div class="pullquote" style="margin-top:3rem">
-      <p>Even the smallest model tested (llama3.2:3b, 2 GB) achieves <em>+21.2% lift</em>. The improvement loop works across model sizes — because the moat is the eval set, not the model.</p>
+    <div class="ik-body">
+      <p>How your best buyers know when a supplier has margin to give. How your senior underwriters smell a risk before the model flags it. How your clinical leads know which trial sites will recruit fast and which will drag.</p>
+      <p>This knowledge lives in people. When they leave, it leaves.</p>
+      <p>ownEvo captures it as a byproduct of the work itself. Every decision the agent makes — and every time it gets corrected — is encoded into the eval set and the skill layer. The agent that onboards your next senior hire already knows what the last twenty years taught your best people.</p>
+      <p>Not because someone wrote it down. Because the agent was running while they were learning.</p>
+      <p class="ik-closing">When the person who built that workflow retires — what happens to what they knew?</p>
     </div>
   </div>
 </section>
