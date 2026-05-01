@@ -23,7 +23,7 @@ the improvement history, and the institutional knowledge that compounds inside
 the system. Run anywhere — cloud, hybrid, or fully local.
 
 Domain: `ownevo.ai`. The site at `www/index.html` is the customer-facing front
-door; pitch + manifesto live in `../../startup2026/docs/`.
+door; pitch + manifesto live in `../../startup_mono/docs/`.
 
 ---
 
@@ -47,7 +47,7 @@ door; pitch + manifesto live in `../../startup2026/docs/`.
 ## 3. The thesis (the manifesto in five claims)
 
 Read the full document at
-`../../startup2026/docs/pitch/ownevo-manifesto.md`. The five load-bearing
+`../../startup_mono/docs/pitch/ownevo-manifesto.md`. The five load-bearing
 claims:
 
 1. **The model race is over for enterprise.** Models are capable enough for
@@ -125,7 +125,7 @@ that ever changes, search-and-replace across `index.html`.
 
 ## 6. Alternate landing-page directions (not yet shipped)
 
-These come from `../../startup2026/docs/pitch/ownevo-landing-ideas.md`. They
+These come from `../../startup_mono/docs/pitch/ownevo-landing-ideas.md`. They
 exist as living alternatives. If the current frame underperforms or a specific
 audience needs a different opening, pull from here:
 
@@ -214,10 +214,9 @@ www/
 
 Adjacent context (outside this dir, but worth knowing):
 
-- `../logos/` — exploratory logo concepts (most superseded by `logo-shield.svg`).
-- `../../startup2026/docs/pitch/` — manifesto, landing-ideas, pitch lines.
-- `../../startup2026/docs/executive-summary.md` — company-level pitch.
-- `../../startup2026/docs/market/` — competitor analysis, customer playbook.
+- `../../startup_mono/docs/pitch/` — manifesto, landing-ideas, pitch lines.
+- `../../startup_mono/docs/executive-summary.md` — company-level pitch.
+- `../../startup_mono/docs/market/` — competitor analysis, customer playbook.
 
 ---
 
@@ -248,7 +247,7 @@ Adjacent context (outside this dir, but worth knowing):
 Regenerate the favicons after editing `logo-shield.svg`:
 
 ```bash
-cd /media/fast_data/work2026/ownevo/www
+cd /Users/jit/code/ownevo/www
 gdk-pixbuf-thumbnailer -s 180 logo-shield.svg apple-touch-icon.png
 gdk-pixbuf-thumbnailer -s 32  logo-shield.svg favicon-32.png
 ffmpeg -y -loglevel error -i favicon-32.png favicon.ico
@@ -264,7 +263,7 @@ python3 -c "from html.parser import HTMLParser; import sys; HTMLParser().feed(op
 Preview locally:
 
 ```bash
-python3 -m http.server -d /media/fast_data/work2026/ownevo/www 8000
+python3 -m http.server -d /Users/jit/code/ownevo/www 8000
 # open http://localhost:8000
 ```
 
