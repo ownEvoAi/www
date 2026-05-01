@@ -118,7 +118,7 @@ through review; reuse rather than reinvent:
 | Footer | Copyright + privacy/security/contact stubs | — |
 
 **Single CTA destination:** all `Talk to us` / `Tell us about your core
-workflow` buttons currently route to `https://forms.gle/S8t84kVA5mLfP6jUA`. If
+workflow` buttons currently route to `https://forms.gle/EgVikAcwzQwXszyUA`. If
 that ever changes, search-and-replace across `index.html`.
 
 ---
@@ -236,7 +236,7 @@ Adjacent context (outside this dir, but worth knowing):
   voice is sovereign and institutional, closer to a trusted infrastructure
   vendor than a creative SaaS tool.
 - **CTAs all route to the same Google Form** (currently
-  `https://forms.gle/S8t84kVA5mLfP6jUA`). Single source of intake.
+  `https://forms.gle/EgVikAcwzQwXszyUA`). Single source of intake.
 - **Mobile breakpoints** at 768px and 500px are already defined. Verify any
   new layout block at those widths before shipping.
 
