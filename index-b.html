@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ownEvo — Layout v3 · Claims TOC</title>
+<title>ownEvo — Own the improvement loop</title>
 <meta name="description" content="Core agents for the workflows that define your business. Owned by you, improving with you, running anywhere.">
 <meta name="theme-color" content="#ffffff">
 
@@ -123,14 +123,37 @@
 
   /* ═══ HERO ═══ */
   .hero {
-    min-height: 75vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 8rem 3rem 4.5rem;
+    padding: 9rem 3rem 6rem;
     max-width: 1280px;
     margin: 0 auto;
     position: relative;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.95rem;
+    opacity: 0;
+    animation: rise 0.7s 0.1s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--accent-deep);
+    display: block;
+    flex-shrink: 0;
   }
 
   .hero-headline {
@@ -267,122 +290,6 @@
     background: var(--accent-deep);
     transform: translateX(-100%);
     animation: scrollSweep 2.4s ease-in-out infinite;
-  }
-
-  /* ═══ CLAIMS TOC ═══ */
-  .claims-toc {
-    border-top: 1px solid var(--rule);
-  }
-  .claims-toc-inner {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 4rem 3rem 5rem;
-  }
-  .claims-toc-eyebrow {
-    font-family: var(--mono);
-    font-size: 0.66rem;
-    font-weight: 500;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--accent-deep);
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-    margin-bottom: 2.5rem;
-  }
-  .claims-toc-eyebrow::before {
-    content: '';
-    width: 28px;
-    height: 1px;
-    background: var(--accent-deep);
-    display: block;
-  }
-  .claims-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 1.25rem;
-  }
-  .claim-card {
-    background: var(--bg);
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    padding: 1.6rem 1.5rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
-  }
-  .claim-card:hover {
-    border-color: var(--accent-line);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px -12px rgba(59,130,246,0.4);
-  }
-  .claim-num {
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent-deep);
-    margin-bottom: 1rem;
-  }
-  .claim-text {
-    font-family: var(--sans);
-    font-size: 1.02rem;
-    font-weight: 600;
-    letter-spacing: -0.018em;
-    line-height: 1.32;
-    color: var(--ink);
-    margin-bottom: 1.25rem;
-  }
-  .claim-text em {
-    font-style: italic;
-    color: var(--accent-deep);
-  }
-  .claim-link {
-    margin-top: auto;
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    transition: color 0.18s, gap 0.18s;
-  }
-  .claim-card:hover .claim-link {
-    color: var(--accent-deep);
-    gap: 0.65rem;
-  }
-
-  /* ═══ PRODUCT PLATE ═══ */
-  .plate {
-    border-top: 1px solid var(--rule);
-  }
-  .plate-inner {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 4rem 3rem 4.5rem;
-  }
-  .plate-body {
-    font-family: var(--sans);
-    font-size: clamp(1.1rem, 1.6vw, 1.3rem);
-    font-weight: 400;
-    line-height: 1.55;
-    letter-spacing: -0.01em;
-    color: var(--ink-2);
-    max-width: 860px;
-  }
-  .plate-body em {
-    font-style: italic;
-    color: var(--accent-deep);
-    font-weight: 500;
-  }
-  .plate-body p + p {
-    margin-top: 1.1rem;
   }
 
   /* ═══ STATEMENT BRIDGE ═══ */
@@ -889,16 +796,14 @@
   }
   @media (max-width: 768px) {
     nav { padding: 1rem 1.5rem; }
-    .hero { padding: 7rem 1.5rem 4rem; }
+    .hero { padding: 7rem 1.5rem 5rem; }
     .bridge,
     .section-inner,
     .final { padding-left: 1.5rem; padding-right: 1.5rem; }
     .section-inner { padding-top: 5rem; padding-bottom: 5rem; }
     .bridge { padding-top: 6rem; padding-bottom: 6rem; }
     .final { padding-top: 6rem; padding-bottom: 6rem; }
-    .claims-toc-inner { padding: 3rem 1.5rem 4rem; }
-    .claims-grid { gap: 0.85rem; }
-    .plate-inner { padding: 3rem 1.5rem 3.5rem; }
+    .hero-scroll { left: 1.5rem; }
     .loop-step { grid-template-columns: 2.5rem 1fr; gap: 1rem; }
     footer {
       flex-direction: column;
@@ -926,6 +831,8 @@
 
 <!-- ═══ HERO ═══ -->
 <section class="hero" id="hero">
+  <p class="hero-eyebrow">Core agents for the workflows that define your business</p>
+
   <h1 class="hero-headline">
     Your agents. Your edge.<br><em>Nobody else's.</em>
   </h1>
@@ -933,7 +840,7 @@
   <p class="hero-punch">Don't rent it. <em>Don't be hostage to it.</em></p>
 
   <p class="hero-sub">
-    Models are ready — and commodity. The continuous improvement loop on <em>your</em> data is <em>the moat</em>. Are your agents getting better on it? Is the institutional knowledge they generate staying yours — or training someone else's?
+    Models are ready. The question now is whether your agents keep getting better on <em>your</em> data — and whether the institutional knowledge they generate stays yours, or trains someone else's.
   </p>
 
   <div class="hero-ctas">
@@ -941,65 +848,12 @@
       Talk to us about your core workflow
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
+    <a href="#how-it-works" class="btn-ghost">See how it works</a>
   </div>
-</section>
 
-<!-- ═══ CLAIMS TOC ═══ -->
-<section class="claims-toc" id="claims">
-  <div class="claims-toc-inner">
-    <div class="claims-toc-eyebrow">The five claims this page turns on</div>
-    <div class="claims-grid">
-      <a href="#why" class="claim-card">
-        <div class="claim-num">§ 01 · Why</div>
-        <p class="claim-text">You paid for the failure. <em>They captured the lesson.</em></p>
-        <span class="claim-link">
-          Read more
-          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-      </a>
-      <a href="#core-vs-ops" class="claim-card">
-        <div class="claim-num">§ 02 · What</div>
-        <p class="claim-text">Ops agents are commodity. <em>Core agents are identity.</em></p>
-        <span class="claim-link">
-          Read more
-          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-      </a>
-      <a href="#how-it-works" class="claim-card">
-        <div class="claim-num">§ 03 · How</div>
-        <p class="claim-text">Deploy once. Improve forever. <em>Regress never.</em></p>
-        <span class="claim-link">
-          Read more
-          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-      </a>
-      <a href="#sovereignty" class="claim-card">
-        <div class="claim-num">§ 04 · Where</div>
-        <p class="claim-text">Cloud, hybrid, or local. <em>The agent runs where you do.</em></p>
-        <span class="claim-link">
-          Read more
-          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-      </a>
-      <a href="#who" class="claim-card">
-        <div class="claim-num">§ 05 · Who</div>
-        <p class="claim-text">If you own the workflow, <em>you should own the agent that runs it.</em></p>
-        <span class="claim-link">
-          Read more
-          <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ PRODUCT PLATE ═══ -->
-<section class="plate">
-  <div class="plate-inner">
-    <div class="plate-body">
-      <p>ownEvo is the platform for core agents — running on your workflow, capturing every failure as an eval case, regression-testing every improvement under your domain expert's approval. <em>Own</em>ed by you. <em>Evo</em>lving with you.</p>
-      <p><em>We build the loop</em> — sim engine, failure clustering, regression gate, plain-language approval. <em>You own the edge</em> — the agent, the eval set, the improvement history, and the institutional knowledge it accumulates. Export anytime; the agent keeps running, even without us.</p>
-    </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <span class="hero-scroll-line"></span>
   </div>
 </section>
 
@@ -1168,7 +1022,7 @@
 
 <!-- ═══ CHAPTER 03 · WHO ═══ -->
 <section class="chapter-cover" id="who">
-  <div class="chapter-num">§ 05 · Who</div>
+  <div class="chapter-num">§ 03 · Who</div>
   <h2 class="chapter-title">For the people who <em>own the core</em>.</h2>
   <p class="chapter-tagline">Not for ops automation buyers. For the workflows that decades of institutional knowledge have shaped — and that one wrong vendor choice could leak.</p>
 </section>
