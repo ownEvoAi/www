@@ -98,6 +98,17 @@ through review; reuse rather than reinvent:
 - *When the person who built that workflow retires — what happens to what
   they knew?* (the closing question of the manifesto)
 
+**What "Own the loop" actually claims (read this before editing copy that uses it):**
+
+The phrase collapses two layers and works as rhetoric only if both layers are clear in surrounding copy:
+
+- **The loop's *content* — owned by the customer.** The eval cases (their failures), the skill layer (their corrections), the improvement history (their decisions), the workflow descriptions, the institutional knowledge accumulating across cycles. This is the durable, exportable, compounding asset. *This* is what "the loop is yours" actually means.
+- **The loop's *mechanism* — built by ownEvo.** The sim engine, the eval framework, the failure clustering, the regression-test logic, the approval workflow plumbing, the analysis tooling. This is methodology and infrastructure. The customer runs it; ownEvo specialises in providing it.
+
+This is the same shorthand as "you own your customer data" with a CRM — strictly, the vendor owns the software; the customer owns the data and decisions, which is the meaningful asset. Don't write copy that implies the customer built the loop themselves, and don't write copy that implies ownEvo holds the eval set or improvement history. The split is: **we build, they own; we run methodology, they keep the moat.**
+
+For sales conversations and decks where the buyer is explicitly asking "what's mine vs. yours," the sharper alternative is *"We build the loop. You own the edge."* The brand line *"Own the loop. Own the edge."* stays for marketing-page rhetoric.
+
 ---
 
 ## 5. The current site (what's actually shipped)
@@ -107,19 +118,25 @@ through review; reuse rather than reinvent:
 | Section | Purpose | Anchor |
 |---|---|---|
 | Nav (sticky, frosted on scroll) | Brand wordmark + "Talk to us" CTA | — |
-| Hero | Headline + subhead + dual CTA + auto-typing terminal feed | `#hero` |
-| Problem | "The data-for-improvement bargain you didn't agree to" — bad/good card pair + pull-quote | `#problem` |
-| Use Cases | Three vertical deep-dives: Supply Chain · Finance & Insurance · Healthcare & Pharma | `#use-cases` |
+| Hero | Eyebrow → headline → punch → sub → dual CTA | `#hero` |
+| Problem | "Your knowledge is the new moat. Don't give it away." — bad/good card pair + pull-quote ("You paid for the failure. They captured the lesson.") | `#problem` |
+| Use Cases | Three vertical accordions: Supply Chain · Finance & Insurance · Healthcare & Pharma (first open by default) | `#use-cases` |
 | How It Works (The Loop) | 6-step auto-cycling loop | `#how-it-works` |
-| IK Problem | "The most valuable things in your business aren't in any document." — institutional knowledge close | `#ik-problem` |
 | Sovereignty | Three cards: any model · local if you need it · export any time | `#sovereignty` |
+| Who It's For | Three persona cards: Supply Chain VP · Chief Risk Officer · Chief Medical Officer | `#who` |
 | Final CTA | "Which workflow defines your business?" | `#contact` |
 | Footer | Copyright + privacy/security/contact stubs | — |
 
 **Removed sections** (notes + restoration criteria in `../ownevo_docs/pitch/ownevo-landing-copy.md`):
 - Core vs. Ops — redundant with Use Cases once vertical deep-dives are on the page
-- Who It's For — redundant with Use Cases; same three verticals in shallower form
 - Proof / Validation — three stat cards not yet manually validated; wrong audience framing
+- IK Problem — redundant with Use Cases (which already names "walks out the door when people retire" in the Healthcare card); also created two `section-label: The Problem` eyebrows on one page. Closing question (*"When the person who built that workflow retires…"*) preserved as canonical brand voice in §4 above; eligible to come back as a sub-page or a between-section bridge.
+
+**Placement note — Core vs. Ops, if it ever returns (or for variants like v2-a that still carry it):** Considered moving the section to *after* the Who It's For personas, immediately before the final CTA. Rejected.
+
+> *Tradeoff:* Putting Core vs. Ops after Who would tighten the personas/distinction relationship — pairing "you own the core" with "here's what core means." If you read the personas and don't quite know what "the core" refers to, the Core vs. Ops block answers it. But the personas already give concrete examples ("10M decisions a week", "won't share loss factors", "clinical knowledge walking out the door"), so the abstract distinction lands flat after them.
+
+The structural job of Core vs. Ops is category-setting (what kind of agent we're building), which belongs early — before the Loop, Sovereignty, and Who sections all read in that frame. Closing real estate should drive action, not introduce new conceptual distinctions.
 
 **Single CTA destination:** all `Talk to us` / `Tell us about your core
 workflow` buttons currently route to `https://forms.gle/EgVikAcwzQwXszyUA`. If

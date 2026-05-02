@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ownEvo — Layout C · Manifesto-First</title>
+<meta name="description" content="Core agents for the workflows that define your business. Owned by you, evolving with you, locked in to nothing.">
+<meta name="theme-color" content="#ffffff">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ownEvo">
+<meta property="og:title" content="ownEvo — Now own the intelligence">
+<meta property="og:description" content="Core agents for the workflows that define your business. Owned by you, evolving with you, locked in to nothing.">
+<meta property="og:url" content="https://ownevo.ai/">
+<meta property="og:image" content="https://ownevo.ai/apple-touch-icon.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ownEvo — Now own the intelligence">
+<meta name="twitter:description" content="Core agents for the workflows that define your business. Owned by you, evolving with you, locked in to nothing.">
+<meta name="twitter:image" content="https://ownevo.ai/apple-touch-icon.png">
+
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ════════════════════════════════════════════════════════════════════
+     ownEvo · Layout C — Manifesto-First
+     Same tokens as v.002. Compressed structure: hero → manifesto →
+     evidence → platform (3 blocks) → CTA.
+     ════════════════════════════════════════════════════════════════════ */
+  :root {
+    --bg:           #FFFFFF;
+    --surface:      #F7F8FA;
+    --surface-2:    #EEF1F5;
+    --ink:          #0B0E14;
+    --ink-2:        #3A4150;
+    --ink-3:        #6B7280;
+    --ink-4:        #9CA3AF;
+    --rule:         #E5E7EB;
+    --rule-strong:  #D1D5DB;
+
+    --accent:       #38bdf8;
+    --accent-deep:  #0284c7;
+    --accent-tint:  #F0F9FF;
+    --accent-line:  rgba(56,189,248,0.5);
+    --accent-soft:  rgba(56,189,248,0.10);
+
+    --sans: 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+
+  /* ═══ NAV ═══ */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: rgba(255,255,255,0);
+    border-bottom: 1px solid transparent;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  nav.scrolled {
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-color: var(--rule);
+  }
+  .nav-logo {
+    font-family: var(--sans);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+  .nav-logo-mark { width: 30px; height: 30px; margin-right: 0.65rem; flex-shrink: 0; }
+  .nav-logo .logo-own { color: var(--ink-2); }
+  .nav-logo .logo-evo { color: var(--accent-deep); font-style: italic; }
+  .nav-cta {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    border: 1px solid var(--ink);
+    padding: 0.55rem 1.2rem;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .nav-cta:hover { background: var(--ink); color: var(--bg); }
+
+  /* ═══ HERO (compact) ═══ */
+  .hero {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8.5rem 3rem 5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .hero-headline {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: clamp(2.8rem, 7.4vw, 6rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    color: var(--ink);
+    max-width: 1100px;
+    opacity: 0;
+    animation: rise 0.85s 0.2s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .hero-headline em { font-style: italic; color: var(--accent-deep); font-weight: 700; }
+  .hero-punch {
+    font-family: var(--sans);
+    font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin-top: 2.25rem;
+    max-width: 800px;
+    line-height: 1.3;
+    opacity: 0;
+    animation: rise 0.8s 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .hero-punch em { font-style: italic; color: var(--accent-deep); }
+  .hero-sub {
+    font-family: var(--sans);
+    font-size: clamp(1.05rem, 1.4vw, 1.18rem);
+    color: var(--ink-2);
+    line-height: 1.6;
+    max-width: 660px;
+    margin-top: 1.4rem;
+    font-weight: 400;
+    opacity: 0;
+    animation: rise 0.8s 0.55s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .hero-sub em { font-style: italic; color: var(--accent-deep); font-weight: 500; }
+  .hero-ctas {
+    display: flex;
+    gap: 0.9rem;
+    align-items: center;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: rise 0.8s 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .btn-primary {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--accent);
+    border: none;
+    padding: 0.95rem 1.8rem;
+    border-radius: 2px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    cursor: pointer;
+  }
+  .btn-primary:hover {
+    background: #56cbfa;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px -10px rgba(56,189,248,0.55);
+  }
+  .btn-primary svg { transition: transform 0.2s; }
+  .btn-primary:hover svg { transform: translateX(3px); }
+  .btn-ghost {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--rule-strong);
+    padding: 0.95rem 1.6rem;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--ink); }
+
+  /* ═══ MANIFESTO ═══ */
+  .manifesto {
+    background: var(--surface);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .manifesto-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 7rem 3rem;
+  }
+  .manifesto-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    display: flex;
+    align-items: center;
+    gap: 0.95rem;
+    margin-bottom: 2rem;
+  }
+  .manifesto-eyebrow::before {
+    content: '';
+    width: 36px;
+    height: 1px;
+    background: var(--accent-deep);
+    display: block;
+    flex-shrink: 0;
+  }
+  .manifesto-intro {
+    font-family: var(--sans);
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.32;
+    color: var(--ink);
+    margin-bottom: 4rem;
+    max-width: 820px;
+  }
+  .manifesto-intro em { font-style: italic; color: var(--accent-deep); }
+  .manifesto-list { display: flex; flex-direction: column; }
+  .manifesto-claim {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 2.5rem;
+    align-items: baseline;
+    padding: 3rem 0;
+    border-top: 1px solid var(--rule);
+  }
+  .manifesto-claim:last-child { border-bottom: 1px solid var(--rule); }
+  .manifesto-num {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.18em;
+    color: var(--accent-deep);
+    font-weight: 500;
+    padding-top: 1rem;
+  }
+  .manifesto-claim p {
+    font-family: var(--sans);
+    font-size: clamp(1.85rem, 4.6vw, 3.6rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--ink);
+    max-width: 1000px;
+  }
+  .manifesto-claim p em { font-style: italic; color: var(--accent-deep); }
+
+  /* ═══ EVIDENCE (compact) ═══ */
+  .evidence {
+    border-bottom: 1px solid var(--rule);
+  }
+  .evidence-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 6rem 3rem;
+  }
+  .evidence-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    display: flex;
+    align-items: center;
+    gap: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+  .evidence-eyebrow::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--accent-deep);
+    display: block;
+    flex-shrink: 0;
+  }
+  .evidence-h {
+    font-family: var(--sans);
+    font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--ink);
+    max-width: 900px;
+    margin-bottom: 3rem;
+  }
+  .evidence-h em { font-style: italic; color: var(--accent-deep); }
+  .evidence-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .evidence-card {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 2rem 1.75rem 2.2rem;
+  }
+  .evidence-stat {
+    font-family: var(--sans);
+    font-size: clamp(2.2rem, 4.2vw, 3.6rem);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    color: var(--accent-deep);
+    line-height: 0.95;
+    margin-bottom: 0.6rem;
+  }
+  .evidence-label {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.012em;
+    line-height: 1.35;
+  }
+  .evidence-detail {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.7;
+  }
+
+  /* ═══ PLATFORM (3 compressed blocks) ═══ */
+  .platform {
+    border-bottom: 1px solid var(--rule);
+  }
+  .platform-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 6.5rem 3rem;
+  }
+  .platform-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    display: flex;
+    align-items: center;
+    gap: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+  .platform-eyebrow::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--accent-deep);
+    display: block;
+    flex-shrink: 0;
+  }
+  .platform-h {
+    font-family: var(--sans);
+    font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--ink);
+    max-width: 900px;
+    margin-bottom: 3.5rem;
+  }
+  .platform-h em { font-style: italic; color: var(--accent-deep); }
+  .platform-blocks {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .platform-block {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 2rem 1.75rem 2.2rem;
+  }
+  .platform-block-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    font-weight: 500;
+    margin-bottom: 1.1rem;
+    display: block;
+  }
+  .platform-block-title {
+    font-family: var(--sans);
+    font-size: 1.18rem;
+    font-weight: 600;
+    letter-spacing: -0.022em;
+    margin-bottom: 0.85rem;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+  .platform-block p {
+    font-size: 0.95rem;
+    color: var(--ink-2);
+    line-height: 1.6;
+    margin-bottom: 0.85rem;
+  }
+  .platform-block p:last-child { margin-bottom: 0; }
+  .platform-block ul {
+    list-style: none;
+    margin-top: 0.6rem;
+  }
+  .platform-block li {
+    font-size: 0.92rem;
+    color: var(--ink-2);
+    line-height: 1.5;
+    padding-left: 1.1em;
+    position: relative;
+    margin-bottom: 0.4rem;
+  }
+  .platform-block li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  /* ═══ FINAL CTA ═══ */
+  .final {
+    border-top: 1px solid var(--rule);
+    padding: 8rem 3rem;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .final h2 {
+    font-family: var(--sans);
+    font-size: clamp(2.2rem, 5.4vw, 4.4rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.04;
+    color: var(--ink);
+    max-width: 1000px;
+    margin-bottom: 1.5rem;
+  }
+  .final h2 em { font-style: italic; color: var(--accent-deep); }
+  .final p {
+    font-family: var(--sans);
+    font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+    color: var(--ink-2);
+    line-height: 1.6;
+    max-width: 640px;
+    margin-bottom: 2.5rem;
+  }
+  .final-note {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--ink-3);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-top: 2rem;
+  }
+
+  /* ═══ FOOTER ═══ */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 1.75rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--ink-3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  footer a { color: var(--ink-3); text-decoration: none; transition: color 0.15s; }
+  footer a:hover { color: var(--ink); }
+  .footer-links { display: flex; gap: 2rem; }
+
+  /* ═══ ANIMATIONS ═══ */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ═══ RESPONSIVE ═══ */
+  @media (max-width: 980px) {
+    .evidence-grid,
+    .platform-blocks { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .hero { padding: 7rem 1.5rem 4rem; }
+    .manifesto-inner,
+    .evidence-inner,
+    .platform-inner,
+    .final { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .manifesto-inner { padding-top: 5rem; padding-bottom: 5rem; }
+    .evidence-inner { padding-top: 4.5rem; padding-bottom: 4.5rem; }
+    .platform-inner { padding-top: 5rem; padding-bottom: 5rem; }
+    .final { padding-top: 5.5rem; padding-bottom: 5.5rem; }
+    .manifesto-claim { grid-template-columns: 3rem 1fr; gap: 1rem; padding: 2rem 0; }
+    .manifesto-num { padding-top: 0.7rem; }
+    footer { flex-direction: column; gap: 0.8rem; align-items: flex-start; padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <svg class="nav-logo-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#38bdf8"/>
+      <circle cx="12" cy="12.5" r="3.2" stroke="#FFFFFF" stroke-width="2"/>
+      <path d="M9.6 8 L12 5.5 L14.4 8 Z" fill="#FFFFFF"/>
+    </svg>
+    <span class="logo-own">own</span><span class="logo-evo">Evo</span>
+  </a>
+  <a href="https://forms.gle/EgVikAcwzQwXszyUA" target="_blank" class="nav-cta">Talk to us</a>
+</nav>
+
+<!-- ═══ HERO (compact) ═══ -->
+<section class="hero" id="hero">
+  <h1 class="hero-headline">
+    Your agents. Your edge.<br><em>Nobody else's.</em>
+  </h1>
+
+  <p class="hero-punch">Don't rent it. <em>Don't be hostage to it.</em></p>
+
+  <p class="hero-sub">
+    Models are ready. The question now is whether your agents keep getting better on <em>your</em> data — and whether the institutional knowledge they generate stays yours, or trains someone else's.
+  </p>
+
+  <div class="hero-ctas">
+    <a href="https://forms.gle/EgVikAcwzQwXszyUA" target="_blank" class="btn-primary">
+      Talk to us about your core workflow
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <a href="#manifesto" class="btn-ghost">Read the thesis</a>
+  </div>
+</section>
+
+<!-- ═══ MANIFESTO ═══ -->
+<section class="manifesto" id="manifesto">
+  <div class="manifesto-inner">
+    <div class="manifesto-eyebrow">The thesis</div>
+    <p class="manifesto-intro">Five claims this page turns on. The rest of the page is the argument for them — read it if you've already bought the thesis, skim it if not.</p>
+
+    <div class="manifesto-list">
+      <div class="manifesto-claim">
+        <div class="manifesto-num">01</div>
+        <p>The model race is over. <em>The bottleneck has moved.</em></p>
+      </div>
+      <div class="manifesto-claim">
+        <div class="manifesto-num">02</div>
+        <p>Ops agents are commodity. <em>Core agents are identity.</em></p>
+      </div>
+      <div class="manifesto-claim">
+        <div class="manifesto-num">03</div>
+        <p>Static agents degrade. <em>The loop is the only defense.</em></p>
+      </div>
+      <div class="manifesto-claim">
+        <div class="manifesto-num">04</div>
+        <p>The model is a commodity. <em>The improvement loop is the moat.</em></p>
+      </div>
+      <div class="manifesto-claim">
+        <div class="manifesto-num">05</div>
+        <p>Your institutional knowledge is the prize. <em>Don't let it train someone else's.</em></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EVIDENCE ═══ -->
+<section class="evidence" id="evidence">
+  <div class="evidence-inner">
+    <div class="evidence-eyebrow">Evidence</div>
+    <h2 class="evidence-h">The improvement loop works. <em>Across 3 domains, 19+ models, 400+ test cases.</em></h2>
+
+    <div class="evidence-grid">
+      <div class="evidence-card">
+        <div class="evidence-stat">+50.7%</div>
+        <div class="evidence-label">Accuracy lift — SRE incident response</div>
+        <div class="evidence-detail">100 incidents · 14 patterns · 18 models<br>claude-opus; best local: qwen3:32b +33.8%</div>
+      </div>
+      <div class="evidence-card">
+        <div class="evidence-stat">72–78%</div>
+        <div class="evidence-label">Accuracy — personal productivity agents</div>
+        <div class="evidence-detail">200 events · 4 agent types · 19 models<br>finance, health, task, learning</div>
+      </div>
+      <div class="evidence-card">
+        <div class="evidence-stat">95.2%</div>
+        <div class="evidence-label">Trap detection — legal case management</div>
+        <div class="evidence-detail">100 cases · 10 legal domains · 13 models<br>claude-opus warm accuracy 68.7%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PLATFORM (3 compressed blocks) ═══ -->
+<section class="platform" id="platform">
+  <div class="platform-inner">
+    <div class="platform-eyebrow">If you bought the argument</div>
+    <h2 class="platform-h">The platform — <em>in three blocks</em>.</h2>
+
+    <div class="platform-blocks">
+      <div class="platform-block">
+        <span class="platform-block-num">A · How</span>
+        <h3 class="platform-block-title">The improvement loop, six steps.</h3>
+        <p>Deploy on your real workflow. Failures cluster automatically into a live eval set. Each improvement passes a regression gate before it ships — no step forward that loses a step already gained.</p>
+        <ul>
+          <li>Domain expert approves in plain language</li>
+          <li>Eval set grows with every cycle</li>
+          <li>Audit trail hash-chained, exportable</li>
+        </ul>
+      </div>
+      <div class="platform-block">
+        <span class="platform-block-num">B · Where</span>
+        <h3 class="platform-block-title">Run anywhere. Lock in to nothing.</h3>
+        <p>Any model — Claude, GPT, Llama, open-weight. Run fully local for regulated data. Memory, eval set, and improvement history export in an open format.</p>
+        <ul>
+          <li>Any model, any provider</li>
+          <li>Local if you need it</li>
+          <li>Export any time</li>
+        </ul>
+      </div>
+      <div class="platform-block">
+        <span class="platform-block-num">C · Who</span>
+        <h3 class="platform-block-title">For the people who own the core.</h3>
+        <p>Built for the workflows that decades of institutional knowledge have shaped — and that one wrong vendor choice could leak.</p>
+        <ul>
+          <li>Supply chain VPs</li>
+          <li>Chief risk officers</li>
+          <li>Chief medical officers</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FINAL CTA ═══ -->
+<section class="final" id="contact">
+  <h2>Which workflow defines your business? <em>That's where we start.</em></h2>
+  <p>Not a generic demo — a conversation about the one process where your institutional knowledge is your edge, and what it would mean if that process never stopped improving.</p>
+  <div class="hero-ctas" style="opacity:1;animation:none;margin-top:0">
+    <a href="https://forms.gle/EgVikAcwzQwXszyUA" target="_blank" class="btn-primary">
+      Tell us about your core workflow
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+  <p class="final-note">Supply chain · Finance · Healthcare · Legal · Any core workflow</p>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <span>© 2026 ownEvo, Inc.</span>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Security</a>
+  </div>
+</footer>
+
+<script>
+(function() {
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', function() {
+    nav.classList.toggle('scrolled', window.scrollY > 32);
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>

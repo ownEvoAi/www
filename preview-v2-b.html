@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ownEvo — Own the improvement loop</title>
+<title>ownEvo — Layout B · Five Chapters</title>
 <meta name="description" content="Core agents for the workflows that define your business. Owned by you, improving with you, running anywhere.">
 <meta name="theme-color" content="#ffffff">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ownEvo">
-<meta property="og:title" content="ownEvo — Own the improvement loop">
+<meta property="og:title" content="ownEvo — Now own the intelligence">
 <meta property="og:description" content="Core agents for the workflows that define your business. Owned by you, improving with you, running anywhere.">
 <meta property="og:url" content="https://ownevo.ai/">
 <meta property="og:image" content="https://ownevo.ai/apple-touch-icon.png">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ownEvo — Own the improvement loop">
+<meta name="twitter:title" content="ownEvo — Now own the intelligence">
 <meta name="twitter:description" content="Core agents for the workflows that define your business. Owned by you, improving with you, running anywhere.">
 <meta name="twitter:image" content="https://ownevo.ai/apple-touch-icon.png">
 
@@ -39,11 +39,11 @@
     --rule:         #E5E7EB;
     --rule-strong:  #D1D5DB;
 
-    --accent:       #3b82f6;            /* brand blue — fills, eyebrow caps, glyphs */
-    --accent-deep:  #2563eb;            /* italics in body, hover, links */
-    --accent-tint:  #eff6ff;            /* subtle wash */
-    --accent-line:  rgba(59,130,246,0.5);
-    --accent-soft:  rgba(59,130,246,0.10);
+    --accent:       #38bdf8;            /* brand sky — fills, eyebrow caps, glyphs */
+    --accent-deep:  #0284c7;            /* italics in body, hover, links */
+    --accent-tint:  #F0F9FF;            /* subtle wash */
+    --accent-line:  rgba(56,189,248,0.5);
+    --accent-soft:  rgba(56,189,248,0.10);
 
     --green:        #059669;
     --red:          #DC2626;
@@ -101,8 +101,8 @@
     margin-right: 0.65rem;
     flex-shrink: 0;
   }
-  .nav-logo .logo-own { color: #475569; }
-  .nav-logo .logo-evo { color: var(--accent); font-style: italic; }
+  .nav-logo .logo-own { color: var(--ink-2); }
+  .nav-logo .logo-evo { color: var(--accent-deep); font-style: italic; }
   .nav-cta {
     font-family: var(--sans);
     font-size: 0.72rem;
@@ -159,12 +159,11 @@
   .hero-headline {
     font-family: var(--sans);
     font-weight: 700;
-    font-size: clamp(2.8rem, 7vw, 5.6rem);
-    line-height: 1.02;
+    font-size: clamp(3.2rem, 9vw, 7.4rem);
+    line-height: 0.98;
     letter-spacing: -0.045em;
     color: var(--ink);
-    max-width: 1200px;
-    text-wrap: balance;
+    max-width: 1100px;
     opacity: 0;
     animation: rise 0.85s 0.2s cubic-bezier(0.16,1,0.3,1) forwards;
   }
@@ -208,6 +207,19 @@
     font-weight: 500;
   }
 
+  .hero-descriptor {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    color: var(--ink-3);
+    line-height: 1.55;
+    max-width: 580px;
+    margin-top: 1.1rem;
+    font-weight: 400;
+    letter-spacing: -0.003em;
+    opacity: 0;
+    animation: rise 0.8s 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
   .hero-ctas {
     display: flex;
     gap: 0.9rem;
@@ -237,9 +249,9 @@
     cursor: pointer;
   }
   .btn-primary:hover {
-    background: var(--accent-deep);
+    background: #56cbfa;
     transform: translateY(-1px);
-    box-shadow: 0 8px 24px -10px rgba(59,130,246,0.55);
+    box-shadow: 0 8px 24px -10px rgba(56,189,248,0.55);
   }
   .btn-primary svg { transition: transform 0.2s; }
   .btn-primary:hover svg { transform: translateX(3px); }
@@ -391,6 +403,40 @@
   }
   .chapter-cover + section.block,
   .chapter-cover + section.block.loop-section { border-top: none; }
+
+  /* ═══ PRINCIPLES LIST (Philosophy chapter) ═══ */
+  .principles {
+    margin-top: 3.5rem;
+    border-top: 1px solid var(--rule);
+  }
+  .principle {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 2.5rem;
+    align-items: baseline;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .principle-num {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    color: var(--accent-deep);
+    font-weight: 500;
+    padding-top: 0.75rem;
+  }
+  .principle p {
+    font-family: var(--sans);
+    font-size: clamp(1.55rem, 3.4vw, 2.6rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+  .principle p em {
+    font-style: italic;
+    color: var(--accent-deep);
+  }
 
   /* ═══ SECTION SHARED ═══ */
   section.block {
@@ -604,7 +650,46 @@
     max-width: 620px;
   }
 
-  /* ═══ PULLQUOTE ═══ */
+  /* ═══ PROOF ═══ */
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 4.5rem;
+  }
+  .proof-card {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 2.25rem 2rem 2.4rem;
+  }
+  .proof-stat {
+    font-family: var(--sans);
+    font-size: clamp(2.6rem, 5vw, 4.4rem);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    color: var(--accent-deep);
+    line-height: 0.95;
+    margin-bottom: 0.7rem;
+  }
+  .proof-label {
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.85rem;
+    letter-spacing: -0.012em;
+    line-height: 1.35;
+  }
+  .proof-detail {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.7;
+  }
+
   .proof-quote {
     margin-top: 4rem;
     padding: 2rem 2.5rem;
@@ -790,6 +875,7 @@
   @media (max-width: 980px) {
     .problem-grid,
     .cvo-grid,
+    .proof-grid,
     .sov-grid,
     .persona-grid { grid-template-columns: 1fr; }
     .cvo-col.ops { border-right: none; border-bottom: 1px solid var(--rule); }
@@ -820,9 +906,9 @@
 <nav id="nav">
   <a href="/" class="nav-logo">
     <svg class="nav-logo-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" style="fill: var(--accent)"/>
-      <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
-      <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#38bdf8"/>
+      <circle cx="12" cy="12.5" r="3.2" stroke="#FFFFFF" stroke-width="2"/>
+      <path d="M9.6 8 L12 5.5 L14.4 8 Z" fill="#FFFFFF"/>
     </svg>
     <span class="logo-own">own</span><span class="logo-evo">Evo</span>
   </a>
@@ -831,8 +917,6 @@
 
 <!-- ═══ HERO ═══ -->
 <section class="hero" id="hero">
-  <p class="hero-eyebrow">Core agents for the workflows that define your business</p>
-
   <h1 class="hero-headline">
     Your agents. Your edge.<br><em>Nobody else's.</em>
   </h1>
@@ -841,6 +925,10 @@
 
   <p class="hero-sub">
     Models are ready. The question now is whether your agents keep getting better on <em>your</em> data — and whether the institutional knowledge they generate stays yours, or trains someone else's.
+  </p>
+
+  <p class="hero-descriptor">
+    Core agents for the workflows that define your business.
   </p>
 
   <div class="hero-ctas">
@@ -857,11 +945,18 @@
   </div>
 </section>
 
-<!-- ═══ § 01 · WHY ═══ -->
-<section class="block" id="why">
+<!-- ═══ CHAPTER 01 · WHY ═══ -->
+<section class="chapter-cover" id="why">
+  <div class="chapter-num">§ 01 · Why</div>
+  <h2 class="chapter-title">The bargain <em>you didn't agree to</em>.</h2>
+  <p class="chapter-tagline">Most enterprise AI platforms run on an implicit deal: give us your operational failures, and we'll give you a slightly better model — for everyone, including your competitors. You paid for the failure. They captured the lesson.</p>
+</section>
+
+<!-- Why · the bargain -->
+<section class="block" id="problem">
   <div class="section-inner">
-    <div class="chapter-num">§ 01 · Why</div>
-    <h2 class="chapter-title">Your knowledge is the new moat. <em>Don't give it away.</em></h2>
+    <div class="section-eyebrow">The current deal</div>
+    <h2 class="section-h">Your failures train their model. <em>Your competitors benefit.</em></h2>
     <p class="section-intro">
       Every time your agent fails, that failure is a signal — about your customers, your process, your edge cases. Most platforms capture that signal and use it to improve their model for everyone. Including your competitors.
     </p>
@@ -884,14 +979,44 @@
         <p>Failures are captured, clustered, and converted into eval cases inside your infrastructure. The improvement loop is yours. The knowledge compounds. No signal leaves your walls.</p>
       </div>
     </div>
+  </div>
+</section>
 
-    <div class="proof-quote" style="margin-top:3.5rem">
-      <p>You paid for the failure. <em>They captured the lesson.</em></p>
+<!-- ═══ CHAPTER 02 · PHILOSOPHY ═══ -->
+<section class="chapter-cover" id="philosophy">
+  <div class="chapter-num">§ 02 · Philosophy</div>
+  <h2 class="chapter-title">What we believe.</h2>
+  <p class="chapter-tagline">Four claims this page turns on. Each is the spine of an argument the rest of the page makes — read them once, then keep reading.</p>
+</section>
+
+<!-- Philosophy · the four principles -->
+<section class="block" id="principles">
+  <div class="section-inner">
+    <div class="section-eyebrow">The principles</div>
+    <h2 class="section-h">The four claims behind everything else.</h2>
+
+    <div class="principles">
+      <div class="principle">
+        <div class="principle-num">01</div>
+        <p>You paid for the failure. <em>They captured the lesson.</em></p>
+      </div>
+      <div class="principle">
+        <div class="principle-num">02</div>
+        <p>Ops agents are commodity. <em>Core agents are identity.</em></p>
+      </div>
+      <div class="principle">
+        <div class="principle-num">03</div>
+        <p>Deploy once. Improve forever. <em>Regress never.</em></p>
+      </div>
+      <div class="principle">
+        <div class="principle-num">04</div>
+        <p>The model is a commodity. <em>The improvement loop is the moat.</em></p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Why · the distinction -->
+<!-- Philosophy · the distinction -->
 <section class="block" id="core-vs-ops">
   <div class="section-inner">
     <div class="section-eyebrow">The distinction</div>
@@ -929,10 +1054,17 @@
   </div>
 </section>
 
-<!-- The loop -->
+<!-- ═══ CHAPTER 03 · HOW ═══ -->
+<section class="chapter-cover" id="how">
+  <div class="chapter-num">§ 03 · How</div>
+  <h2 class="chapter-title">The improvement loop.</h2>
+  <p class="chapter-tagline">A static agent degrades. The loop is the only defense — six steps, regression-tested, plain-language approval, every change auditable.</p>
+</section>
+
+<!-- How · the loop -->
 <section class="block loop-section" id="how-it-works">
   <div class="section-inner">
-    <div class="section-eyebrow">The loop</div>
+    <div class="section-eyebrow">The mechanism</div>
     <h2 class="section-h">A static agent degrades. <em>The loop is the only defense.</em></h2>
     <p class="section-intro">
       Deploying an agent is the starting line, not the goal. What matters is what it knows on day 365 — and whether that improvement belongs to you or to someone else.
@@ -985,7 +1117,47 @@
   </div>
 </section>
 
-<!-- How · sovereignty -->
+<!-- ═══ CHAPTER 04 · PROOF ═══ -->
+<section class="chapter-cover" id="proof-chapter">
+  <div class="chapter-num">§ 04 · Proof</div>
+  <h2 class="chapter-title">The evidence — <em>and where it runs</em>.</h2>
+  <p class="chapter-tagline">What the loop produced across three production-representative domains, plus the three concrete properties that make ownership real: any model, run local, export anytime.</p>
+</section>
+
+<!-- Proof · the numbers -->
+<section class="block" id="proof">
+  <div class="section-inner">
+    <div class="section-eyebrow">The numbers</div>
+    <h2 class="section-h">The improvement loop works. <em>Empirically. Across domains.</em></h2>
+    <p class="section-intro">
+      Self-evolution validated across 3 domains, 19+ models, 400+ real test cases. Not benchmark numbers on a research paper — accuracy improvement on representative production workflows.
+    </p>
+
+    <div class="proof-grid">
+      <div class="proof-card">
+        <div class="proof-stat">+50.7%</div>
+        <div class="proof-label">Accuracy lift — SRE incident response</div>
+        <div class="proof-detail">100 incidents · 14 patterns · 18 models tested<br>claude-opus; best local: qwen3:32b +33.8%<br>all 18 models showed positive lift</div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-stat">72–78%</div>
+        <div class="proof-label">Accuracy — personal productivity agents</div>
+        <div class="proof-detail">200 events · 4 agent types · 19 models<br>finance, health, task, learning<br>all models flat or positive after fix sweep</div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-stat">95.2%</div>
+        <div class="proof-label">Trap detection — legal case management</div>
+        <div class="proof-detail">100 cases · 10 legal domains · 13 models<br>claude-opus warm accuracy 68.7%<br>CaseMind plaintiff agent</div>
+      </div>
+    </div>
+
+    <div class="proof-quote">
+      <p>Even the smallest model tested (llama3.2:3b, 2 GB) achieves <em>+21.2% lift</em>. The improvement loop works across model sizes — because the moat is the eval set, not the model.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Proof · where it runs -->
 <section class="block" id="sovereignty">
   <div class="section-inner">
     <div class="section-eyebrow">Where it runs</div>
@@ -1020,11 +1192,11 @@
   </div>
 </section>
 
-<!-- ═══ CHAPTER 03 · WHO ═══ -->
+<!-- ═══ CHAPTER 05 · WHO ═══ -->
 <section class="chapter-cover" id="who">
-  <div class="chapter-num">§ 03 · Who</div>
-  <h2 class="chapter-title">For the people who <em>own the core</em>.</h2>
-  <p class="chapter-tagline">Not for ops automation buyers. For the workflows that decades of institutional knowledge have shaped — and that one wrong vendor choice could leak.</p>
+  <div class="chapter-num">§ 05 · Who</div>
+  <h2 class="chapter-title">Built for the people who <em>own the core</em>.</h2>
+  <p class="chapter-tagline">Not for ops automation buyers. For the workflows that decades of institutional knowledge have shaped — and that one wrong vendor choice could leak. Three personas this is built for.</p>
 </section>
 
 <!-- Who · personas -->
@@ -1052,8 +1224,8 @@
 
 <!-- ═══ FINAL CTA ═══ -->
 <section class="final" id="contact">
-  <h2>Which of your core workflows do you want to <em>start with?</em></h2>
-  <p>Not a generic demo — a conversation about a process where your institutional knowledge is your edge, and what it would mean if that process never stopped improving.</p>
+  <h2>Which workflow defines your business? <em>That's where we start.</em></h2>
+  <p>Not a generic demo — a conversation about the one process where your institutional knowledge is your edge, and what it would mean if that process never stopped improving.</p>
   <div class="hero-ctas">
     <a href="https://forms.gle/EgVikAcwzQwXszyUA" target="_blank" class="btn-primary">
       Tell us about your core workflow

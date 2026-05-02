@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ownEvo — Own the improvement loop</title>
+<meta name="description" content="Core agents for the workflows that define your business. Self-improving, sovereign, owned by you.">
+<meta name="theme-color" content="#ffffff">
+
+<!-- Open Graph / social share -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ownEvo">
+<meta property="og:title" content="ownEvo — Own the improvement loop">
+<meta property="og:description" content="Core agents for the workflows that define your business. Self-improving, sovereign, owned by you.">
+<meta property="og:url" content="https://ownevo.ai/">
+<meta property="og:image" content="https://ownevo.ai/apple-touch-icon.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ownEvo — Own the improvement loop">
+<meta name="twitter:description" content="Core agents for the workflows that define your business. Self-improving, sovereign, owned by you.">
+<meta name="twitter:image" content="https://ownevo.ai/apple-touch-icon.png">
+
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ════════════════════════════════════════════════════════════════════
+     ownEvo design system — see BRAND.md for the canonical specification.
+     Tokens, type scale, components, and motion are defined there.
+     ════════════════════════════════════════════════════════════════════ */
+  :root {
+    --bg: #ffffff;
+    --surface: #f8fafc;
+    --surface-2: #f1f5f9;
+    --border: #e2e8f0;
+    --border-light: #cbd5e1;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --accent-dim: #3b82f60d;
+    --accent-glow: #3b82f614;
+    --accent-muted: rgba(59,130,246,0.10);
+    --white: #0f172a;
+    --grey-100: #1e293b;
+    --grey-200: #334155;
+    --grey-300: #475569;
+    --grey-500: #64748b;
+    --grey-700: #94a3b8;
+    --grey-900: #cbd5e1;
+    --green: #059669;
+    --red: #dc2626;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--white);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ═══ NAV ═══ */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 3rem;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  nav.scrolled {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: var(--border);
+  }
+  .nav-logo {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--white);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.12em;
+  }
+  .nav-logo-mark {
+    width: 32px;
+    height: 32px;
+    margin-right: 0.6rem;
+    flex-shrink: 0;
+  }
+  .nav-logo .logo-own { color: var(--grey-300); }
+  .nav-logo .logo-evo { color: var(--accent); font-style: italic; }
+  .nav-cta {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid rgba(59,130,246,0.3);
+    padding: 0.5rem 1.2rem;
+    border-radius: 3px;
+    transition: all 0.2s;
+  }
+  .nav-cta:hover {
+    background: var(--accent-muted);
+    border-color: var(--accent);
+  }
+
+  /* ═══ SECTIONS ═══ */
+  section, .hero {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ═══ HERO ═══ */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 7rem 2rem 5rem;
+    text-align: center;
+    background:
+      radial-gradient(ellipse 65% 40% at 50% 35%, rgba(59,130,246,0.16), transparent 65%),
+      radial-gradient(ellipse 90% 60% at 50% 100%, rgba(148,163,184,0.10), transparent 70%);
+  }
+
+  .hero-headline {
+    font-size: clamp(2.6rem, 6vw, 4.8rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    max-width: 800px;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: up 0.7s 0.2s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .hero-headline em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-punch {
+    font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: var(--white);
+    max-width: 640px;
+    line-height: 1.3;
+    margin-bottom: 1.25rem;
+    opacity: 0;
+    animation: up 0.7s 0.32s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .hero-punch em { font-style: italic; color: var(--accent); }
+
+  .hero-sub {
+    font-size: clamp(1rem, 1.8vw, 1.15rem);
+    color: var(--grey-300);
+    font-weight: 400;
+    line-height: 1.65;
+    max-width: 620px;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: up 0.7s 0.44s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .hero-sub em { font-style: italic; color: var(--accent); }
+
+  .hero-eyebrow {
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--grey-500);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: up 0.6s 0.1s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 4rem;
+    opacity: 0;
+    animation: up 0.7s 0.68s cubic-bezier(0.16,1,0.3,1) forwards;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn-primary {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    padding: 0.8rem 2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 0 28px rgba(59,130,246,0.25);
+  }
+  .btn-primary svg { transition: transform 0.2s; }
+  .btn-primary:hover svg { transform: translateX(3px); }
+  .btn-ghost {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--grey-300);
+    background: transparent;
+    border: 1px solid var(--border-light);
+    padding: 0.8rem 2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    border-radius: 3px;
+  }
+  .btn-ghost:hover { border-color: var(--grey-500); color: var(--white); }
+
+  .is-disabled { cursor: not-allowed; opacity: 0.55; pointer-events: none; }
+  .is-disabled:hover { box-shadow: none; }
+
+  /* ═══ SECTION SHARED ═══ */
+  .section-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+  }
+  .section-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+  }
+  .section-heading {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    max-width: 640px;
+    margin-bottom: 1.25rem;
+  }
+  .section-heading em { font-style: italic; color: var(--accent); }
+  .section-body {
+    font-size: 1.05rem;
+    color: var(--grey-300);
+    line-height: 1.7;
+    max-width: 580px;
+  }
+  .section-body + .section-body { margin-top: 1rem; }
+
+  hr.section-rule {
+    border: none;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ═══ PROBLEM SECTION ═══ */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 4rem;
+  }
+  .problem-card {
+    background: var(--surface);
+    border-radius: 6px;
+    padding: 2rem;
+    box-shadow: 0 4px 14px rgba(15,23,42,0.07), 0 1px 3px rgba(15,23,42,0.06), 0 0 0 1px rgba(15,23,42,0.05);
+  }
+  .problem-card-label {
+    font-size: 0.56rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .label-bad { color: var(--red); }
+  .label-good { color: var(--green); }
+  .problem-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+  }
+  .problem-card p {
+    font-size: 0.88rem;
+    color: var(--grey-300);
+    line-height: 1.65;
+  }
+  .problem-card.bad { border-color: rgba(220,38,38,0.25); }
+  .problem-card.good { border-color: rgba(5,150,105,0.25); background: rgba(5,150,105,0.04); }
+  .pullquote {
+    margin-top: 3.5rem;
+    padding: 2rem 2.5rem;
+    border-left: 2px solid var(--accent);
+    background: var(--accent-dim);
+  }
+  .pullquote p {
+    font-size: 1.15rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.5;
+    color: var(--white);
+  }
+  .pullquote p em { font-style: italic; color: var(--accent); }
+
+  /* ═══ CORE VS OPS ═══ */
+  .cvo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 3.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .cvo-col {
+    padding: 2.5rem;
+  }
+  .cvo-col.ops {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+  }
+  .cvo-col.core { background: var(--surface-2); }
+  .cvo-col-label {
+    font-size: 0.56rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .cvo-col.ops .cvo-col-label { color: var(--grey-500); }
+  .cvo-col.core .cvo-col-label { color: var(--accent); }
+  .cvo-col h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.25rem;
+    line-height: 1.3;
+  }
+  .cvo-col.ops h3 { color: var(--grey-500); }
+  .cvo-col.core h3 { color: var(--white); }
+  .cvo-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .cvo-list li {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    padding-left: 1.2em;
+    position: relative;
+  }
+  .cvo-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+  }
+  .cvo-col.ops .cvo-list li { color: var(--grey-700); }
+  .cvo-col.ops .cvo-list li::before { color: var(--grey-700); }
+  .cvo-col.core .cvo-list li { color: var(--grey-200); }
+  .cvo-col.core .cvo-list li::before { color: var(--accent); }
+  .cvo-footer {
+    font-size: 0.78rem;
+    margin-top: 1.75rem;
+    font-style: italic;
+    line-height: 1.5;
+  }
+  .cvo-col.ops .cvo-footer { color: var(--grey-700); }
+  .cvo-col.core .cvo-footer { color: var(--grey-300); }
+
+  /* ═══ LOOP SECTION ═══ */
+  .loop-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .loop-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 3.5rem;
+  }
+  .loop-step {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1.5rem;
+    align-items: flex-start;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border);
+    opacity: 0.45;
+    transition: opacity 0.4s;
+  }
+  .loop-step:last-child { border-bottom: none; }
+  .loop-step.active { opacity: 1; }
+  .step-num {
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    padding-top: 0.2rem;
+    text-align: right;
+  }
+  .step-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
+  }
+  .step-content p {
+    font-size: 0.88rem;
+    color: var(--grey-300);
+    line-height: 1.6;
+    max-width: 500px;
+  }
+
+  /* ═══ PROOF ═══ */
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+  .proof-card {
+    background: var(--surface);
+    border-radius: 6px;
+    padding: 2rem;
+    box-shadow: 0 4px 14px rgba(15,23,42,0.07), 0 1px 3px rgba(15,23,42,0.06), 0 0 0 1px rgba(15,23,42,0.05);
+  }
+  .proof-stat {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .proof-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+  }
+  .proof-detail {
+    font-size: 0.56rem;
+    color: var(--grey-500);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.6;
+  }
+
+  /* ═══ SOVEREIGNTY ═══ */
+  .sov-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+  .sov-card {
+    border-radius: 6px;
+    padding: 2rem;
+    background: var(--surface);
+    box-shadow: 0 4px 14px rgba(15,23,42,0.07), 0 1px 3px rgba(15,23,42,0.06), 0 0 0 1px rgba(15,23,42,0.05);
+  }
+  .sov-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--accent-muted);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+    color: var(--accent);
+  }
+  .sov-card h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.6rem;
+  }
+  .sov-card p {
+    font-size: 0.85rem;
+    color: var(--grey-300);
+    line-height: 1.65;
+  }
+
+  /* ═══ WHO IT'S FOR ═══ */
+  .persona-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+  .persona-card {
+    border-radius: 6px;
+    padding: 2rem;
+    background: var(--surface);
+    box-shadow: 0 4px 14px rgba(15,23,42,0.07), 0 1px 3px rgba(15,23,42,0.06), 0 0 0 1px rgba(15,23,42,0.05);
+  }
+  .persona-role {
+    font-size: 0.56rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .persona-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+  }
+  .persona-card p {
+    font-size: 0.85rem;
+    color: var(--grey-300);
+    line-height: 1.65;
+  }
+
+  /* ═══ FINAL CTA ═══ */
+  .final-cta {
+    text-align: center;
+    padding: 7rem 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .final-cta .section-heading {
+    max-width: 640px;
+    margin: 0 auto 1.25rem;
+  }
+  .final-cta .section-body {
+    max-width: 480px;
+    margin: 0 auto 3rem;
+  }
+  .final-cta .hero-ctas { justify-content: center; margin-bottom: 1.25rem; }
+  .final-cta-note {
+    font-size: 0.85rem;
+    color: var(--grey-500);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 0.5rem;
+  }
+
+  /* ═══ FOOTER ═══ */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 1.75rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.52rem;
+    color: var(--grey-700);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  footer a { color: var(--grey-700); text-decoration: none; transition: color 0.15s; }
+  footer a:hover { color: var(--grey-300); }
+  .footer-links { display: flex; gap: 2rem; }
+
+  /* ═══ ANIMATIONS ═══ */
+  @keyframes up {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ═══ USE CASES ═══ */
+  /* ═══ USE CASES ACCORDION ═══ */
+  .accordion {
+    margin-top: 3rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .accordion-item {
+    border-bottom: 1px solid var(--border);
+  }
+  .accordion-item:last-child { border-bottom: none; }
+  .accordion-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 1.75rem 2.5rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s;
+  }
+  .accordion-trigger:hover { background: var(--surface); }
+  .accordion-item.is-open > .accordion-trigger { background: var(--surface); }
+  .accordion-trigger-left { flex: 1; }
+  .vertical-tag {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent-muted);
+    border-radius: 4px;
+    padding: 0.22rem 0.55rem;
+    margin-bottom: 0.8rem;
+  }
+  .accordion-trigger h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    line-height: 1.3;
+    margin: 0;
+  }
+  .accordion-trigger h3 em { font-style: italic; color: var(--accent); }
+  .accordion-chevron {
+    flex-shrink: 0;
+    color: var(--grey-500);
+    transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+    margin-top: 0.2rem;
+  }
+  .accordion-item.is-open .accordion-chevron { transform: rotate(180deg); }
+  .accordion-body {
+    display: none;
+    padding: 0 2.5rem 2rem;
+    background: var(--surface);
+  }
+  .accordion-item.is-open > .accordion-body { display: block; }
+  .accordion-body p {
+    font-size: 0.975rem;
+    line-height: 1.75;
+    color: var(--grey-200);
+    margin-bottom: 1rem;
+  }
+  .accordion-body p:last-of-type { margin-bottom: 0; }
+  .vertical-proof {
+    margin-top: 1.5rem;
+    padding: 1.1rem 1.4rem;
+    border-left: 3px solid var(--accent);
+    background: var(--accent-glow);
+    border-radius: 0 8px 8px 0;
+    font-size: 0.875rem;
+    color: var(--grey-200);
+    line-height: 1.65;
+  }
+
+  /* ═══ RESPONSIVE ═══ */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .section-inner { padding: 4rem 1.5rem; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .cvo-grid { grid-template-columns: 1fr; }
+    .cvo-col.ops { border-right: none; border-bottom: 1px solid var(--border); }
+    .proof-grid { grid-template-columns: 1fr; }
+    .sov-grid { grid-template-columns: 1fr; }
+    .persona-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 0.8rem; text-align: center; padding: 1.5rem; }
+    .footer-links { justify-content: center; }
+    .hero-headline { letter-spacing: -0.03em; }
+  }
+
+  @media (max-width: 500px) {
+    .loop-step { grid-template-columns: 2.2rem 1fr; gap: 1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <svg class="nav-logo-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" style="fill: var(--accent)"/>
+      <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+      <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+    </svg>
+    <span class="logo-own">own</span><span class="logo-evo">Evo</span>
+  </a>
+  <a href="https://forms.gle/EgVikAcwzQwXszyUA" target="_blank" rel="noopener" class="nav-cta">Talk to us</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero" id="hero">
+  <p class="hero-eyebrow">Core agents for the workflows that define your business</p>
+
+  <h1 class="hero-headline">
+    Your agents. Your edge.<br><em>Nobody else's.</em>
+  </h1>
+
+  <p class="hero-punch">Don't rent it. <em>Don't be hostage to it.</em></p>
+
+  <p class="hero-sub">
+    Models are ready. The question now is whether your agents keep getting better on <em>your</em> data — and whether the institutional knowledge they generate stays yours, or trains someone else's.
+  </p>
+
+  <div class="hero-ctas">
+    <a href="https://forms.gle/EgVikAcwzQwXszyUA" target="_blank" rel="noopener" class="btn-primary">
+      Talk to us about your core workflow
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <a href="#how-it-works" class="btn-ghost">See how it works</a>
+  </div>
+
+</div>
+
+<!-- ═══ PROBLEM ═══ -->
+<section id="problem">
+  <div class="section-inner">
+    <div class="section-label">The Problem</div>
+    <h2 class="section-heading">Your knowledge is the new moat. <em>Don't give it away.</em></h2>
+    <p class="section-body">
+      Every time your agent fails, that failure is a signal. A signal about your customers, your process, your edge cases. Most platforms capture that signal — and use it to improve their model for everyone, including your competitors.
+    </p>
+
+    <div class="problem-grid">
+      <div class="problem-card bad">
+        <div class="problem-card-label label-bad">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="#dc2626"/><path d="M4 4l4 4M8 4l-4 4" stroke="#dc2626" stroke-width="1.2" stroke-linecap="round"/></svg>
+          The current deal
+        </div>
+        <h3>Your failures train their model. Your competitors benefit.</h3>
+        <p>Your demand forecast misses. Your agent logs the failure. The platform ingests it. Their model improves — for all their customers. Your edge case becomes their product roadmap.</p>
+      </div>
+      <div class="problem-card good">
+        <div class="problem-card-label label-good">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5.5" stroke="#059669"/><path d="M3.5 6l2 2 3-3.5" stroke="#059669" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          The ownEvo alternative
+        </div>
+        <h3>Your failures feed your loop. The lesson stays yours.</h3>
+        <p>Failures are captured, clustered, and converted into eval cases inside your infrastructure. The improvement loop is yours. The knowledge compounds. No signal leaves your walls.</p>
+      </div>
+    </div>
+
+    <div class="pullquote">
+      <p>You paid for the failure. <em>They captured the lesson.</em></p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ═══ USE CASES ═══ -->
+<section id="use-cases">
+  <div class="section-inner">
+    <div class="section-label">Use Cases</div>
+    <h2 class="section-heading">Built for the workflows that <em>define your business.</em></h2>
+    <p class="section-body">
+      Not ops automation. Core intelligence — the kind that took decades to accumulate and cannot be rented from anyone.
+    </p>
+
+    <div class="accordion">
+
+      <div class="accordion-item is-open">
+        <button class="accordion-trigger" aria-expanded="true">
+          <div class="accordion-trigger-left">
+            <div class="vertical-tag">Retail · Distribution · Manufacturing</div>
+            <h3>The margin is in the decisions that happen <em>10 million times a week.</em></h3>
+          </div>
+          <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="accordion-body">
+          <p>When to mark down a seasonal SKU. Which store gets the constrained inventory. Whether that supplier's cost-build has slack or not.</p>
+          <p>These aren't questions a generic agent can answer. They require the lift curves calibrated to your promotions, the markdown timing signals from your category history, the supplier cost models your buyers built over 20 years of negotiations.</p>
+          <p>An ownEvo supply chain agent starts with what you know and gets better with every decision cycle. The live eval set grows. Failures cluster automatically. Every improvement is regression-tested before it reaches production.</p>
+          <p>Your demand forecasting model doesn't have to be rebuilt every planning cycle. It compounds.</p>
+          <div class="vertical-proof">Companies using continuous improvement loops on supply chain agents have seen 40–50% reductions in forecast error and 30–40% reductions in excess inventory — not from better models, but from better institutional knowledge captured in the loop.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          <div class="accordion-trigger-left">
+            <div class="vertical-tag">Banking · Insurance · Asset Management</div>
+            <h3>Your risk models are only as good as what happened <em>after the last cycle.</em></h3>
+          </div>
+          <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="accordion-body">
+          <p>Probability-of-default models go stale. Catastrophe pricing needs to absorb new loss patterns. Credit spreads shift faster than any static model can track.</p>
+          <p>The edge in finance has always been the proprietary signal — the 60 years of claims development factors, the behavioral payment velocity data, the through-cycle recalibration methodology that nobody else has.</p>
+          <p>An ownEvo finance agent captures that recalibration as it happens. Every cycle that diverges from the model becomes a new eval case. Every improvement is validated against every prior fix. The model that priced your portfolio last year isn't the model pricing it today — and you can see exactly what changed and why.</p>
+          <p>No vendor has your loss history. No vendor should own the loop that learns from it.</p>
+          <div class="vertical-proof">JPMorgan, Berkshire, and Allianz have each invested in proprietary ML systems for underwriting and credit that are not and will never be available to competitors. The advantage is not the algorithm — it's the feedback loop running on proprietary claims and transaction data.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          <div class="accordion-trigger-left">
+            <div class="vertical-tag">Payers · Providers · Life Sciences</div>
+            <h3>The most expensive mistakes in healthcare are the ones that <em>already happened once.</em></h3>
+          </div>
+          <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="accordion-body">
+          <p>A clinical trial that fails at Phase III because the patient stratification was wrong. A formulary decision that shifted utilization in ways nobody modeled. A drug interaction that showed up in post-market surveillance but not in the label.</p>
+          <p>The institutional knowledge that prevents these failures lives in outcomes — 1,000 past trials, 150M member claims, years of dispensing records. It's not in any protocol document. It walks out the door when people retire.</p>
+          <p>An ownEvo healthcare agent captures that knowledge as the work happens. Trial design decisions become eval cases. Formulary outcomes feed the next negotiation. Adverse event patterns build a regression suite that grows with every case.</p>
+          <p>Your clinical knowledge doesn't have to be recreated from scratch every time a senior researcher leaves. It compounds.</p>
+          <div class="vertical-proof">Pfizer, UnitedHealth, and CVS each maintain proprietary AI systems for trial design, formulary management, and drug interaction triage that are explicitly not shareable — because the training data is the moat. The algorithm is secondary.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section id="how-it-works" class="loop-section">
+  <div class="section-inner">
+    <div class="section-label">The Loop</div>
+    <h2 class="section-heading">Deploy once. Improve forever. <em>Regress never.</em></h2>
+    <p class="section-body">
+      Deploying an agent is not the goal — it's the starting line. The question that matters is what it knows on day 365, and whether that improvement is yours or someone else's.
+    </p>
+
+    <div class="loop-steps" id="loop-steps">
+      <div class="loop-step active">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h4>Deploy on your core workflow</h4>
+          <p>The agent runs on your real process — real decisions, real outcomes, real data. Not a demo environment. Not synthetic events.</p>
+        </div>
+      </div>
+      <div class="loop-step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h4>Failures are captured automatically</h4>
+          <p>Every time the agent gets it wrong, the trace is captured, analyzed, and clustered into a root-cause pattern. No manual labeling, no incident tickets, no retrospectives.</p>
+        </div>
+      </div>
+      <div class="loop-step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h4>A live eval set grows with you</h4>
+          <p>Failure clusters become reusable eval cases. Not a static benchmark — a living test suite that reflects how your specific process actually fails. It compounds with every cycle.</p>
+        </div>
+      </div>
+      <div class="loop-step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h4>Improvements proposed and regression-tested</h4>
+          <p>Each proposed improvement must pass two gates: does it fix the new failure, and does it leave every previously resolved case intact? No step forward that loses a step already gained.</p>
+        </div>
+      </div>
+      <div class="loop-step">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <h4>Domain expert approves in plain language</h4>
+          <p>Not a developer. The person who knows the work reads a plain-language description and approves or rejects. If you can describe what went wrong in a meeting, you can fix it.</p>
+        </div>
+      </div>
+      <div class="loop-step">
+        <div class="step-num">06</div>
+        <div class="step-content">
+          <h4>The agent that runs today is measurably better than six months ago</h4>
+          <p>Full history: every improvement, the eval set it was validated against, the regression cases it had to satisfy. Not a black box — a compound. Auditable, exportable, yours.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SOVEREIGNTY ═══ -->
+<section id="sovereignty">
+  <div class="section-inner">
+    <div class="section-label">Ownership</div>
+    <h2 class="section-heading">Run anywhere. Own everything.<br><em>Lock in to nothing.</em></h2>
+    <p class="section-body">
+      Owning your agents is not a philosophical position. It is a set of concrete properties that either your system has or it doesn't.
+    </p>
+
+    <div class="sov-grid">
+      <div class="sov-card">
+        <div class="sov-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M17.5 14v6M14.5 17h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Any model, any provider</h3>
+        <p>Claude, GPT, Llama, Mistral — or any open-weight model you choose. Swap models without rebuilding. The institutional knowledge travels with the agent, not the model provider. Switch tomorrow. Take everything.</p>
+      </div>
+      <div class="sov-card">
+        <div class="sov-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Local if you need it</h3>
+        <p>Regulated data that can't leave your walls? Run fully local. 80–90% of routine decisions handled by local models at near-zero cost. Cloud inference reserved for the complexity that genuinely needs it.</p>
+      </div>
+      <div class="sov-card">
+        <div class="sov-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Export any time</h3>
+        <p>Memory, eval set, improvement history, skill layer — all export in an open format. The lock-in is the institutional knowledge you've accumulated. That belongs to you, not to us.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ═══ WHO IT'S FOR ═══ -->
+<section id="who">
+  <div class="section-inner">
+    <div class="section-label">Who It's For</div>
+    <h2 class="section-heading">For the people who <em>own the core.</em></h2>
+    <p class="section-body">
+      Not for ops automation buyers. For the workflows that decades of institutional knowledge have shaped — and that one wrong vendor choice could leak.
+    </p>
+
+    <div class="persona-grid">
+      <div class="persona-card">
+        <span class="persona-role">Supply Chain VP</span>
+        <h3>The margin is in decisions that happen 10 million times a week.</h3>
+        <p>Tired of rebuilding demand models every planning cycle. Wants an agent that compounds — one that knows your category, your suppliers, your seasonal patterns, and gets better at it every quarter without starting over.</p>
+      </div>
+      <div class="persona-card">
+        <span class="persona-role">Chief Risk Officer</span>
+        <h3>Your edge is in proprietary signal. Don't share it to improve their model.</h3>
+        <p>Knows the competitive advantage is in the feedback loop running on their claims and transaction data. Won't share loss development factors with any vendor. Needs the improvement loop to stay inside the institution.</p>
+      </div>
+      <div class="persona-card">
+        <span class="persona-role">Chief Medical Officer</span>
+        <h3>The most expensive mistake is the one that already happened once.</h3>
+        <p>Watched clinical knowledge walk out the door when senior researchers retired. Wants a system where every trial design decision, every formulary outcome, every adverse event pattern leaves something behind — permanently.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FINAL CTA ═══ -->
+<section class="final-cta" id="contact">
+  <h2 class="section-heading" style="margin:0 auto 1.25rem">Which of your core workflows do you want to <em>start with?</em></h2>
+  <p class="section-body" style="margin:0 auto 3rem">
+    Not a generic demo — a conversation about a process where your institutional knowledge is your edge, and what it would mean if that process never stopped improving.
+  </p>
+  <div class="hero-ctas">
+    <a href="https://forms.gle/EgVikAcwzQwXszyUA" target="_blank" rel="noopener" class="btn-primary">
+      Tell us about your core workflow
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+  <p class="final-cta-note">Supply chain · Finance · Healthcare · Legal · Any core workflow</p>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <span>© 2026 ownEvo, Inc.</span>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Security</a>
+  </div>
+</footer>
+
+<script>
+// Nav scroll
+(function() {
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', function() {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+})();
+
+// Use cases accordion
+(function() {
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger) {
+    trigger.addEventListener('click', function() {
+      const item = this.closest('.accordion-item');
+      const isOpen = item.classList.contains('is-open');
+      document.querySelectorAll('.accordion-item').forEach(function(i) {
+        i.classList.remove('is-open');
+        i.querySelector('.accordion-trigger').setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+})();
+
+// Loop step animation
+(function() {
+  const steps = document.querySelectorAll('.loop-step');
+  if (!steps.length) return;
+  let current = 0;
+
+  function advance() {
+    steps[current].classList.remove('active');
+    current = (current + 1) % steps.length;
+    steps[current].classList.add('active');
+  }
+
+  setInterval(advance, 2200);
+})();
+
+</script>
+</body>
+</html>

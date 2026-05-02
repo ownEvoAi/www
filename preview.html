@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ownEvo — The race to build the best model is over</title>
+<meta name="description" content="An essay on what comes after the model selection era — and why the improvement loop running above it is the moat.">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500;1,8..60,600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --stone:        #EDE8DD;
+    --stone-2:      #E5DFD2;
+    --stone-3:      #DCD4C2;
+    --ink:          #1A1814;
+    --ink-2:        #4A4640;
+    --ink-3:        #807B72;
+    --ink-4:        #B0AB9F;
+    --rule:         #C8C2B5;
+    --rule-light:   #D8D2C5;
+    --oxblood:      #7E2D2D;
+    --oxblood-dim:  rgba(126, 45, 45, 0.07);
+    --oxblood-line: rgba(126, 45, 45, 0.30);
+    --oxblood-deep: #5C1F1F;
+
+    --serif: 'Source Serif 4', 'Source Serif Pro', Georgia, 'Times New Roman', serif;
+    --mono:  'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--serif);
+    background: var(--stone);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    font-feature-settings: "kern" 1, "liga" 1, "onum" 1;
+  }
+
+  /* ════════════ MASTHEAD ════════════ */
+  .masthead {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 4rem 1.5rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--rule);
+  }
+  .wordmark {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .wordmark em { font-style: italic; color: var(--oxblood); }
+  .masthead-meta {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    display: flex;
+    gap: 1.5rem;
+  }
+  .masthead-meta span + span { padding-left: 1.5rem; border-left: 1px solid var(--rule); }
+
+  /* ════════════ LEDGER HERO ════════════ */
+  .ledger-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.25rem 4rem 0;
+  }
+  .ledger-cap {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.6rem;
+  }
+  .ledger-pulse {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--oxblood);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 1; }
+  }
+  .ledger-cap-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+    margin-left: 0.5rem;
+  }
+  .ledger {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.9;
+    color: var(--ink-2);
+    background: var(--stone-2);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    table-layout: fixed;
+  }
+  .ledger thead th {
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.58rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--rule);
+    background: var(--stone-3);
+  }
+  .ledger tbody td {
+    padding: 0.18rem 1rem;
+    border: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background 1.2s ease-out;
+  }
+  .ledger tbody tr.fresh td {
+    background: var(--oxblood-dim);
+  }
+  .ledger .col-ts    { width: 18%; color: var(--ink-3); }
+  .ledger .col-agent { width: 16%; color: var(--ink-2); }
+  .ledger .col-event { width: 38%; color: var(--ink); }
+  .ledger .col-delta { width: 14%; color: var(--ink-2); }
+  .ledger .col-state { width: 14%; color: var(--ink-3); }
+  .ledger .state-promoted, .ledger .state-deployed, .ledger .state-learned, .ledger .state-added {
+    color: var(--oxblood);
+  }
+  .ledger .state-rejected { color: var(--ink-3); text-decoration: line-through; }
+  .ledger-foot {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-top: 0.7rem;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ════════════ INTERSTITIAL ════════════ */
+  .interstitial {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4.5rem 4rem 1rem;
+    text-align: center;
+  }
+  .interstitial p {
+    font-family: var(--serif);
+    font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+    font-style: italic;
+    color: var(--ink-2);
+    line-height: 1.5;
+    max-width: 580px;
+    margin: 0 auto;
+    letter-spacing: -0.005em;
+  }
+  .interstitial p em { color: var(--oxblood); }
+
+  /* ════════════ ESSAY ════════════ */
+  .essay {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 5rem 4rem 6rem;
+  }
+
+  .essay-head {
+    margin-bottom: 4rem;
+    max-width: 880px;
+  }
+  .essay-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--oxblood);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .essay-eyebrow::before {
+    content: ''; width: 32px; height: 1px; background: var(--oxblood); display: block;
+  }
+
+  h1.essay-title {
+    font-family: var(--serif);
+    font-size: clamp(2.6rem, 5.6vw, 4.8rem);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-bottom: 1.75rem;
+  }
+  h1.essay-title em { font-style: italic; color: var(--oxblood); font-weight: 600; }
+
+  .essay-byline {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+  }
+  .essay-byline span + span { padding-left: 1.5rem; border-left: 1px solid var(--rule); }
+
+  /* Body grid: 640 main / 60 gap / 240 sidenote */
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 640px) 60px 240px;
+    margin-bottom: 1.6rem;
+    align-items: start;
+  }
+  .row > p { grid-column: 1; }
+  .row > aside.sn { grid-column: 3; }
+
+  .row > p {
+    font-family: var(--serif);
+    font-size: 1.18rem;
+    line-height: 1.65;
+    color: var(--ink);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+  }
+  .row > p em { font-style: italic; color: var(--ink); font-weight: 500; }
+  .row > p strong { font-weight: 600; color: var(--ink); }
+  .row > p .ox { color: var(--oxblood); font-style: italic; }
+  .row > p a { color: var(--oxblood); text-decoration: none; border-bottom: 1px solid var(--oxblood-line); transition: border-color 0.2s; }
+  .row > p a:hover { border-bottom-color: var(--oxblood); }
+
+  /* Footnote ref */
+  .fnref {
+    font-family: var(--mono);
+    font-size: 0.62em;
+    color: var(--oxblood);
+    text-decoration: none;
+    vertical-align: super;
+    line-height: 0;
+    padding: 0 0.05em 0 0.1em;
+    font-weight: 500;
+  }
+  .fnref:hover { text-decoration: underline; text-decoration-color: var(--oxblood); }
+
+  aside.sn {
+    font-family: var(--serif);
+    font-size: 0.84rem;
+    line-height: 1.5;
+    color: var(--ink-3);
+    font-style: italic;
+    padding-top: 0.45em;
+    border-top: 1px solid var(--rule-light);
+    padding-left: 0;
+  }
+  aside.sn .sn-num {
+    font-family: var(--mono);
+    font-size: 0.78em;
+    color: var(--oxblood);
+    font-style: normal;
+    margin-right: 0.4em;
+    font-weight: 500;
+  }
+  aside.sn em { color: var(--ink-2); font-style: italic; }
+
+  /* Section heading inside the essay */
+  .section-h {
+    grid-column: 1;
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ink);
+    margin: 2.6rem 0 1.2rem;
+    letter-spacing: -0.01em;
+  }
+  .section-h em { font-style: italic; color: var(--oxblood); }
+  .section-h-num {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--oxblood);
+    letter-spacing: 0.16em;
+    margin-right: 0.8em;
+    font-weight: 500;
+  }
+
+  /* Pull quote */
+  .pull {
+    grid-column: 1 / span 3;
+    margin: 3.5rem 0;
+    padding: 2rem 0 2rem 2.5rem;
+    border-left: 3px solid var(--oxblood);
+    max-width: 760px;
+  }
+  .pull p {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+  .pull p em { color: var(--oxblood); font-style: italic; }
+
+  /* Diagram */
+  .diagram {
+    grid-column: 1 / span 3;
+    margin: 3.5rem 0;
+    padding: 2.5rem 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    max-width: 940px;
+  }
+  .diagram-head {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 1.5rem;
+  }
+  .diagram-head em { color: var(--oxblood); font-style: normal; }
+  .diagram svg { display: block; max-width: 100%; height: auto; }
+
+  /* Annotated diff */
+  .diff {
+    grid-column: 1 / span 3;
+    margin: 3.5rem 0;
+    max-width: 940px;
+  }
+  .diff-head {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .diff-head em { color: var(--oxblood); font-style: normal; }
+  .diff-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--rule);
+    background: var(--stone-2);
+  }
+  .diff-col { padding: 1.6rem 1.6rem; }
+  .diff-col + .diff-col { border-left: 1px solid var(--rule); }
+  .diff-col-label {
+    font-family: var(--mono);
+    font-size: 0.56rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding-bottom: 0.8rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .diff pre {
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .diff pre .add { color: var(--oxblood-deep); background: var(--oxblood-dim); display: block; margin: 0 -0.5rem; padding: 0 0.5rem; border-left: 2px solid var(--oxblood); }
+  .diff pre .rm  { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--ink-4); display: block; margin: 0 -0.5rem; padding: 0 0.5rem; }
+  .diff pre .marker {
+    font-family: var(--mono);
+    font-size: 0.62em;
+    color: var(--oxblood);
+    vertical-align: super;
+    line-height: 0;
+    padding: 0 0.1em;
+  }
+  .diff-foot {
+    font-family: var(--serif);
+    font-size: 0.84rem;
+    line-height: 1.55;
+    color: var(--ink-3);
+    font-style: italic;
+    margin-top: 1.25rem;
+    max-width: 760px;
+  }
+  .diff-foot .sn-num {
+    font-family: var(--mono);
+    font-size: 0.78em;
+    color: var(--oxblood);
+    font-style: normal;
+    margin-right: 0.4em;
+    font-weight: 500;
+  }
+  .diff-foot p + p { margin-top: 0.5rem; }
+
+  /* Inline CTA */
+  .closing {
+    grid-column: 1;
+    margin-top: 2.5rem;
+  }
+  .cta-inline {
+    color: var(--oxblood);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--oxblood);
+    padding-bottom: 1px;
+    font-style: italic;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .cta-inline:hover { opacity: 0.7; }
+
+  /* ════════════ FOOTNOTES ════════════ */
+  .footnotes {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 4rem 3rem;
+    border-top: 2px solid var(--ink);
+  }
+  .footnotes-head {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 2rem;
+  }
+  .footnotes ol {
+    list-style: none;
+    display: grid;
+    grid-template-columns: minmax(0, 640px) 60px 240px;
+    gap: 0;
+  }
+  .footnotes li {
+    grid-column: 1;
+    font-family: var(--serif);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin-bottom: 1.1rem;
+    padding-left: 2.2em;
+    position: relative;
+    counter-increment: fn;
+  }
+  .footnotes ol { counter-reset: fn; }
+  .footnotes li::before {
+    content: counter(fn);
+    font-family: var(--mono);
+    font-size: 0.78em;
+    color: var(--oxblood);
+    font-weight: 500;
+    position: absolute;
+    left: 0;
+    top: 0.1em;
+  }
+  .footnotes li code {
+    font-family: var(--mono);
+    font-size: 0.86em;
+    color: var(--ink);
+    background: var(--stone-2);
+    padding: 0.05em 0.35em;
+    border-radius: 1px;
+  }
+  .footnotes li em { font-style: italic; color: var(--ink); }
+
+  /* ════════════ COLOPHON ════════════ */
+  .colophon {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 4rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+  }
+  .colophon a { color: var(--ink-4); text-decoration: none; transition: color 0.15s; }
+  .colophon a:hover { color: var(--ink-2); }
+  .colophon-links { display: flex; gap: 2rem; }
+
+  /* ════════════ MOBILE ════════════ */
+  @media (max-width: 980px) {
+    .row { grid-template-columns: 1fr; gap: 0; }
+    .row > p { grid-column: 1; }
+    .row > aside.sn {
+      grid-column: 1;
+      margin-top: 0.6rem;
+      margin-bottom: 0.4rem;
+      padding-left: 1rem;
+      border-left: 2px solid var(--oxblood-line);
+      border-top: none;
+      padding-top: 0;
+    }
+    .pull, .diagram, .diff { grid-column: 1; }
+    .footnotes ol { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .masthead, .ledger-wrap, .interstitial, .essay, .footnotes, .colophon {
+      padding-left: 1.5rem; padding-right: 1.5rem;
+    }
+    .masthead { flex-direction: column; gap: 1rem; align-items: flex-start; padding-top: 1.5rem; }
+    .masthead-meta { font-size: 0.56rem; }
+    .ledger { font-size: 0.62rem; }
+    .ledger thead th, .ledger tbody td { padding-left: 0.6rem; padding-right: 0.6rem; }
+    .ledger .col-ts { display: none; } .ledger thead th.col-ts { display: none; }
+    .ledger .col-agent { width: 24%; }
+    .ledger .col-event { width: 46%; }
+    .ledger .col-delta { width: 18%; }
+    .ledger .col-state { width: 12%; }
+    .diff-cols { grid-template-columns: 1fr; }
+    .diff-col + .diff-col { border-left: none; border-top: 1px solid var(--rule); }
+    .colophon { flex-direction: column; gap: 0.8rem; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════ MASTHEAD ══════════ -->
+<header class="masthead">
+  <a href="/" class="wordmark">own<em>Evo</em></a>
+  <div class="masthead-meta">
+    <span>Issue 001</span>
+    <span>April 2026</span>
+    <span>ownevo.ai</span>
+  </div>
+</header>
+
+<!-- ══════════ LEDGER HERO ══════════ -->
+<div class="ledger-wrap">
+  <div class="ledger-cap">
+    <span class="ledger-pulse"></span>
+    <span>Live · improvement loop · last 24h</span>
+    <span class="ledger-cap-rule"></span>
+    <span>n = 187 events</span>
+  </div>
+  <table class="ledger">
+    <thead>
+      <tr>
+        <th class="col-ts">Timestamp&nbsp;UTC</th>
+        <th class="col-agent">Agent</th>
+        <th class="col-event">Event</th>
+        <th class="col-delta">Δ confidence</th>
+        <th class="col-state">State</th>
+      </tr>
+    </thead>
+    <tbody id="ledger-rows">
+      <!-- seeded by JS -->
+    </tbody>
+  </table>
+  <div class="ledger-foot">
+    <span>append-only · hash-chained · customer-owned</span>
+    <span>~/agentos/audit.jsonl</span>
+  </div>
+</div>
+
+<!-- ══════════ INTERSTITIAL ══════════ -->
+<div class="interstitial">
+  <p>One hundred and forty of these are improvements. The other forty-seven are how we got there.</p>
+</div>
+
+<!-- ══════════ ESSAY ══════════ -->
+<article class="essay">
+  <div class="essay-head">
+    <div class="essay-eyebrow">An essay on what comes next</div>
+    <h1 class="essay-title">The race to build the best model<br><em>is over.</em></h1>
+    <div class="essay-byline">
+      <span>By J. R. Chowdhury</span>
+      <span>~6 min read</span>
+      <span>v.001</span>
+    </div>
+  </div>
+
+  <!-- §1 -->
+  <div class="row">
+    <p>For three years the only question every enterprise asked about AI was <em>which model do we use.</em> That era is ending. Models crossed a threshold. The bottleneck has moved &mdash; from the quality of the underlying intelligence to the quality of the institutional knowledge running on top of it, and whether your business owns the loop that compounds it.<a href="#fn-1" class="fnref">¹</a></p>
+    <aside class="sn"><span class="sn-num">¹</span>Validation across three domains, 19+ models, 400+ test cases. Source-of-truth document maintained at <em>docs/source-of-truth.md</em> in the production repo.</aside>
+  </div>
+
+  <h2 class="section-h"><span class="section-h-num">§ 1</span>The bargain you didn't agree to</h2>
+
+  <!-- §2 -->
+  <div class="row">
+    <p>Most enterprise AI platforms run on an implicit bargain. Give them access to your operational data; they will give you better agents. When your demand forecast misses a markdown window, when your risk model misfires before a credit event, that failure is captured. The platform improves its model. The improved model becomes available to all its customers &mdash; including your competitors.</p>
+  </div>
+
+  <div class="row">
+    <p><span class="ox">You paid for the failure. They captured the lesson.</span> This is not a hypothetical. It is the structural logic of every platform that improves on shared usage data. Your operational mistakes are their training set. Your edge cases are their product roadmap.</p>
+    <aside class="sn"><span class="sn-num">²</span>Some platforms claim isolation. In practice the boundary is set by the vendor, not the customer &mdash; and is renegotiable in any future ToS update.</aside>
+  </div>
+
+  <div class="row">
+    <div class="pull">
+      <p>The model is a commodity. <em>The improvement loop is the moat.</em></p>
+    </div>
+  </div>
+
+  <h2 class="section-h"><span class="section-h-num">§ 2</span>The distinction that matters</h2>
+
+  <!-- §3 -->
+  <div class="row">
+    <p>There is a distinction the industry has not yet clearly made, but every enterprise instinctively understands. <em>Ops agents</em> &mdash; HR onboarding, sales outreach, expense approvals &mdash; are commodity. Every vendor sells them. They are interchangeable. No business builds durable advantage on its expense workflow.</p>
+  </div>
+
+  <div class="row">
+    <p><em>Core agents</em> are different. They encode how a business actually competes: how a buyer knows when a supplier's cost-build has slack, how an underwriter recalibrates through a credit cycle, how a clinical team designs a trial that gets approved.<a href="#fn-2" class="fnref">²</a> None of this knowledge lives in any document. It lives in outcomes &mdash; decisions that worked and didn't, accumulated across years and people. Core agents are how it's captured. But only if you own the loop.</p>
+    <aside class="sn"><span class="sn-num">³</span>JPMorgan's through-cycle credit calibration. Walmart's category buyers reading supplier cost-builds. Pfizer's compound-specific toxicity priors. Each is a moat measured in decades of proprietary outcome data.</aside>
+  </div>
+
+  <!-- ═════ DIAGRAM ═════ -->
+  <div class="row">
+    <div class="diagram">
+      <div class="diagram-head">Figure 1 &nbsp;·&nbsp; <em>The improvement loop</em></div>
+      <svg viewBox="0 0 920 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schematic of the closed-loop self-improvement cycle">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#7E2D2D"/>
+          </marker>
+          <marker id="arr-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#7E2D2D" opacity="0.45"/>
+          </marker>
+        </defs>
+
+        <!-- main horizontal flow at y=80 -->
+        <g font-family="JetBrains Mono, monospace" font-size="11" fill="#1A1814" letter-spacing="0.06em" text-anchor="middle" font-weight="500">
+          <text x="65"  y="84">EXECUTE</text>
+          <text x="200" y="84">OBSERVE</text>
+          <text x="335" y="84">REFLECT</text>
+          <text x="470" y="84">PROPOSE</text>
+          <text x="615" y="84">REGRESSION&#8202;GATE</text>
+          <text x="780" y="84">DEPLOY</text>
+        </g>
+
+        <!-- horizontal arrows (oxblood thin) -->
+        <g stroke="#7E2D2D" stroke-width="1" fill="none">
+          <line x1="105" y1="80" x2="160" y2="80" marker-end="url(#arr)"/>
+          <line x1="240" y1="80" x2="295" y2="80" marker-end="url(#arr)"/>
+          <line x1="375" y1="80" x2="430" y2="80" marker-end="url(#arr)"/>
+          <line x1="510" y1="80" x2="555" y2="80" marker-end="url(#arr)"/>
+          <line x1="675" y1="80" x2="745" y2="80" marker-end="url(#arr)"/>
+        </g>
+
+        <!-- gate fail loop: from REGRESSION GATE down and back to PROPOSE -->
+        <g stroke="#7E2D2D" stroke-width="1" stroke-dasharray="3 3" fill="none" opacity="0.6">
+          <path d="M 615 92 L 615 140 L 470 140 L 470 92" marker-end="url(#arr-d)"/>
+        </g>
+        <text x="540" y="156" font-family="JetBrains Mono, monospace" font-size="10" fill="#7E2D2D" letter-spacing="0.06em" text-anchor="middle" font-style="italic">fail · reject · re-propose</text>
+
+        <!-- next-cycle loop: from DEPLOY back around to EXECUTE -->
+        <g stroke="#7E2D2D" stroke-width="1" fill="none">
+          <path d="M 780 68 L 780 30 L 65 30 L 65 68" marker-end="url(#arr)"/>
+        </g>
+        <text x="420" y="22" font-family="JetBrains Mono, monospace" font-size="10" fill="#7E2D2D" letter-spacing="0.1em" text-anchor="middle" font-weight="500">NEXT CYCLE &nbsp;·&nbsp; eval set grows</text>
+
+        <!-- domain expert annotation -->
+        <g stroke="#7E2D2D" stroke-width="0.7" fill="none" opacity="0.5">
+          <line x1="615" y1="68" x2="615" y2="50"/>
+        </g>
+        <text x="615" y="44" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#7E2D2D" letter-spacing="0.08em" text-anchor="middle" font-style="italic">domain expert approves</text>
+
+        <!-- horizontal datum line under labels -->
+        <g stroke="#C8C2B5" stroke-width="0.5">
+          <line x1="20" y1="100" x2="900" y2="100"/>
+        </g>
+
+        <!-- step numerals -->
+        <g font-family="JetBrains Mono, monospace" font-size="9" fill="#807B72" letter-spacing="0.08em" text-anchor="middle">
+          <text x="65"  y="115">01</text>
+          <text x="200" y="115">02</text>
+          <text x="335" y="115">03</text>
+          <text x="470" y="115">04</text>
+          <text x="615" y="115">05</text>
+          <text x="780" y="115">06</text>
+        </g>
+
+        <!-- gate sublabel -->
+        <text x="615" y="195" font-family="Source Serif 4, serif" font-size="11" fill="#4A4640" font-style="italic" text-anchor="middle">a regression gate that grows harder to pass over time</text>
+      </svg>
+    </div>
+  </div>
+
+  <h2 class="section-h"><span class="section-h-num">§ 3</span>What ownership concretely means</h2>
+
+  <!-- §4 -->
+  <div class="row">
+    <p>The agent runs on any model &mdash; Claude, GPT, Llama, or open-weight on your hardware. Failures cluster automatically into a live evaluation set that grows with every cycle. Each proposed improvement passes a regression gate before it reaches production: it must improve the new failure pattern <em>and</em> maintain performance on every previously resolved one. <span class="ox">No step forward that loses a step already gained.</span></p>
+  </div>
+
+  <div class="row">
+    <p>The eval set, the improvement history, the skill layer all export in an open format. The lock-in is the institutional knowledge &mdash; and it belongs to you, not to us. When the next senior researcher leaves, the knowledge stays. When a better model ships, you swap providers without rebuilding. When regulation changes, the audit trail is already hash-chained and exportable.<a href="#fn-3" class="fnref">³</a></p>
+    <aside class="sn"><span class="sn-num">⁴</span>Run-3 corpus, 100 incidents, 18 models. <em>+50.7%</em> lift on claude-opus. <em>+33.8%</em> lift on qwen3:32b running fully local. All 18 models tested showed positive lift.</aside>
+  </div>
+
+  <!-- ═════ ANNOTATED DIFF ═════ -->
+  <div class="row">
+    <div class="diff">
+      <div class="diff-head">Figure 2 &nbsp;·&nbsp; <em>The same agent, twelve weeks apart</em></div>
+      <div class="diff-cols">
+        <div class="diff-col">
+          <div class="diff-col-label">PROMPT &nbsp;·&nbsp; week 0 &nbsp;·&nbsp; deploy</div>
+<pre>You are an SRE incident responder.
+
+When given an alert:
+1. Identify likely root cause from
+   the alert metadata.
+2. Suggest a runbook step.
+3. Output JSON:
+   { hypothesis, runbook_step,
+     confidence }.</pre>
+        </div>
+        <div class="diff-col">
+          <div class="diff-col-label">PROMPT &nbsp;·&nbsp; week 12 &nbsp;·&nbsp; current</div>
+<pre>You are an SRE incident responder.
+
+When given an alert:
+1. Identify likely root cause from
+   the alert metadata.
+<span class="add">2. Recall the 5 most similar prior
+   incidents from memory.<span class="marker">⁵</span></span>
+<span class="rm">2. Suggest a runbook step.</span>
+<span class="add">3. Suggest a runbook step. If a prior
+   pattern with confidence ≥ 0.7
+   matches, prefer that step.<span class="marker">⁶</span>
+   Otherwise propose a new one.</span>
+<span class="rm">3. Output JSON:
+   { hypothesis, runbook_step,
+     confidence }.</span>
+<span class="add">4. Output JSON:
+   { hypothesis, runbook_step,
+     confidence, similar_prior_ids }.</span></pre>
+        </div>
+      </div>
+      <div class="diff-foot">
+        <p><span class="sn-num">⁵</span>Reflection R-0312 — case <em>OOM after deploy, 2026-02-04.</em> The hypothesis was correct but missed a 2025-Q4 incident with the same root cause. Recall now precedes hypothesis.</p>
+        <p><span class="sn-num">⁶</span>Reflection R-0418 — case <em>cert expiry escalation.</em> Improvements stopped passing the regression gate when prior-pattern weighting was uniform; a confidence floor was added.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- §5 closing -->
+  <div class="row">
+    <div class="closing">
+      <p>The race to build the best model is over. The race to own the intelligence running on top of it has just begun. If the workflow that defines your business is one of these &mdash; or one we haven't named &mdash; <a href="https://forms.gle/EgVikAcwzQwXszyUA" class="cta-inline">tell us about it →</a></p>
+    </div>
+  </div>
+</article>
+
+<!-- ══════════ FOOTNOTES ══════════ -->
+<section class="footnotes" id="footnotes">
+  <div class="footnotes-head">Footnotes &nbsp;·&nbsp; sources &amp; artifacts</div>
+  <ol>
+    <li id="fn-1">Self-evolution validation across three production-representative domains. SRE incident response: 100 synthetic incidents, 14 patterns, 18 models. Personal productivity: 200 events, 4 agent types, 19 models. Legal case management: 100 cases, 10 domains, 13 models. All sweep results live in <code>docs/source-of-truth.md</code>. Reproducible from the harness at <code>core/</code>.</li>
+    <li id="fn-2">A non-exhaustive set: SKU-location demand forecasting, through-cycle credit recalibration, clinical trial design and patient stratification, supplier cost-build models, network capacity planning at cell-site granularity. Each is institutional knowledge accumulated over decades of proprietary outcome data — by definition unavailable to any vendor's training corpus.</li>
+    <li id="fn-3">Audit ledger format: append-only JSONL, SHA-256 hash-chain, signed checkpoints. Every action — hypothesis, recall, reflection, proposal, regression result, approval, deployment — is recorded with the agent identity, the prompting context, and the outcome. Exportable in full at any time. Customer-owned by default.</li>
+    <li>Even the smallest model tested (<code>llama3.2:3b</code>, 2 GB) achieves <em>+21.2%</em> lift over its cold baseline. The improvement loop works across model sizes because the moat is the eval set, not the model. Switching providers is a deployment change; the institutional knowledge does not move.</li>
+    <li>Regression gate semantics: a proposal must improve performance on the new failure pattern <em>and</em> maintain performance on every previously resolved case. As the eval set grows, the gate becomes progressively harder to pass — forcing each improvement to be genuinely additive. Reliability compounds.</li>
+  </ol>
+</section>
+
+<!-- ══════════ COLOPHON ══════════ -->
+<footer class="colophon">
+  <span>© 2026 ownEvo, Inc. &nbsp;·&nbsp; Set in Source Serif 4 &amp; JetBrains Mono</span>
+  <div class="colophon-links">
+    <a href="#">Privacy</a>
+    <a href="#">Security</a>
+  </div>
+</footer>
+
+<script>
+(function() {
+  const events = [
+    ['sre-sentinel',    'hypothesis-recorded',     '—',           'draft',     ''],
+    ['sre-sentinel',    'memory-recall · k=12',    '—',           'ok',        ''],
+    ['sre-sentinel',    'outcome-resolved',        '+0.18',       'learned',   'state-learned'],
+    ['sre-sentinel',    'reflection-scored',       'conf=0.74',   'ok',        ''],
+    ['case-mind',       'intake-classified',       '—',           'draft',     ''],
+    ['case-mind',       'precedent-search · k=8',  '—',           'ok',        ''],
+    ['case-mind',       'disclaimer-attached',     '—',           'ok',        ''],
+    ['health-tracker',  'pattern-promoted',        '+0.22',       'promoted',  'state-promoted'],
+    ['finance-agent',   'category-rebalance',      '—',           'draft',     ''],
+    ['sre-sentinel',    'proposal-regression',     '0/847 fail',  'promoted',  'state-promoted'],
+    ['case-mind',       'hypothesis-recorded',     '—',           'draft',     ''],
+    ['case-mind',       'outcome-resolved',        '+0.31',       'learned',   'state-learned'],
+    ['sre-sentinel',    'autonomy=PROPOSE',        '—',           'ok',        ''],
+    ['sre-sentinel',    'eval-case-grown',         'n=1',         'added',     'state-added'],
+    ['finance-agent',   'reflection-scored',       'conf=0.62',   'ok',        ''],
+    ['case-mind',       'proposal-regression',     '1/100 fail',  'rejected',  'state-rejected'],
+    ['health-tracker',  'hypothesis-recorded',     '—',           'draft',     ''],
+    ['sre-sentinel',    'pattern-promoted',        '+0.41',       'promoted',  'state-promoted'],
+    ['case-mind',       'memory-defrag',           'Δ=18 nodes',  'ok',        ''],
+    ['sre-sentinel',    'domain-expert-approved',  '—',           'deployed',  'state-deployed'],
+    ['finance-agent',   'eval-case-grown',         'n=1',         'added',     'state-added'],
+    ['case-mind',       'reflection-scored',       'conf=0.81',   'ok',        ''],
+    ['sre-sentinel',    'memory-recall · k=8',     '—',           'ok',        ''],
+    ['case-mind',       'pattern-promoted',        '+0.27',       'promoted',  'state-promoted'],
+    ['health-tracker',  'outcome-resolved',        '+0.14',       'learned',   'state-learned'],
+    ['sre-sentinel',    'proposal-regression',     '0/847 fail',  'promoted',  'state-promoted'],
+  ];
+
+  const tbody = document.getElementById('ledger-rows');
+  const MAX = 14;
+  let counter = 0;
+  let now = new Date('2026-04-29T14:48:12Z').getTime();
+
+  function fmt(t) {
+    const d = new Date(t);
+    const pad = n => String(n).padStart(2, '0');
+    return `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`;
+  }
+
+  function buildRow(ev, ts, fresh) {
+    const tr = document.createElement('tr');
+    if (fresh) tr.className = 'fresh';
+    tr.innerHTML = `
+      <td class="col-ts">${fmt(ts)}</td>
+      <td class="col-agent">${ev[0]}</td>
+      <td class="col-event">${ev[1]}</td>
+      <td class="col-delta">${ev[2]}</td>
+      <td class="col-state ${ev[4]}">${ev[3]}</td>
+    `;
+    return tr;
+  }
+
+  // seed initial 14 rows (newest at top, descending timestamps)
+  for (let i = 0; i < MAX; i++) {
+    const ev = events[(events.length - 1 - i + events.length) % events.length];
+    const ts = now - i * (45_000 + (i % 5) * 12_000);
+    tbody.appendChild(buildRow(ev, ts, false));
+  }
+  counter = MAX;
+
+  // periodically prepend new rows
+  function prepend() {
+    now += 30_000 + Math.floor(Math.random() * 90_000);
+    const ev = events[counter % events.length];
+    const tr = buildRow(ev, now, true);
+    tbody.prepend(tr);
+    while (tbody.children.length > MAX) tbody.lastElementChild.remove();
+    setTimeout(() => tr.classList.remove('fresh'), 1600);
+    counter++;
+  }
+  setInterval(prepend, 6500);
+})();
+</script>
+</body>
+</html>
