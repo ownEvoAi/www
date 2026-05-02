@@ -109,16 +109,17 @@ through review; reuse rather than reinvent:
 | Nav (sticky, frosted on scroll) | Brand wordmark + "Talk to us" CTA | — |
 | Hero | Headline + subhead + dual CTA + auto-typing terminal feed | `#hero` |
 | Problem | "The data-for-improvement bargain you didn't agree to" — bad/good card pair + pull-quote | `#problem` |
-| Core vs. Ops | Side-by-side comparison; the central framing | `#core-vs-ops` |
 | Use Cases | Three vertical deep-dives: Supply Chain · Finance & Insurance · Healthcare & Pharma | `#use-cases` |
 | How It Works (The Loop) | 6-step auto-cycling loop | `#how-it-works` |
-| IK Problem | "The most valuable things in your business aren't in any document." — institutional knowledge closing argument | `#ik-problem` |
+| IK Problem | "The most valuable things in your business aren't in any document." — institutional knowledge close | `#ik-problem` |
 | Sovereignty | Three cards: any model · local if you need it · export any time | `#sovereignty` |
-| Who It's For | Three personas: Supply Chain VP · CRO · CMO | `#who` |
 | Final CTA | "Which workflow defines your business?" | `#contact` |
 | Footer | Copyright + privacy/security/contact stubs | — |
 
-**Removed section:** Proof / Validation (three stat cards: +50.7% SRE, 72–78% productivity, 95.2% legal) — pulled because numbers are not yet manually validated and the personal productivity / small-model framing is wrong for the enterprise audience. Full removal note with restoration checklist is in `../ownevo_docs/pitch/ownevo-landing-copy.md` (Staged / Removed section).
+**Removed sections** (notes + restoration criteria in `../ownevo_docs/pitch/ownevo-landing-copy.md`):
+- Core vs. Ops — redundant with Use Cases once vertical deep-dives are on the page
+- Who It's For — redundant with Use Cases; same three verticals in shallower form
+- Proof / Validation — three stat cards not yet manually validated; wrong audience framing
 
 **Single CTA destination:** all `Talk to us` / `Tell us about your core
 workflow` buttons currently route to `https://forms.gle/EgVikAcwzQwXszyUA`. If
