@@ -594,45 +594,74 @@
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 
   /* ═══ USE CASES ═══ */
-  .vertical-blocks {
-    display: flex;
-    flex-direction: column;
-    gap: 3rem;
+  /* ═══ USE CASES ACCORDION ═══ */
+  .accordion {
     margin-top: 3rem;
-  }
-  .vertical-block {
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 2.5rem;
-    background: var(--surface);
+    overflow: hidden;
   }
+  .accordion-item {
+    border-bottom: 1px solid var(--border);
+  }
+  .accordion-item:last-child { border-bottom: none; }
+  .accordion-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 1.75rem 2.5rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s;
+  }
+  .accordion-trigger:hover { background: var(--surface); }
+  .accordion-item.is-open > .accordion-trigger { background: var(--surface); }
+  .accordion-trigger-left { flex: 1; }
   .vertical-tag {
     display: inline-block;
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--accent);
     border: 1px solid var(--accent-muted);
     border-radius: 4px;
-    padding: 0.25rem 0.6rem;
-    margin-bottom: 1rem;
+    padding: 0.22rem 0.55rem;
+    margin-bottom: 0.8rem;
   }
-  .vertical-block h3 {
-    font-size: 1.35rem;
+  .accordion-trigger h3 {
+    font-size: 1.2rem;
     font-weight: 600;
     letter-spacing: -0.02em;
     color: var(--white);
-    margin-bottom: 1.2rem;
     line-height: 1.3;
+    margin: 0;
   }
-  .vertical-block p {
+  .accordion-trigger h3 em { font-style: italic; color: var(--accent); }
+  .accordion-chevron {
+    flex-shrink: 0;
+    color: var(--grey-500);
+    transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+    margin-top: 0.2rem;
+  }
+  .accordion-item.is-open .accordion-chevron { transform: rotate(180deg); }
+  .accordion-body {
+    display: none;
+    padding: 0 2.5rem 2rem;
+    background: var(--surface);
+  }
+  .accordion-item.is-open > .accordion-body { display: block; }
+  .accordion-body p {
     font-size: 0.975rem;
     line-height: 1.75;
     color: var(--grey-200);
     margin-bottom: 1rem;
   }
-  .vertical-block p:last-of-type { margin-bottom: 0; }
+  .accordion-body p:last-of-type { margin-bottom: 0; }
   .vertical-proof {
     margin-top: 1.5rem;
     padding: 1.1rem 1.4rem;
@@ -778,36 +807,57 @@
       Not ops automation. Core intelligence — the kind that took decades to accumulate and cannot be rented from anyone.
     </p>
 
-    <div class="vertical-blocks">
+    <div class="accordion">
 
-      <div class="vertical-block">
-        <div class="vertical-tag">Retail · Distribution · Manufacturing</div>
-        <h3>The margin is in the decisions that happen <em>10 million times a week.</em></h3>
-        <p>When to mark down a seasonal SKU. Which store gets the constrained inventory. Whether that supplier's cost-build has slack or not.</p>
-        <p>These aren't questions a generic agent can answer. They require the lift curves calibrated to your promotions, the markdown timing signals from your category history, the supplier cost models your buyers built over 20 years of negotiations.</p>
-        <p>An ownEvo supply chain agent starts with what you know and gets better with every decision cycle. The live eval set grows. Failures cluster automatically. Every improvement is regression-tested before it reaches production.</p>
-        <p>Your demand forecasting model doesn't have to be rebuilt every planning cycle. It compounds.</p>
-        <div class="vertical-proof">Companies using continuous improvement loops on supply chain agents have seen 40–50% reductions in forecast error and 30–40% reductions in excess inventory — not from better models, but from better institutional knowledge captured in the loop.</div>
+      <div class="accordion-item is-open">
+        <button class="accordion-trigger" aria-expanded="true">
+          <div class="accordion-trigger-left">
+            <div class="vertical-tag">Retail · Distribution · Manufacturing</div>
+            <h3>The margin is in the decisions that happen <em>10 million times a week.</em></h3>
+          </div>
+          <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="accordion-body">
+          <p>When to mark down a seasonal SKU. Which store gets the constrained inventory. Whether that supplier's cost-build has slack or not.</p>
+          <p>These aren't questions a generic agent can answer. They require the lift curves calibrated to your promotions, the markdown timing signals from your category history, the supplier cost models your buyers built over 20 years of negotiations.</p>
+          <p>An ownEvo supply chain agent starts with what you know and gets better with every decision cycle. The live eval set grows. Failures cluster automatically. Every improvement is regression-tested before it reaches production.</p>
+          <p>Your demand forecasting model doesn't have to be rebuilt every planning cycle. It compounds.</p>
+          <div class="vertical-proof">Companies using continuous improvement loops on supply chain agents have seen 40–50% reductions in forecast error and 30–40% reductions in excess inventory — not from better models, but from better institutional knowledge captured in the loop.</div>
+        </div>
       </div>
 
-      <div class="vertical-block">
-        <div class="vertical-tag">Banking · Insurance · Asset Management</div>
-        <h3>Your risk models are only as good as what happened <em>after the last cycle.</em></h3>
-        <p>Probability-of-default models go stale. Catastrophe pricing needs to absorb new loss patterns. Credit spreads shift faster than any static model can track.</p>
-        <p>The edge in finance has always been the proprietary signal — the 60 years of claims development factors, the behavioral payment velocity data, the through-cycle recalibration methodology that nobody else has.</p>
-        <p>An ownEvo finance agent captures that recalibration as it happens. Every cycle that diverges from the model becomes a new eval case. Every improvement is validated against every prior fix. The model that priced your portfolio last year isn't the model pricing it today — and you can see exactly what changed and why.</p>
-        <p>No vendor has your loss history. No vendor should own the loop that learns from it.</p>
-        <div class="vertical-proof">JPMorgan, Berkshire, and Allianz have each invested in proprietary ML systems for underwriting and credit that are not and will never be available to competitors. The advantage is not the algorithm — it's the feedback loop running on proprietary claims and transaction data.</div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          <div class="accordion-trigger-left">
+            <div class="vertical-tag">Banking · Insurance · Asset Management</div>
+            <h3>Your risk models are only as good as what happened <em>after the last cycle.</em></h3>
+          </div>
+          <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="accordion-body">
+          <p>Probability-of-default models go stale. Catastrophe pricing needs to absorb new loss patterns. Credit spreads shift faster than any static model can track.</p>
+          <p>The edge in finance has always been the proprietary signal — the 60 years of claims development factors, the behavioral payment velocity data, the through-cycle recalibration methodology that nobody else has.</p>
+          <p>An ownEvo finance agent captures that recalibration as it happens. Every cycle that diverges from the model becomes a new eval case. Every improvement is validated against every prior fix. The model that priced your portfolio last year isn't the model pricing it today — and you can see exactly what changed and why.</p>
+          <p>No vendor has your loss history. No vendor should own the loop that learns from it.</p>
+          <div class="vertical-proof">JPMorgan, Berkshire, and Allianz have each invested in proprietary ML systems for underwriting and credit that are not and will never be available to competitors. The advantage is not the algorithm — it's the feedback loop running on proprietary claims and transaction data.</div>
+        </div>
       </div>
 
-      <div class="vertical-block">
-        <div class="vertical-tag">Payers · Providers · Life Sciences</div>
-        <h3>The most expensive mistakes in healthcare are the ones that <em>already happened once.</em></h3>
-        <p>A clinical trial that fails at Phase III because the patient stratification was wrong. A formulary decision that shifted utilization in ways nobody modeled. A drug interaction that showed up in post-market surveillance but not in the label.</p>
-        <p>The institutional knowledge that prevents these failures lives in outcomes — 1,000 past trials, 150M member claims, years of dispensing records. It's not in any protocol document. It walks out the door when people retire.</p>
-        <p>An ownEvo healthcare agent captures that knowledge as the work happens. Trial design decisions become eval cases. Formulary outcomes feed the next negotiation. Adverse event patterns build a regression suite that grows with every case.</p>
-        <p>Your clinical knowledge doesn't have to be recreated from scratch every time a senior researcher leaves. It compounds.</p>
-        <div class="vertical-proof">Pfizer, UnitedHealth, and CVS each maintain proprietary AI systems for trial design, formulary management, and drug interaction triage that are explicitly not shareable — because the training data is the moat. The algorithm is secondary.</div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" aria-expanded="false">
+          <div class="accordion-trigger-left">
+            <div class="vertical-tag">Payers · Providers · Life Sciences</div>
+            <h3>The most expensive mistakes in healthcare are the ones that <em>already happened once.</em></h3>
+          </div>
+          <svg class="accordion-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="accordion-body">
+          <p>A clinical trial that fails at Phase III because the patient stratification was wrong. A formulary decision that shifted utilization in ways nobody modeled. A drug interaction that showed up in post-market surveillance but not in the label.</p>
+          <p>The institutional knowledge that prevents these failures lives in outcomes — 1,000 past trials, 150M member claims, years of dispensing records. It's not in any protocol document. It walks out the door when people retire.</p>
+          <p>An ownEvo healthcare agent captures that knowledge as the work happens. Trial design decisions become eval cases. Formulary outcomes feed the next negotiation. Adverse event patterns build a regression suite that grows with every case.</p>
+          <p>Your clinical knowledge doesn't have to be recreated from scratch every time a senior researcher leaves. It compounds.</p>
+          <div class="vertical-proof">Pfizer, UnitedHealth, and CVS each maintain proprietary AI systems for trial design, formulary management, and drug interaction triage that are explicitly not shareable — because the training data is the moat. The algorithm is secondary.</div>
+        </div>
       </div>
 
     </div>
@@ -957,6 +1007,24 @@
   window.addEventListener('scroll', function() {
     nav.classList.toggle('scrolled', window.scrollY > 40);
   }, { passive: true });
+})();
+
+// Use cases accordion
+(function() {
+  document.querySelectorAll('.accordion-trigger').forEach(function(trigger) {
+    trigger.addEventListener('click', function() {
+      const item = this.closest('.accordion-item');
+      const isOpen = item.classList.contains('is-open');
+      document.querySelectorAll('.accordion-item').forEach(function(i) {
+        i.classList.remove('is-open');
+        i.querySelector('.accordion-trigger').setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
 })();
 
 // Loop step animation
