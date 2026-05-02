@@ -80,6 +80,7 @@
   nav.scrolled {
     background: rgba(255,255,255,0.85);
     backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-color: var(--border);
   }
   .nav-logo {
@@ -139,19 +140,6 @@
       radial-gradient(ellipse 90% 60% at 50% 100%, rgba(148,163,184,0.10), transparent 70%);
   }
 
-  .hero-label {
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--grey-300);
-    margin-bottom: 2rem;
-    opacity: 0;
-    animation: up 0.6s 0.1s cubic-bezier(0.16,1,0.3,1) forwards;
-    max-width: 640px;
-    line-height: 1.5;
-  }
-
   .hero-headline {
     font-size: clamp(2.6rem, 6vw, 4.8rem);
     font-weight: 700;
@@ -167,15 +155,40 @@
     color: var(--accent);
   }
 
+  .hero-punch {
+    font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: var(--white);
+    max-width: 640px;
+    line-height: 1.3;
+    margin-bottom: 1.25rem;
+    opacity: 0;
+    animation: up 0.7s 0.32s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .hero-punch em { font-style: italic; color: var(--accent); }
+
   .hero-sub {
-    font-size: clamp(1rem, 1.8vw, 1.25rem);
+    font-size: clamp(1rem, 1.8vw, 1.15rem);
     color: var(--grey-300);
     font-weight: 400;
-    line-height: 1.6;
-    max-width: 560px;
+    line-height: 1.65;
+    max-width: 620px;
+    margin-bottom: 0.85rem;
+    opacity: 0;
+    animation: up 0.7s 0.44s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .hero-sub em { font-style: italic; color: var(--accent); }
+
+  .hero-descriptor {
+    font-size: 0.95rem;
+    color: var(--grey-500);
+    line-height: 1.55;
+    max-width: 580px;
+    font-weight: 400;
     margin-bottom: 3rem;
     opacity: 0;
-    animation: up 0.7s 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
+    animation: up 0.7s 0.56s cubic-bezier(0.16,1,0.3,1) forwards;
   }
 
   .hero-ctas {
@@ -184,7 +197,7 @@
     align-items: center;
     margin-bottom: 4rem;
     opacity: 0;
-    animation: up 0.7s 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+    animation: up 0.7s 0.68s cubic-bezier(0.16,1,0.3,1) forwards;
     flex-wrap: wrap;
     justify-content: center;
   }
@@ -672,6 +685,14 @@
   @media (max-width: 500px) {
     .loop-step { grid-template-columns: 2.2rem 1fr; gap: 1rem; }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -691,15 +712,17 @@
 
 <!-- ═══ HERO ═══ -->
 <div class="hero" id="hero">
-  <div class="hero-label">Agents that move the business — trusted without sacrifice</div>
-
   <h1 class="hero-headline">
     Your agents. Your edge.<br><em>Nobody else's.</em>
   </h1>
 
+  <p class="hero-punch">Don't rent it. <em>Don't be hostage to it.</em></p>
+
   <p class="hero-sub">
-    Models are ready. The question now is who owns the intelligence running on top of them — and whether it keeps getting better on <em>your</em> data.
+    Models are ready. The question now is whether your agents keep getting better on <em>your</em> data — and whether the institutional knowledge they generate stays yours, or trains someone else's.
   </p>
+
+  <p class="hero-descriptor">Core agents for the workflows that define your business.</p>
 
   <div class="hero-ctas">
     <a href="https://forms.gle/EgVikAcwzQwXszyUA" target="_blank" rel="noopener" class="btn-primary">
