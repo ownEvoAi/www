@@ -1220,20 +1220,20 @@
             <text x="67" y="393" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Regression-tested</text>
           </g>
 
-          <!-- ── Cycle arrows (clockwise, arcs of the radius-200 circle around 320,380) ── -->
-          <!-- Run → Capture -->
-          <path d="M 500 207 A 200 200 0 0 1 520 349" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
-          <!-- Capture → Cluster -->
-          <path d="M 520 411 A 200 200 0 0 1 500 522" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
-          <!-- Cluster → Eval grows -->
-          <path d="M 340 580 A 200 200 0 0 1 300 580" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
-          <!-- Eval grows → Propose -->
-          <path d="M 140 522 A 200 200 0 0 1 120 411" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
-          <!-- Propose → Approve + steer -->
-          <path d="M 120 349 A 200 200 0 0 1 140 238" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
-          <!-- Approve + steer → Run (closes the loop; carries the "ship · redeploy" step) -->
-          <path d="M 300 207 Q 320 168 340 207" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
-          <text x="320" y="164" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#6B7280" letter-spacing="0.08em">ship · redeploy</text>
+          <!-- ── Cycle arrows — all six segments lie on the same radius-200 circle around (320, 380) and start/end exactly where that circle crosses each box's edge, so the arrows + the boxes-on-top read as one continuous ring ── -->
+          <!-- Run → Capture (Run bottom-edge exit @ x=461 → Capture top-edge entry @ x=518) -->
+          <path d="M 461 238 A 200 200 0 0 1 518 349" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <!-- Capture → Cluster (Capture bottom-edge exit @ x=518 → Cluster top-edge entry @ x=461) -->
+          <path d="M 518 411 A 200 200 0 0 1 461 522" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <!-- Cluster → Eval grows (Cluster left-edge exit @ y=579 → Eval grows right-edge entry @ y=579) -->
+          <path d="M 340 579 A 200 200 0 0 1 300 579" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <!-- Eval grows → Propose (Eval grows top-edge exit @ x=179 → Propose bottom-edge entry @ x=122) -->
+          <path d="M 179 522 A 200 200 0 0 1 122 411" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <!-- Propose → Approve + steer (Propose top-edge exit @ x=122 → Approve+steer bottom-edge entry @ x=179) -->
+          <path d="M 122 349 A 200 200 0 0 1 179 238" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <!-- Approve + steer → Run (closing arc; same radius-200 circle, threads above the eval set, carries the "ship · redeploy" step) -->
+          <path d="M 300 181 A 200 200 0 0 1 340 181" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <text x="320" y="172" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#6B7280" letter-spacing="0.08em">ship · redeploy</text>
         </svg>
       </div>
 
