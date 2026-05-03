@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Customer support · Operate — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  .wf-back { display: inline-flex; align-items: center; gap: 4px; color: var(--text-muted); font-size: 12px; margin-bottom: 8px; }
+  .wf-back:hover { color: var(--text-2); }
+  .wf-title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .wf-title { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+  .wf-buyer { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+  .tab { padding: 10px 14px; font-size: 13px; color: var(--text-3); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+  /* Operate layout */
+  .op-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; margin-bottom: 16px; }
+  @media (max-width: 1100px) { .op-grid { grid-template-columns: 1fr; } }
+
+  /* Kanban tweaks */
+  .kanban-card .sentiment { display: inline-block; width: 6px; height: 6px; border-radius: 50%; }
+  .kanban-card .sentiment.pos { background: var(--green); }
+  .kanban-card .sentiment.neutral { background: var(--text-faint); }
+  .kanban-card .sentiment.neg { background: var(--red); }
+  .kanban-card.featured { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-muted); }
+
+  /* Ticket meta in conversation */
+  .ticket-meta { background: var(--surface); border: 1px solid var(--border); border-radius: 8px 8px 0 0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+  .ticket-id { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 12px; color: var(--text-muted); }
+  .ticket-customer { font-size: 13.5px; font-weight: 500; color: var(--text); }
+  .ticket-subject { font-size: 12.5px; color: var(--text-3); margin-top: 2px; }
+  .ticket-actions { display: flex; gap: 6px; }
+
+  /* convo styling tweaks */
+  .convo-tool { display: flex; gap: 8px; align-items: flex-start; padding: 8px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 11.5px; color: var(--text-3); margin: 0 36px; }
+  .convo-tool-icon { color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+  .convo-tool-icon svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .convo-tool-body { line-height: 1.5; }
+  .convo-tool-body .key { color: var(--accent); }
+  .convo-tool-body .num { color: var(--green); }
+  .convo-citation { display: inline-flex; vertical-align: super; font-size: 9px; font-weight: 600; background: var(--accent-muted); color: var(--accent); padding: 0 4px; border-radius: 4px; margin-left: 2px; cursor: pointer; }
+  .convo .citations-box { margin-top: 4px; padding: 8px 12px; background: var(--surface-2); border-radius: 4px; font-size: 11px; color: var(--text-3); }
+  .convo .citations-box strong { color: var(--text-2); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>09 / 10</code> · primitive coverage · Kanban + Conversation ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+
+    <div class="workspace-switcher">
+      <span class="workspace-avatar">A</span>
+      <span class="nav-label">Acme Distribution</span>
+      <span class="chev">▾</span>
+    </div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg>
+      <span class="nav-label">Health</span>
+    </a>
+    <a href="02-inbox.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg>
+      <span class="nav-label">Inbox</span>
+      <span class="nav-badge">12</span>
+    </a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Demand prediction</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Labour management</span>
+      <span class="nav-badge">4</span>
+    </a>
+    <a href="10-contract-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Union contract review</span>
+      <span class="nav-badge">2</span>
+    </a>
+    <a href="09-support-operate.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Customer support</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+      <span class="nav-label">New workflow</span>
+    </a>
+
+    <div class="nav-section">Library</div>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg>
+      <span class="nav-label">Skills</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg>
+      <span class="nav-label">Traces</span>
+    </a>
+    <a href="08-audit.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg>
+      <span class="nav-label">Audit</span>
+    </a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;">
+        <svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg>
+        <span class="nav-label" id="themeLabel">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div style="margin-bottom: 6px;">
+      <a href="01-health.html" class="wf-back">‹ Workflows</a>
+      <div class="wf-title-row">
+        <h1 class="wf-title">Customer support</h1>
+        <span class="pill green">● Active</span>
+        <span class="pill outline">v17</span>
+      </div>
+      <p class="wf-buyer">Owner: Jordan Wells · Support Ops Lead · 412 tickets / day · Avg TTR 9m</p>
+    </div>
+
+    <div class="tabs">
+      <a href="#" class="tab">Overview</a>
+      <a href="#" class="tab active">Operate</a>
+      <a href="#" class="tab">Failures</a>
+      <a href="#" class="tab">Eval cases <span class="muted" style="margin-left: 4px; font-size: 11px;">88</span></a>
+      <a href="#" class="tab">Skills <span class="muted" style="margin-left: 4px; font-size: 11px;">12</span></a>
+      <a href="08-audit.html" class="tab">Audit</a>
+      <a href="#" class="tab">Triggers</a>
+      <a href="#" class="tab">Integrations</a>
+      <a href="#" class="tab">Permissions</a>
+    </div>
+
+    <!-- MetricCards -->
+    <div class="metrics" style="margin-bottom: 16px;">
+      <div class="metric">
+        <div class="metric-label">CSAT · 7d</div>
+        <div class="metric-value">4.6<span class="metric-unit">/5</span></div>
+        <div class="metric-delta up">▲ 0.3 vs prev</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Avg time to resolve</div>
+        <div class="metric-value">9<span class="metric-unit">m 14s</span></div>
+        <div class="metric-delta up">▼ 1m 12s</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Active tickets</div>
+        <div class="metric-value">17</div>
+        <div class="metric-delta flat">3 new in last hour</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Auto-resolved · 7d</div>
+        <div class="metric-value">2,418</div>
+        <div class="metric-delta up">▲ 12% vs prev</div>
+      </div>
+    </div>
+
+    <!-- AlertList for escalations -->
+    <div style="margin-bottom: 16px;">
+      <div style="font-size: 13px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;">Escalations needing human decision · 2</div>
+      <div class="alerts">
+        <div class="alert high">
+          <svg class="alert-icon" viewBox="0 0 16 16"><path d="M8 1 L15 14 L1 14 Z M8 6 L8 10 M8 12 L8 12.5"/></svg>
+          <div class="alert-body">
+            <div class="alert-title">Ticket #28471 · Lakeside Co. · refund $5,200 exceeds agent autonomous limit</div>
+            <div class="alert-meta">9h ago · Acct exec: D. Park · Customer rated frustration: high</div>
+          </div>
+          <div style="display: flex; gap: 6px; align-items: center;"><span class="btn btn-secondary" style="font-size: 11px; padding: 4px 10px;">Decide</span></div>
+        </div>
+        <div class="alert medium">
+          <svg class="alert-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 5 L8 9 M8 11 L8 11.5"/></svg>
+          <div class="alert-body">
+            <div class="alert-title">Ticket #28488 · Westin Industrial · contract terms question — needs legal sign-off</div>
+            <div class="alert-meta">3h ago · escalated by agent</div>
+          </div>
+          <div style="display: flex; gap: 6px; align-items: center;"><span class="btn btn-secondary" style="font-size: 11px; padding: 4px 10px;">Route</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Two-col: Kanban + Conversation -->
+    <div class="op-grid">
+      <!-- Kanban -->
+      <section>
+        <div style="font-size: 13px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;">Ticket queue</div>
+        <div class="kanban">
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="kanban-col-title">New</span>
+              <span class="kanban-col-count">4</span>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-title">Order #28471 missing</div>
+              <div class="kanban-card-body">Customer never received order, asking about refund</div>
+              <div class="kanban-card-meta">
+                <span><span class="sentiment neg"></span>&nbsp;Lakeside Co.</span>
+                <span>9h ago</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-title">Login issues after password reset</div>
+              <div class="kanban-card-body">"Reset link doesn't work, getting 500 errors"</div>
+              <div class="kanban-card-meta">
+                <span><span class="sentiment neutral"></span>&nbsp;K. Sanders</span>
+                <span>22m ago</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-title">Bulk pricing question</div>
+              <div class="kanban-card-body">Quote for 5,000 unit order, custom branding</div>
+              <div class="kanban-card-meta">
+                <span><span class="sentiment pos"></span>&nbsp;PrintCo Inc.</span>
+                <span>14m ago</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-title">Cancel subscription request</div>
+              <div class="kanban-card-body">Wants to downgrade plan, asks about retention offer</div>
+              <div class="kanban-card-meta">
+                <span><span class="sentiment neutral"></span>&nbsp;L. Hayes</span>
+                <span>4m ago</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="kanban-col-title">In progress</span>
+              <span class="kanban-col-count">3</span>
+            </div>
+            <div class="kanban-card featured">
+              <div class="kanban-card-title">Refund request — order #28471 ←</div>
+              <div class="kanban-card-body">Agent confirmed entitlement, awaiting human authorisation for amount</div>
+              <div class="kanban-card-meta">
+                <span><span class="sentiment neg"></span>&nbsp;Lakeside Co.</span>
+                <span>3 turns</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-title">Damaged shipment claim</div>
+              <div class="kanban-card-body">Photo evidence received, processing replacement</div>
+              <div class="kanban-card-meta">
+                <span><span class="sentiment neutral"></span>&nbsp;M. Liu</span>
+                <span>2 turns</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-title">Tax invoice request</div>
+              <div class="kanban-card-body">Generating revised invoice with VAT</div>
+              <div class="kanban-card-meta">
+                <span><span class="sentiment pos"></span>&nbsp;Hartley Ltd.</span>
+                <span>1 turn</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="kanban-col-title">Awaiting customer</span>
+              <span class="kanban-col-count">2</span>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-title">Shipping address verification</div>
+              <div class="kanban-card-body">Waiting on confirmation of correct ZIP</div>
+              <div class="kanban-card-meta">
+                <span><span class="sentiment neutral"></span>&nbsp;R. Patel</span>
+                <span>2h ago</span>
+              </div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-title">Account merge request</div>
+              <div class="kanban-card-body">Asked customer for original signup email</div>
+              <div class="kanban-card-meta">
+                <span><span class="sentiment pos"></span>&nbsp;A. Romero</span>
+                <span>4h ago</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="kanban-col">
+            <div class="kanban-col-header">
+              <span class="kanban-col-title">Resolved · today</span>
+              <span class="kanban-col-count">8</span>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-title">Coupon code question</div>
+              <div class="kanban-card-body">Resolved · CSAT 5</div>
+              <div class="kanban-card-meta"><span><span class="sentiment pos"></span>&nbsp;K. Tang</span><span>1h ago</span></div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-title">Order tracking</div>
+              <div class="kanban-card-body">Resolved · CSAT 5</div>
+              <div class="kanban-card-meta"><span><span class="sentiment pos"></span>&nbsp;J. Brown</span><span>2h ago</span></div>
+            </div>
+            <div class="kanban-card" style="opacity: 0.7;">
+              <div class="kanban-card-title">+ 6 more resolved</div>
+              <div class="kanban-card-meta"><span style="color: var(--text-faint);">View all →</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Conversation -->
+      <section>
+        <div style="font-size: 13px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;">Active ticket transcript</div>
+
+        <div class="ticket-meta">
+          <div>
+            <div class="ticket-id">Ticket #28471</div>
+            <div class="ticket-customer">Lakeside Co. · sarah@lakeside.co</div>
+            <div class="ticket-subject">Order #28471 missing — refund requested</div>
+          </div>
+          <div class="ticket-actions">
+            <button class="btn btn-secondary" style="font-size: 11.5px; padding: 4px 10px;">Reassign</button>
+            <button class="btn btn-secondary" style="font-size: 11.5px; padding: 4px 10px;">Tools ↗</button>
+          </div>
+        </div>
+
+        <div class="convo" style="border-radius: 0 0 8px 8px; border-top: 0;">
+          <div class="convo-msg user">
+            <div class="convo-avatar user">SK</div>
+            <div class="convo-bubble-wrap">
+              <div class="convo-bubble">I never received my order #28471. Tracking shows it was supposed to arrive on April 30 but nothing has shown up. Can I get a full refund? This was time-sensitive for our event.</div>
+              <div class="convo-meta">9h 14m ago</div>
+            </div>
+          </div>
+
+          <div class="convo-msg agent">
+            <div class="convo-avatar agent">A</div>
+            <div class="convo-bubble-wrap">
+              <div class="convo-bubble">I'm sorry to hear that, Sarah. I'm checking on order #28471 right now.</div>
+              <div class="convo-meta">9h 14m ago</div>
+            </div>
+          </div>
+
+          <div class="convo-tool">
+            <div class="convo-tool-icon"><svg viewBox="0 0 16 16"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg></div>
+            <div class="convo-tool-body">→ <span class="key">get_order_status</span>(<span class="key">order_id</span>=<span class="num">"28471"</span>)<br>← {<span class="key">status</span>: <span class="num">"shipped"</span>, <span class="key">shipped_at</span>: <span class="num">"2026-04-28"</span>, <span class="key">last_scan</span>: <span class="num">"2026-04-30"</span>, <span class="key">value</span>: <span class="num">5200</span>}</div>
+          </div>
+
+          <div class="convo-tool">
+            <div class="convo-tool-icon"><svg viewBox="0 0 16 16"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg></div>
+            <div class="convo-tool-body">→ <span class="key">check_entitlement</span>(<span class="key">customer_id</span>=<span class="num">"lakeside-co"</span>, <span class="key">claim_type</span>=<span class="num">"undelivered"</span>)<br>← {<span class="key">eligible</span>: <span class="num">true</span>, <span class="key">policy</span>: <span class="num">"full_refund_after_72h_no_movement"</span>, <span class="key">limit</span>: <span class="num">10000</span>}</div>
+          </div>
+
+          <div class="convo-msg agent">
+            <div class="convo-avatar agent">A</div>
+            <div class="convo-bubble-wrap">
+              <div class="convo-bubble">Your order shipped on April 28 but tracking shows no movement since April 30 — that's beyond our 72-hour threshold. You're eligible for a full refund of $5,200 under your plan's undelivered-shipment policy<span class="convo-citation">1</span><span class="convo-citation">2</span>.<br><br>Because the refund amount is over $5,000, I'll route this to your account exec, Devon Park, for final authorisation. You should hear back within 4 hours.</div>
+              <div class="convo-meta">9h 14m ago · 2 tools called</div>
+              <div class="citations-box">
+                <strong>[1]</strong> Plan: Enterprise · §4.2 Undelivered shipment refund policy<br>
+                <strong>[2]</strong> Order #28471 status · last_scan 2026-04-30 (4d 14h ago)
+              </div>
+            </div>
+          </div>
+
+          <div class="convo-msg user">
+            <div class="convo-avatar user">SK</div>
+            <div class="convo-bubble-wrap">
+              <div class="convo-bubble">Thank you. How long until I see the refund?</div>
+              <div class="convo-meta">8h 50m ago</div>
+            </div>
+          </div>
+
+          <div class="convo-msg agent">
+            <div class="convo-avatar agent">A</div>
+            <div class="convo-bubble-wrap">
+              <div class="convo-bubble">Once Devon authorises, refunds typically post to your original payment method within 3-5 business days. I've flagged this as priority given the time sensitivity you mentioned.<br><br><em style="color: var(--text-muted); font-size: 12px;">— awaiting human authorisation —</em></div>
+              <div class="convo-meta">8h 49m ago</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>

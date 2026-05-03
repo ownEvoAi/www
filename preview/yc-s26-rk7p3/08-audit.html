@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Audit trail — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  /* Filters */
+  .audit-filters { display: flex; gap: 8px; align-items: center; padding: 12px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-label { font-size: 11.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+  .filter-select { padding: 5px 28px 5px 12px; border-radius: 6px; font-size: 12.5px; color: var(--text-2); background: var(--bg); border: 1px solid var(--border); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3e%3cpath fill='none' stroke='%2364748b' stroke-width='1.5' d='M1 1l4 4 4-4'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 8px center; }
+  .filter-divider { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+
+  /* Verify chain banner */
+  .verify-banner { display: flex; gap: 12px; align-items: center; padding: 14px 18px; background: var(--green-soft); border: 1px solid var(--green); border-radius: 8px; margin-bottom: 16px; }
+  .verify-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--green); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .verify-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+  .verify-body { flex: 1; }
+  .verify-title { font-size: 13.5px; font-weight: 500; color: var(--text); }
+  .verify-meta { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+  /* Audit table */
+  .audit-list { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-sm); }
+  .audit-row { display: grid; grid-template-columns: 36px 130px minmax(0, 1.5fr) minmax(0, 1fr) 130px 140px 32px; align-items: center; gap: 14px; padding: 14px 18px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.12s; }
+  .audit-row:last-child { border-bottom: 0; }
+  .audit-row:hover { background: var(--surface); }
+  .audit-row.head { background: var(--surface); padding: 10px 18px; cursor: default; }
+  .audit-row.head:hover { background: var(--surface); }
+  .audit-row.head > div { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); }
+
+  /* Chain icon column */
+  .chain-cell { display: flex; flex-direction: column; align-items: center; height: 100%; gap: 0; position: relative; }
+  .chain-line-top, .chain-line-bot { width: 1px; flex: 1; background: var(--border); min-height: 8px; }
+  .chain-line-top.first { background: transparent; }
+  .chain-line-bot.last { background: transparent; }
+  .chain-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); flex-shrink: 0; }
+  .chain-dot.approval { border-color: var(--green); background: var(--green); }
+  .chain-dot.gate-block { border-color: var(--red); background: var(--red); }
+  .chain-dot.system { border-color: var(--text-faint); background: var(--text-faint); }
+
+  .audit-time { font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+  .audit-time-rel { font-size: 11px; color: var(--text-muted); }
+  .audit-event { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .audit-event-title { font-size: 13.5px; color: var(--text); font-weight: 500; }
+  .audit-event-target { font-size: 12px; color: var(--text-muted); }
+  .audit-actor { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .audit-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--surface-2); color: var(--text-2); display: flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 600; flex-shrink: 0; }
+  .audit-avatar.system { background: var(--text-faint); color: white; }
+  .audit-actor-name { font-size: 12.5px; color: var(--text-2); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .audit-actor-role { font-size: 11px; color: var(--text-muted); }
+  .audit-hash { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+  .audit-hash code { color: var(--text-3); }
+  .audit-hash svg { width: 11px; height: 11px; stroke: var(--text-faint); fill: none; stroke-width: 2; }
+  .audit-chev { color: var(--text-faint); justify-self: end; }
+
+  /* Stats summary */
+  .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>08 / 10</code> · sovereignty proof — hash-chained audit ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+
+    <div class="workspace-switcher">
+      <span class="workspace-avatar">A</span>
+      <span class="nav-label">Acme Distribution</span>
+      <span class="chev">▾</span>
+    </div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg>
+      <span class="nav-label">Health</span>
+    </a>
+    <a href="02-inbox.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg>
+      <span class="nav-label">Inbox</span>
+      <span class="nav-badge">12</span>
+    </a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Demand prediction</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Labour management</span>
+      <span class="nav-badge">4</span>
+    </a>
+    <a href="10-contract-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Union contract review</span>
+      <span class="nav-badge">2</span>
+    </a>
+    <a href="09-support-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Customer support</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+      <span class="nav-label">New workflow</span>
+    </a>
+
+    <div class="nav-section">Library</div>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg>
+      <span class="nav-label">Skills</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg>
+      <span class="nav-label">Traces</span>
+    </a>
+    <a href="08-audit.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg>
+      <span class="nav-label">Audit</span>
+    </a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;">
+        <svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg>
+        <span class="nav-label" id="themeLabel">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">Audit trail</h1>
+        <p class="page-subtitle">Hash-chained, tamper-evident · 412 events across 4 workflows · exportable as CSV / JSON</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-secondary">
+          <svg class="btn-icon" viewBox="0 0 16 16"><path d="M3 5 L8 10 L13 5"/></svg>
+          Last 30 days
+        </button>
+        <button class="btn btn-secondary">
+          <svg class="btn-icon" viewBox="0 0 16 16"><path d="M8 2 L8 11 M5 8 L8 11 L11 8 M3 14 L13 14"/></svg>
+          Export
+        </button>
+      </div>
+    </header>
+
+    <!-- Stats summary -->
+    <div class="stats-summary">
+      <div class="card">
+        <div class="card-title">Approvals · 30d</div>
+        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">28</div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">across 4 workflows · 9 reviewers</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Rejections · 30d</div>
+        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">7</div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">5 became new eval cases</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Gate blocks · 30d</div>
+        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">3</div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">caught before deploy</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Avg time to decision</div>
+        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">6h <span style="font-size: 14px; color: var(--text-muted);">42m</span></div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">SLA target: 24h</div>
+      </div>
+    </div>
+
+    <!-- Verify chain banner -->
+    <div class="verify-banner">
+      <div class="verify-icon">
+        <svg viewBox="0 0 16 16"><path d="M3 8 L7 12 L13 4"/></svg>
+      </div>
+      <div class="verify-body">
+        <div class="verify-title">Chain verified · 412 / 412 events match expected hash</div>
+        <div class="verify-meta">Last verified 2 min ago · genesis hash <code style="font-family: ui-monospace, monospace; font-size: 11px;">0x7e2c...0001</code> · current head <code style="font-family: ui-monospace, monospace; font-size: 11px;">0xa84c...e2f1</code></div>
+      </div>
+      <button class="btn btn-secondary" style="font-size: 12px; padding: 6px 12px;">Verify now</button>
+    </div>
+
+    <!-- Filters -->
+    <div class="audit-filters">
+      <span class="filter-label">Workflow</span>
+      <select class="filter-select">
+        <option>All workflows</option>
+        <option>Demand prediction</option>
+        <option>Labour management</option>
+        <option>Union contract review</option>
+        <option>Customer support</option>
+      </select>
+      <span class="filter-divider"></span>
+      <span class="filter-label">Event</span>
+      <select class="filter-select">
+        <option>All event types</option>
+        <option>Approvals only</option>
+        <option>Rejections only</option>
+        <option>Gate blocks</option>
+        <option>System events</option>
+      </select>
+      <span class="filter-divider"></span>
+      <span class="filter-label">Reviewer</span>
+      <select class="filter-select">
+        <option>Anyone</option>
+        <option>Maria Chen</option>
+        <option>Devon Park</option>
+        <option>Priya Anand</option>
+      </select>
+      <span style="margin-left: auto; font-size: 12px; color: var(--text-muted);">Showing 8 of 412 events</span>
+    </div>
+
+    <!-- Audit list -->
+    <div class="audit-list">
+      <div class="audit-row head">
+        <div></div>
+        <div>Time</div>
+        <div>Event</div>
+        <div>Actor</div>
+        <div>Hash</div>
+        <div>Status</div>
+        <div></div>
+      </div>
+
+      <!-- Latest: approval -->
+      <div class="audit-row">
+        <div class="chain-cell">
+          <div class="chain-line-top first"></div>
+          <div class="chain-dot approval"></div>
+          <div class="chain-line-bot"></div>
+        </div>
+        <div>
+          <div class="audit-time">2026-05-02 11:14:08</div>
+          <div class="audit-time-rel">2h ago</div>
+        </div>
+        <div class="audit-event">
+          <div class="audit-event-title">Approved: Seasonal anomaly fix</div>
+          <div class="audit-event-target">Demand prediction · skill seasonal-anomaly-detector v3 → v4 · gate 12/12</div>
+        </div>
+        <div class="audit-actor">
+          <div class="audit-avatar">MC</div>
+          <div>
+            <div class="audit-actor-name">Maria Chen</div>
+            <div class="audit-actor-role">Supply Chain VP</div>
+          </div>
+        </div>
+        <div class="audit-hash"><code>0xa84c…e2f1</code><svg viewBox="0 0 16 16"><path d="M5 11 L11 5 M5 5 L11 11" opacity="0"/><path d="M3 8 L7 4 L7 6 L11 6 L11 10 L7 10 L7 12 Z"/></svg></div>
+        <div><span class="pill green">Deployed</span></div>
+        <div class="audit-chev">›</div>
+      </div>
+
+      <!-- approval: support entitlement -->
+      <div class="audit-row">
+        <div class="chain-cell">
+          <div class="chain-line-top"></div>
+          <div class="chain-dot approval"></div>
+          <div class="chain-line-bot"></div>
+        </div>
+        <div>
+          <div class="audit-time">2026-05-02 06:48:33</div>
+          <div class="audit-time-rel">6h ago</div>
+        </div>
+        <div class="audit-event">
+          <div class="audit-event-title">Approved: Entitlement check before refund</div>
+          <div class="audit-event-target">Customer support · skill refund-handler v8 → v9 · gate 24/24</div>
+        </div>
+        <div class="audit-actor">
+          <div class="audit-avatar">DP</div>
+          <div>
+            <div class="audit-actor-name">Devon Park</div>
+            <div class="audit-actor-role">Workforce Ops</div>
+          </div>
+        </div>
+        <div class="audit-hash"><code>0x6f12…b7d4</code><svg viewBox="0 0 16 16"><path d="M3 8 L7 4 L7 6 L11 6 L11 10 L7 10 L7 12 Z"/></svg></div>
+        <div><span class="pill green">Deployed</span></div>
+        <div class="audit-chev">›</div>
+      </div>
+
+      <!-- regression block (gate block) -->
+      <div class="audit-row">
+        <div class="chain-cell">
+          <div class="chain-line-top"></div>
+          <div class="chain-dot gate-block"></div>
+          <div class="chain-line-bot"></div>
+        </div>
+        <div>
+          <div class="audit-time">2026-04-30 14:22:09</div>
+          <div class="audit-time-rel">2d ago</div>
+        </div>
+        <div class="audit-event">
+          <div class="audit-event-title">Gate block: shift-rebalancing change rejected by gate</div>
+          <div class="audit-event-target">Labour management · skill shift-rebalancer · gate 9/12 (3 regressions)</div>
+        </div>
+        <div class="audit-actor">
+          <div class="audit-avatar system">⚙</div>
+          <div>
+            <div class="audit-actor-name">Improvement agent</div>
+            <div class="audit-actor-role">automated</div>
+          </div>
+        </div>
+        <div class="audit-hash"><code>0x3a91…c428</code><svg viewBox="0 0 16 16"><path d="M3 8 L7 4 L7 6 L11 6 L11 10 L7 10 L7 12 Z"/></svg></div>
+        <div><span class="pill red">Blocked</span></div>
+        <div class="audit-chev">›</div>
+      </div>
+
+      <!-- approval: jurisdiction -->
+      <div class="audit-row">
+        <div class="chain-cell">
+          <div class="chain-line-top"></div>
+          <div class="chain-dot approval"></div>
+          <div class="chain-line-bot"></div>
+        </div>
+        <div>
+          <div class="audit-time">2026-04-30 09:11:42</div>
+          <div class="audit-time-rel">2d ago</div>
+        </div>
+        <div class="audit-event">
+          <div class="audit-event-title">Approved: Jurisdictional carve-out check</div>
+          <div class="audit-event-target">Union contract review · skill clause-risk-flagger v4 → v5 · gate 18/18</div>
+        </div>
+        <div class="audit-actor">
+          <div class="audit-avatar">PA</div>
+          <div>
+            <div class="audit-actor-name">Priya Anand</div>
+            <div class="audit-actor-role">Labour Relations</div>
+          </div>
+        </div>
+        <div class="audit-hash"><code>0xc218…7a93</code><svg viewBox="0 0 16 16"><path d="M3 8 L7 4 L7 6 L11 6 L11 10 L7 10 L7 12 Z"/></svg></div>
+        <div><span class="pill green">Deployed</span></div>
+        <div class="audit-chev">›</div>
+      </div>
+
+      <!-- rejection -->
+      <div class="audit-row">
+        <div class="chain-cell">
+          <div class="chain-line-top"></div>
+          <div class="chain-dot" style="border-color: var(--amber); background: var(--amber);"></div>
+          <div class="chain-line-bot"></div>
+        </div>
+        <div>
+          <div class="audit-time">2026-04-29 16:42:11</div>
+          <div class="audit-time-rel">3d ago</div>
+        </div>
+        <div class="audit-event">
+          <div class="audit-event-title">Rejected: Aggressive promo discount auto-apply</div>
+          <div class="audit-event-target">Demand prediction · proposal #ce-2241 · comment converted to eval case #128</div>
+        </div>
+        <div class="audit-actor">
+          <div class="audit-avatar">MC</div>
+          <div>
+            <div class="audit-actor-name">Maria Chen</div>
+            <div class="audit-actor-role">Supply Chain VP</div>
+          </div>
+        </div>
+        <div class="audit-hash"><code>0xb554…9e02</code><svg viewBox="0 0 16 16"><path d="M3 8 L7 4 L7 6 L11 6 L11 10 L7 10 L7 12 Z"/></svg></div>
+        <div><span class="pill amber">Rejected</span></div>
+        <div class="audit-chev">›</div>
+      </div>
+
+      <!-- approval: supplier -->
+      <div class="audit-row">
+        <div class="chain-cell">
+          <div class="chain-line-top"></div>
+          <div class="chain-dot approval"></div>
+          <div class="chain-line-bot"></div>
+        </div>
+        <div>
+          <div class="audit-time">2026-04-23 13:08:17</div>
+          <div class="audit-time-rel">9d ago</div>
+        </div>
+        <div class="audit-event">
+          <div class="audit-event-title">Approved: Supplier price bake-in</div>
+          <div class="audit-event-target">Demand prediction · skill price-build-handler v2 → v3 · gate 11/11</div>
+        </div>
+        <div class="audit-actor">
+          <div class="audit-avatar">MC</div>
+          <div>
+            <div class="audit-actor-name">Maria Chen</div>
+            <div class="audit-actor-role">Supply Chain VP</div>
+          </div>
+        </div>
+        <div class="audit-hash"><code>0x9ae3…44f8</code><svg viewBox="0 0 16 16"><path d="M3 8 L7 4 L7 6 L11 6 L11 10 L7 10 L7 12 Z"/></svg></div>
+        <div><span class="pill green">Deployed</span></div>
+        <div class="audit-chev">›</div>
+      </div>
+
+      <!-- system: eval case added -->
+      <div class="audit-row">
+        <div class="chain-cell">
+          <div class="chain-line-top"></div>
+          <div class="chain-dot system"></div>
+          <div class="chain-line-bot"></div>
+        </div>
+        <div>
+          <div class="audit-time">2026-04-21 02:14:55</div>
+          <div class="audit-time-rel">11d ago</div>
+        </div>
+        <div class="audit-event">
+          <div class="audit-event-title">Eval case promoted: PNW winter boot 2025-W47 (replay)</div>
+          <div class="audit-event-target">Demand prediction · auto-promoted from cluster #ce-2284 (14 traces)</div>
+        </div>
+        <div class="audit-actor">
+          <div class="audit-avatar system">⚙</div>
+          <div>
+            <div class="audit-actor-name">Curator agent</div>
+            <div class="audit-actor-role">automated</div>
+          </div>
+        </div>
+        <div class="audit-hash"><code>0x4f08…1b76</code><svg viewBox="0 0 16 16"><path d="M3 8 L7 4 L7 6 L11 6 L11 10 L7 10 L7 12 Z"/></svg></div>
+        <div><span class="pill outline">System</span></div>
+        <div class="audit-chev">›</div>
+      </div>
+
+      <!-- approval: regional -->
+      <div class="audit-row">
+        <div class="chain-cell">
+          <div class="chain-line-top"></div>
+          <div class="chain-dot approval"></div>
+          <div class="chain-line-bot last"></div>
+        </div>
+        <div>
+          <div class="audit-time">2026-04-15 10:34:22</div>
+          <div class="audit-time-rel">17d ago</div>
+        </div>
+        <div class="audit-event">
+          <div class="audit-event-title">Approved: Regional variance fix</div>
+          <div class="audit-event-target">Demand prediction · skill regional-weights v1 → v2 · gate 9/9</div>
+        </div>
+        <div class="audit-actor">
+          <div class="audit-avatar">MC</div>
+          <div>
+            <div class="audit-actor-name">Maria Chen</div>
+            <div class="audit-actor-role">Supply Chain VP</div>
+          </div>
+        </div>
+        <div class="audit-hash"><code>0x2e4d…c105</code><svg viewBox="0 0 16 16"><path d="M3 8 L7 4 L7 6 L11 6 L11 10 L7 10 L7 12 Z"/></svg></div>
+        <div><span class="pill green">Deployed</span></div>
+        <div class="audit-chev">›</div>
+      </div>
+    </div>
+
+    <div style="text-align: center; padding: 24px; color: var(--text-muted); font-size: 12.5px;">
+      Showing first 8 events · <a href="#" style="color: var(--accent);">Load 404 more</a>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>

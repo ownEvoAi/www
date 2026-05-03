@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Union contract review · Operate — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  .wf-back { display: inline-flex; align-items: center; gap: 4px; color: var(--text-muted); font-size: 12px; margin-bottom: 8px; }
+  .wf-back:hover { color: var(--text-2); }
+  .wf-title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .wf-title { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+  .wf-buyer { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+  .tab { padding: 10px 14px; font-size: 13px; color: var(--text-3); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+  /* Doc reader tweaks */
+  .doc-reader { display: grid; grid-template-columns: minmax(0, 1fr) 280px; }
+  .doc-body h2 { font-size: 16px; font-weight: 600; color: var(--text); margin: 4px 0 14px; letter-spacing: -0.01em; }
+  .doc-body h3 { font-size: 13px; font-weight: 600; color: var(--text-2); margin: 18px 0 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .doc-body p { font-size: 13.5px; line-height: 1.7; color: var(--text-2); margin-bottom: 12px; }
+  .doc-body .clause { background: var(--amber-soft); border-left: 3px solid var(--amber); padding: 10px 14px; margin: 10px 0; border-radius: 0 4px 4px 0; }
+  .doc-body .clause-flagged { background: var(--red-soft); border-left-color: var(--red); }
+  .doc-body .clause-accepted { background: var(--green-soft); border-left-color: var(--green); }
+  .doc-body .clause-num { font-size: 11px; font-weight: 600; color: var(--amber); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .doc-body .clause-flagged .clause-num { color: var(--red); }
+  .doc-body .clause-accepted .clause-num { color: var(--green); }
+
+  .doc-margin { background: var(--surface); border-left: 1px solid var(--border); padding: 16px 14px; }
+  .doc-margin-title { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
+  .doc-annotation { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 9px 11px; margin-bottom: 8px; }
+  .doc-annotation.high { border-left: 3px solid var(--red); }
+  .doc-annotation.medium { border-left: 3px solid var(--amber); }
+  .doc-annotation.low { border-left: 3px solid var(--accent); }
+  .doc-annotation-num { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .doc-annotation-title { font-size: 12.5px; font-weight: 500; color: var(--text); margin-top: 3px; }
+  .doc-annotation-body { color: var(--text-muted); font-size: 11.5px; margin-top: 4px; line-height: 1.5; }
+
+  /* Side-by-side override */
+  .side-body { font-size: 13.5px; line-height: 1.7; padding: 16px 18px; }
+  .diff-line { padding: 2px 8px; margin: 0 -8px; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>10 / 10</code> · primitive coverage · Document + SideBySide ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+
+    <div class="workspace-switcher">
+      <span class="workspace-avatar">A</span>
+      <span class="nav-label">Acme Distribution</span>
+      <span class="chev">▾</span>
+    </div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg>
+      <span class="nav-label">Health</span>
+    </a>
+    <a href="02-inbox.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg>
+      <span class="nav-label">Inbox</span>
+      <span class="nav-badge">12</span>
+    </a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Demand prediction</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Labour management</span>
+      <span class="nav-badge">4</span>
+    </a>
+    <a href="10-contract-operate.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Union contract review</span>
+      <span class="nav-badge">2</span>
+    </a>
+    <a href="09-support-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Customer support</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+      <span class="nav-label">New workflow</span>
+    </a>
+
+    <div class="nav-section">Library</div>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg>
+      <span class="nav-label">Skills</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg>
+      <span class="nav-label">Traces</span>
+    </a>
+    <a href="08-audit.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg>
+      <span class="nav-label">Audit</span>
+    </a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;">
+        <svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg>
+        <span class="nav-label" id="themeLabel">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div style="margin-bottom: 6px;">
+      <a href="01-health.html" class="wf-back">‹ Workflows</a>
+      <div class="wf-title-row">
+        <h1 class="wf-title">Union contract review</h1>
+        <span class="pill green">● Active</span>
+        <span class="pill outline">v8</span>
+      </div>
+      <p class="wf-buyer">Owner: Priya Anand · Labour Relations · Reviewing: DWU-Acme 2026 Master Agreement (proposed)</p>
+    </div>
+
+    <div class="tabs">
+      <a href="#" class="tab">Overview</a>
+      <a href="#" class="tab active">Operate</a>
+      <a href="#" class="tab">Failures</a>
+      <a href="#" class="tab">Eval cases <span class="muted" style="margin-left: 4px; font-size: 11px;">42</span></a>
+      <a href="#" class="tab">Skills <span class="muted" style="margin-left: 4px; font-size: 11px;">7</span></a>
+      <a href="08-audit.html" class="tab">Audit</a>
+      <a href="#" class="tab">Triggers</a>
+      <a href="#" class="tab">Integrations</a>
+      <a href="#" class="tab">Permissions</a>
+    </div>
+
+    <!-- MetricCards -->
+    <div class="metrics" style="margin-bottom: 16px;">
+      <div class="metric">
+        <div class="metric-label">Clause coverage</div>
+        <div class="metric-value">96<span class="metric-unit">%</span></div>
+        <div class="metric-delta flat">128 of 134 clauses analysed</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Risk-flagged clauses</div>
+        <div class="metric-value">3</div>
+        <div class="metric-delta down">▲ 1 vs prior version</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Grievance precedent matches</div>
+        <div class="metric-value">7</div>
+        <div class="metric-delta flat">across 4 prior contracts</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Total $ exposure (estimate)</div>
+        <div class="metric-value">$1.2<span class="metric-unit">M</span></div>
+        <div class="metric-delta up">▼ $480k vs prior version</div>
+      </div>
+    </div>
+
+    <!-- Alert list of flagged clauses -->
+    <div style="margin-bottom: 16px;">
+      <div style="font-size: 13px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;">Risk-flagged clauses</div>
+      <div class="alerts">
+        <div class="alert high">
+          <svg class="alert-icon" viewBox="0 0 16 16"><path d="M8 1 L15 14 L1 14 Z M8 6 L8 10 M8 12 L8 12.5"/></svg>
+          <div class="alert-body">
+            <div class="alert-title">§4.2 Wage minimums — missing California state-level carve-out</div>
+            <div class="alert-meta">Negotiated $19.50/hr is below California state minimum ($20.00/hr eff. 2026-07-01) — could trigger grievance & wage-claim liability</div>
+          </div>
+        </div>
+        <div class="alert medium">
+          <svg class="alert-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 5 L8 9 M8 11 L8 11.5"/></svg>
+          <div class="alert-body">
+            <div class="alert-title">§7.1 Grievance procedure — 30-day window may not match precedent (Local 184 vs. Regional Fulfillment, 2024)</div>
+            <div class="alert-meta">Prior arbitration ruled 45-day window standard; deviation requires explicit acknowledgment</div>
+          </div>
+        </div>
+        <div class="alert medium">
+          <svg class="alert-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 5 L8 9 M8 11 L8 11.5"/></svg>
+          <div class="alert-body">
+            <div class="alert-title">§9.4 Holiday pay — ambiguous on Juneteenth / floating holiday treatment</div>
+            <div class="alert-meta">Prior contract added explicit list; current draft says "and other federal holidays as observed"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Document reader -->
+    <div style="margin-bottom: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px;">
+        <span style="font-size: 13px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em;">Contract document · DWU-Acme 2026 master agreement</span>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn btn-secondary" style="font-size: 12px; padding: 5px 11px;">View prior version</button>
+          <button class="btn btn-secondary" style="font-size: 12px; padding: 5px 11px;">Download PDF</button>
+        </div>
+      </div>
+
+      <div class="doc-reader">
+        <div class="doc-body">
+          <h2>Article IV · Wages and Compensation</h2>
+
+          <h3>§4.1 Base wage rates</h3>
+          <p>The Company shall pay all bargaining-unit employees a minimum hourly wage of nineteen dollars and fifty cents ($19.50) per hour, effective July 1, 2026. The base rate shall increase by 3.0% on each annual anniversary of this Agreement.</p>
+
+          <div class="clause clause-flagged">
+            <div class="clause-num">⚑ §4.2 · risk-flagged</div>
+            <p style="margin: 0;">Notwithstanding §4.1, where federal, state, or local law prescribes a higher minimum wage, the Company shall pay the higher of the two rates. <span style="background: var(--red-soft); color: var(--red); padding: 1px 5px; border-radius: 3px; font-weight: 500;">[Missing: explicit California state minimum schedule reference. State minimum reaches $20.00/hr on 2026-07-01, which exceeds the §4.1 base rate.]</span></p>
+          </div>
+
+          <h3>§4.3 Overtime premium</h3>
+          <p>All hours worked in excess of forty (40) per week shall be compensated at one and one-half (1.5) times the employee's regular rate. The 4-week rolling overtime cap of twenty-four (24) hours per employee, as set in the prior agreement, is preserved.</p>
+
+          <div class="clause clause-accepted">
+            <div class="clause-num">✓ §4.4 · acknowledged</div>
+            <p style="margin: 0;">Premium rates for night shift (10pm–6am) shall be 15% above base. Premium rates for weekend shift shall be 12% above base. <em style="color: var(--text-muted); font-size: 12.5px;">— Reviewer: Priya Anand approved 2026-04-30, matches Local 184 standard.</em></p>
+          </div>
+
+          <h2 style="margin-top: 28px;">Article VII · Grievance and Arbitration</h2>
+
+          <div class="clause">
+            <div class="clause-num">! §7.1 · review</div>
+            <p style="margin: 0;">Any grievance arising under this Agreement shall be initiated in writing within thirty (30) calendar days of the event giving rise to the grievance, or the date the employee or Union became aware or reasonably should have become aware.</p>
+          </div>
+
+          <p>Step 1 — Informal discussion with immediate supervisor (5 business days). Step 2 — Written grievance to department head (10 business days). Step 3 — Joint Union-Management committee (15 business days). Step 4 — Binding arbitration through AAA panel.</p>
+        </div>
+
+        <div class="doc-margin">
+          <div class="doc-margin-title">Annotations · 5</div>
+
+          <div class="doc-annotation high">
+            <div class="doc-annotation-num">§4.2 · CA state minimum</div>
+            <div class="doc-annotation-title">Missing jurisdictional carve-out</div>
+            <div class="doc-annotation-body">CA SB-3 schedule sets state minimum to $20.00/hr eff. 2026-07-01. Negotiated rate $19.50/hr would create wage-claim exposure for ~340 CA employees. Suggested redline below.</div>
+            <span class="pill red" style="margin-top: 6px; font-size: 9.5px;">High · 1 precedent</span>
+          </div>
+
+          <div class="doc-annotation low">
+            <div class="doc-annotation-num">§4.3 · overtime cap</div>
+            <div class="doc-annotation-title">Matches prior · ok</div>
+            <div class="doc-annotation-body">24h / 4-week rolling cap matches prior agreement and Local 184 standard.</div>
+          </div>
+
+          <div class="doc-annotation low">
+            <div class="doc-annotation-num">§4.4 · shift premiums</div>
+            <div class="doc-annotation-title">Reviewer approved</div>
+            <div class="doc-annotation-body">Approved by P. Anand on 2026-04-30. Matches Local 184 baseline.</div>
+          </div>
+
+          <div class="doc-annotation medium">
+            <div class="doc-annotation-num">§7.1 · grievance window</div>
+            <div class="doc-annotation-title">30d may not match precedent</div>
+            <div class="doc-annotation-body">Prior arbitration (Local 184 v. Regional Fulfillment, 2024) ruled 45-day window as standard. Deviation should be explicit.</div>
+            <span class="pill amber" style="margin-top: 6px; font-size: 9.5px;">Medium · 1 precedent</span>
+          </div>
+
+          <div class="doc-annotation medium">
+            <div class="doc-annotation-num">§9.4 · holiday pay</div>
+            <div class="doc-annotation-title">Ambiguous on Juneteenth</div>
+            <div class="doc-annotation-body">Prior contract enumerated holidays explicitly. Current "as observed" language opens dispute.</div>
+            <span class="pill amber" style="margin-top: 6px; font-size: 9.5px;">Medium · 0 precedent</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Side-by-side redline for §4.2 -->
+    <div>
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px;">
+        <span style="font-size: 13px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em;">Proposed redline · §4.2 wage minimums</span>
+        <div style="display: flex; gap: 6px;">
+          <span class="pill accent" style="font-size: 11px;">Awaiting reviewer decision</span>
+          <button class="btn btn-secondary" style="font-size: 12px; padding: 5px 11px;">Open in proposal</button>
+        </div>
+      </div>
+
+      <div class="side-by-side">
+        <div class="side">
+          <div class="side-header">
+            <span>Current · as drafted</span>
+            <span class="pill outline" style="font-size: 9.5px;">v8</span>
+          </div>
+          <div class="side-body">
+            Notwithstanding §4.1, where federal, state, or local law prescribes a higher minimum wage, the Company shall pay the higher of the two rates.
+          </div>
+        </div>
+        <div class="side">
+          <div class="side-header">
+            <span>Proposed redline · agent generated</span>
+            <span class="pill accent" style="font-size: 9.5px;">+3 sentences</span>
+          </div>
+          <div class="side-body">
+            Notwithstanding §4.1, where federal, state, or local law prescribes a higher minimum wage, the Company shall pay the higher of the two rates.<br><br>
+            <span class="diff-line diff-add">Specifically with respect to California, the Company acknowledges that California state minimum wage shall reach $20.00 per hour effective July 1, 2026, pursuant to Cal. Lab. Code §1182.12.</span>
+            <span class="diff-line diff-add">For all bargaining-unit employees performing work within California, the base wage rate shall be the greater of (a) the rate set in §4.1, or (b) the prevailing California state minimum.</span>
+            <span class="diff-line diff-add">The Company shall provide written notice to the Union within thirty (30) days of any state minimum wage adjustment that requires implementation under this provision.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>

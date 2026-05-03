@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>New workflow · Describe — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  /* Centered single-column layout for the create flow */
+  .create-wrap { max-width: 880px; margin: 0 auto; padding: 16px 0 80px; }
+
+  /* Step indicator */
+  .steps { display: flex; align-items: center; gap: 0; margin-bottom: 36px; }
+  .step { display: flex; align-items: center; gap: 10px; padding: 6px 0; color: var(--text-muted); font-size: 13px; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--text-muted); }
+  .step.active { color: var(--text); }
+  .step.active .step-num { border-color: var(--accent); background: var(--accent); color: white; }
+  .step.done .step-num { border-color: var(--green); background: var(--green); color: white; }
+  .step-label { font-weight: 500; }
+  .step-connector { flex: 1; height: 1.5px; background: var(--border); margin: 0 14px; max-width: 80px; }
+  .step.done + .step-connector { background: var(--green); }
+
+  /* Page header */
+  .create-head { margin-bottom: 28px; }
+  .create-title { font-size: 26px; font-weight: 600; letter-spacing: -0.025em; color: var(--text); }
+  .create-sub { font-size: 14px; color: var(--text-muted); margin-top: 6px; max-width: 640px; line-height: 1.55; }
+
+  /* The describe area */
+  .describe-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow); }
+  .describe-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .describe-label { font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; }
+  .describe-counter { font-size: 11.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .describe-textarea {
+    width: 100%; min-height: 280px;
+    padding: 18px 22px;
+    border: 0; border-radius: 0 0 10px 10px;
+    font-family: inherit; font-size: 15px; line-height: 1.7;
+    color: var(--text); background: var(--bg);
+    resize: vertical; outline: none;
+  }
+  .describe-textarea::placeholder { color: var(--text-faint); }
+
+  /* Hint chips above textarea */
+  .hint-chips { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+  .hint-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 12px; background: var(--surface-2); color: var(--text-3); font-size: 11.5px; cursor: pointer; transition: background 0.12s, color 0.12s; }
+  .hint-chip:hover { background: var(--accent-muted); color: var(--accent); }
+  .hint-chip svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  /* Bottom action row */
+  .action-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+  .action-hint { font-size: 12.5px; color: var(--text-muted); max-width: 460px; line-height: 1.5; }
+  .generate-btn { padding: 10px 20px; font-size: 14px; }
+
+  /* Example templates */
+  .examples { margin-top: 48px; }
+  .examples-title { font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 14px; }
+  .examples-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .example { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; cursor: pointer; transition: border-color 0.12s, background 0.12s; }
+  .example:hover { border-color: var(--border-light); background: var(--surface); }
+  .example-vertical { font-size: 11px; font-weight: 500; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .example-title { font-size: 13.5px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .example-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+
+  /* What happens next */
+  .next-info { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin-top: 32px; display: flex; gap: 12px; align-items: flex-start; }
+  .next-info-icon { width: 18px; height: 18px; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+  .next-info-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.75; }
+  .next-info-body { font-size: 12.5px; color: var(--text-3); line-height: 1.55; }
+  .next-info-body strong { color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>03 / 10</code> · gated IP — natural-language wedge ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+
+    <div class="workspace-switcher">
+      <span class="workspace-avatar">A</span>
+      <span class="nav-label">Acme Distribution</span>
+      <span class="chev">▾</span>
+    </div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg>
+      <span class="nav-label">Health</span>
+    </a>
+    <a href="02-inbox.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg>
+      <span class="nav-label">Inbox</span>
+      <span class="nav-badge">12</span>
+    </a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Demand prediction</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Labour management</span>
+    </a>
+    <a href="10-contract-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Union contract review</span>
+    </a>
+    <a href="09-support-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Customer support</span>
+    </a>
+    <a href="03-new-workflow-step1.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+      <span class="nav-label">New workflow</span>
+    </a>
+
+    <div class="nav-section">Library</div>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg>
+      <span class="nav-label">Skills</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg>
+      <span class="nav-label">Traces</span>
+    </a>
+    <a href="08-audit.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg>
+      <span class="nav-label">Audit</span>
+    </a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;">
+        <svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg>
+        <span class="nav-label" id="themeLabel">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="create-wrap">
+      <!-- Step indicator -->
+      <div class="steps">
+        <div class="step active">
+          <div class="step-num">1</div>
+          <div class="step-label">Describe</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-label">Review generated</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-label">Run baseline</div>
+        </div>
+      </div>
+
+      <!-- Page header -->
+      <div class="create-head">
+        <h1 class="create-title">Describe the workflow</h1>
+        <p class="create-sub">Write what the agent should do, in plain English. Include what it reads, what it produces, who reviews it, and what counts as a good outcome. ownEvo will generate a simulator, an eval set, and a success metric from your description — you'll review and adjust them on the next step.</p>
+      </div>
+
+      <!-- Hint chips -->
+      <div class="hint-chips">
+        <span class="hint-chip"><svg viewBox="0 0 16 16"><path d="M2 8 L8 14 L14 8 L8 2 Z M5 8 L11 8 M8 5 L8 11"/></svg>Add a data source</span>
+        <span class="hint-chip"><svg viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M6 6 L10 6 M6 9 L10 9"/></svg>Add a success metric</span>
+        <span class="hint-chip"><svg viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.5"/><path d="M3 14 C3 11 5 10 8 10 C11 10 13 11 13 14"/></svg>Specify a reviewer</span>
+        <span class="hint-chip"><svg viewBox="0 0 16 16"><path d="M3 8 L7 12 L13 4"/></svg>Add an example outcome</span>
+      </div>
+
+      <!-- Describe textarea -->
+      <div class="describe-card" style="margin-top: 14px;">
+        <div class="describe-head">
+          <span class="describe-label">Workflow description</span>
+          <span class="describe-counter">412 / 4,000 chars</span>
+        </div>
+        <textarea class="describe-textarea" id="describe">Forecast weekly demand at SKU-store level for our 8,400 SKU catalog across 142 stores. Flag SKUs likely to need markdown within 4 weeks. Account for seasonality, supplier price-build, and regional variance.
+
+Pull historical sales from SAP ERP. Pull current weather forecasts from NOAA for cold-weather categories. The supply chain VP reviews markdown alerts daily; an alert is correct if it lands within 6 weeks of the actual markdown event and the recommended discount is within 5pp of what we ultimately ran.
+
+Past misses: we missed the 2025 Pacific NW winter boot spike by 4 weeks, and we routinely underweight promotional uplift on bundled SKUs.</textarea>
+      </div>
+
+      <!-- Action row -->
+      <div class="action-row">
+        <div class="action-hint">
+          You can edit the workflow description at any time. Each edit is versioned and gate-able like a skill change.
+        </div>
+        <a href="04-new-workflow-step2.html" class="btn btn-primary generate-btn">
+          Generate sim &amp; eval set →
+        </a>
+      </div>
+
+      <!-- What happens next info -->
+      <div class="next-info">
+        <div class="next-info-icon">
+          <svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/><path d="M9 6 L9 10 M9 12 L9 12.5"/></svg>
+        </div>
+        <div class="next-info-body">
+          <strong>What ownEvo generates next:</strong>
+          a simulator (synthetic SKU catalog, supplier behaviour, weather + sales generators), 12 representative eval cases derived from your past misses + edge cases, and a success metric definition (markdown-window precision/recall + discount-bp accuracy). You review and edit each before the baseline run.
+        </div>
+      </div>
+
+      <!-- Example templates -->
+      <div class="examples">
+        <div class="examples-title">Or start from a template</div>
+        <div class="examples-grid">
+          <div class="example">
+            <div class="example-vertical">Supply chain</div>
+            <div class="example-title">Labour shift scheduling</div>
+            <div class="example-desc">Optimize weekly shift assignments under union OT caps and forecasted demand.</div>
+          </div>
+          <div class="example">
+            <div class="example-vertical">Legal / Labour</div>
+            <div class="example-title">Union contract review</div>
+            <div class="example-desc">Flag risk clauses, jurisdictional carve-outs, and grievance precedent in proposed contract changes.</div>
+          </div>
+          <div class="example">
+            <div class="example-vertical">Customer ops</div>
+            <div class="example-title">Customer support triage</div>
+            <div class="example-desc">Triage incoming tickets, draft responses, escalate refunds above policy threshold.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+
+    // Char counter
+    const ta = document.getElementById('describe');
+    const counter = document.querySelector('.describe-counter');
+    const update = () => { counter.textContent = ta.value.length + ' / 4,000 chars'; };
+    ta.addEventListener('input', update);
+    update();
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>New workflow · Generated artifacts — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  .create-wrap { max-width: 1080px; margin: 0 auto; padding: 16px 0 80px; }
+
+  /* Step indicator */
+  .steps { display: flex; align-items: center; gap: 0; margin-bottom: 32px; }
+  .step { display: flex; align-items: center; gap: 10px; padding: 6px 0; color: var(--text-muted); font-size: 13px; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--text-muted); }
+  .step.active { color: var(--text); }
+  .step.active .step-num { border-color: var(--accent); background: var(--accent); color: white; }
+  .step.done { color: var(--text-3); }
+  .step.done .step-num { border-color: var(--green); background: var(--green); color: white; font-size: 11px; }
+  .step-connector { flex: 1; height: 1.5px; background: var(--border); margin: 0 14px; max-width: 80px; }
+  .step.done + .step-connector { background: var(--green); }
+
+  /* Header + summary of source description */
+  .gen-head { margin-bottom: 22px; }
+  .gen-title { font-size: 26px; font-weight: 600; letter-spacing: -0.025em; color: var(--text); }
+  .gen-sub { font-size: 14px; color: var(--text-muted); margin-top: 6px; max-width: 760px; line-height: 1.55; }
+
+  .source-quote {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px 18px; margin-bottom: 28px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .source-quote-label { font-size: 10.5px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.07em; flex-shrink: 0; padding-top: 2px; }
+  .source-quote-body { font-size: 13.5px; color: var(--text-3); line-height: 1.6; font-style: italic; flex: 1; }
+  .source-quote-edit { color: var(--accent); font-size: 12px; flex-shrink: 0; padding-top: 2px; }
+
+  /* Generated artifact section card */
+  .gen-section { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px; margin-bottom: 16px; box-shadow: var(--shadow-sm); }
+  .gen-section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+  .gen-section-title-row { display: flex; align-items: center; gap: 10px; }
+  .gen-section-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--accent-muted); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .gen-section-icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.75; }
+  .gen-section-title { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+  .gen-section-meta { font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+  .gen-section-actions { display: flex; gap: 6px; }
+
+  /* Artifact item rows */
+  .artifact-list { display: flex; flex-direction: column; gap: 8px; }
+  .artifact { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 10px; padding: 10px 12px; border-radius: 6px; background: var(--surface); align-items: start; }
+  .artifact-icon { color: var(--text-muted); margin-top: 3px; }
+  .artifact-icon svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .artifact-body { min-width: 0; }
+  .artifact-title { font-size: 13.5px; font-weight: 500; color: var(--text); }
+  .artifact-title code { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 12.5px; background: var(--bg); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); }
+  .artifact-desc { font-size: 12.5px; color: var(--text-3); margin-top: 3px; line-height: 1.5; }
+  .artifact-derived { font-size: 11px; color: var(--text-muted); margin-top: 5px; display: flex; align-items: center; gap: 4px; font-style: italic; }
+  .artifact-derived svg { width: 11px; height: 11px; stroke: var(--accent); fill: none; stroke-width: 2; flex-shrink: 0; }
+  .artifact-derived em { color: var(--accent); font-style: italic; }
+  .artifact-edit { color: var(--text-muted); font-size: 11px; padding-top: 3px; }
+  .artifact-edit:hover { color: var(--accent); }
+
+  /* Eval cases as a compact table */
+  .eval-table { background: var(--surface); border-radius: 6px; overflow: hidden; }
+  .eval-row { display: grid; grid-template-columns: 28px 1fr 110px 80px 60px; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); align-items: center; }
+  .eval-row:last-child { border-bottom: 0; }
+  .eval-row.head { background: var(--surface-2); padding: 8px 14px; }
+  .eval-row.head > div { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); }
+  .eval-num { font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .eval-name { font-size: 13px; color: var(--text); font-weight: 500; min-width: 0; }
+  .eval-name code { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 11.5px; background: var(--bg); padding: 1px 4px; border-radius: 3px; }
+  .eval-source { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+
+  /* Metric definition */
+  .metric-def { background: var(--surface); border-radius: 6px; padding: 14px 18px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 12.5px; line-height: 1.7; color: var(--text-2); }
+  .metric-def .key { color: var(--accent); }
+  .metric-def .num { color: var(--green); }
+  .metric-def .comment { color: var(--text-muted); font-style: italic; }
+
+  /* UI primitives picker */
+  .prim-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+  .prim { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; display: flex; gap: 10px; align-items: center; cursor: pointer; transition: border-color 0.12s, background 0.12s; }
+  .prim.selected { border-color: var(--accent); background: var(--accent-dim); }
+  .prim-icon { width: 28px; height: 28px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border); color: var(--text-3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .prim-icon svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.75; }
+  .prim.selected .prim-icon { color: var(--accent); border-color: var(--accent); }
+  .prim-name { font-size: 12.5px; font-weight: 500; color: var(--text); }
+  .prim-check { margin-left: auto; color: var(--text-faint); }
+  .prim.selected .prim-check { color: var(--accent); }
+  .prim-check svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+
+  /* Bottom action row */
+  .gen-action-row { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .gen-action-left { display: flex; gap: 8px; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>04 / 10</code> · <strong>gated IP</strong> — natural-language → sim/eval/metric ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+
+    <div class="workspace-switcher">
+      <span class="workspace-avatar">A</span>
+      <span class="nav-label">Acme Distribution</span>
+      <span class="chev">▾</span>
+    </div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg>
+      <span class="nav-label">Health</span>
+    </a>
+    <a href="02-inbox.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg>
+      <span class="nav-label">Inbox</span>
+      <span class="nav-badge">12</span>
+    </a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Demand prediction</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Labour management</span>
+    </a>
+    <a href="10-contract-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Union contract review</span>
+    </a>
+    <a href="09-support-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Customer support</span>
+    </a>
+    <a href="03-new-workflow-step1.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+      <span class="nav-label">New workflow</span>
+    </a>
+
+    <div class="nav-section">Library</div>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg>
+      <span class="nav-label">Skills</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg>
+      <span class="nav-label">Traces</span>
+    </a>
+    <a href="08-audit.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg>
+      <span class="nav-label">Audit</span>
+    </a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;">
+        <svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg>
+        <span class="nav-label" id="themeLabel">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="create-wrap">
+      <!-- Step indicator -->
+      <div class="steps">
+        <div class="step done">
+          <div class="step-num">✓</div>
+          <div class="step-label">Describe</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step active">
+          <div class="step-num">2</div>
+          <div class="step-label">Review generated</div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-label">Run baseline</div>
+        </div>
+      </div>
+
+      <!-- Header -->
+      <div class="gen-head">
+        <h1 class="gen-title">Review what we'll build</h1>
+        <p class="gen-sub">From your description, ownEvo generated a simulator, an eval set, a success metric, and a UI layout. Each is editable. Once you approve, the agent runs against the simulator to establish a baseline — then the improvement loop starts.</p>
+      </div>
+
+      <!-- Source quote -->
+      <div class="source-quote">
+        <span class="source-quote-label">From your<br>description</span>
+        <div class="source-quote-body">
+          "Forecast weekly demand at SKU-store level for our 8,400 SKU catalog across 142 stores. Flag SKUs likely to need markdown within 4 weeks. Account for seasonality, supplier price-build, and regional variance. Pull historical sales from SAP ERP. Pull current weather forecasts from NOAA…"
+        </div>
+        <a href="03-new-workflow-step1.html" class="source-quote-edit">Edit ↗</a>
+      </div>
+
+      <!-- ─── Section 1: Simulator ─── -->
+      <section class="gen-section">
+        <div class="gen-section-head">
+          <div class="gen-section-title-row">
+            <div class="gen-section-icon">
+              <svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="6"/><path d="M9 5 L9 9 L12 11"/></svg>
+            </div>
+            <div>
+              <div class="gen-section-title">Simulator</div>
+              <div class="gen-section-meta">6 tools · 2 user behaviours · 3 environment generators</div>
+            </div>
+          </div>
+          <div class="gen-section-actions">
+            <button class="btn btn-ghost" style="font-size: 12px;">↻ Regenerate</button>
+            <button class="btn btn-secondary" style="font-size: 12px;">Edit YAML</button>
+          </div>
+        </div>
+
+        <div style="font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">Tools the agent can call</div>
+        <div class="artifact-list" style="margin-bottom: 18px;">
+          <div class="artifact">
+            <div class="artifact-icon"><svg viewBox="0 0 16 16"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg></div>
+            <div class="artifact-body">
+              <div class="artifact-title"><code>forecast_demand(sku, region, weeks_ahead)</code></div>
+              <div class="artifact-desc">Returns a forecast with confidence intervals.</div>
+              <div class="artifact-derived"><svg viewBox="0 0 16 16"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg> derived from <em>"Forecast weekly demand at SKU-store level"</em></div>
+            </div>
+            <a href="#" class="artifact-edit">Edit</a>
+          </div>
+          <div class="artifact">
+            <div class="artifact-icon"><svg viewBox="0 0 16 16"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg></div>
+            <div class="artifact-body">
+              <div class="artifact-title"><code>fire_markdown_alert(sku, region, severity, recommended_discount_bp)</code></div>
+              <div class="artifact-desc">Notifies the supply chain VP. Logged for audit.</div>
+              <div class="artifact-derived"><svg viewBox="0 0 16 16"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg> derived from <em>"Flag SKUs likely to need markdown within 4 weeks"</em></div>
+            </div>
+            <a href="#" class="artifact-edit">Edit</a>
+          </div>
+          <div class="artifact">
+            <div class="artifact-icon"><svg viewBox="0 0 16 16"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg></div>
+            <div class="artifact-body">
+              <div class="artifact-title"><code>query_sap_sales(sku, region, start_date, end_date)</code></div>
+              <div class="artifact-desc">Historical sales by week. Live in production; replayed deterministically in simulator.</div>
+              <div class="artifact-derived"><svg viewBox="0 0 16 16"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg> derived from <em>"Pull historical sales from SAP ERP"</em></div>
+            </div>
+            <a href="#" class="artifact-edit">Edit</a>
+          </div>
+          <div class="artifact">
+            <div class="artifact-icon"><svg viewBox="0 0 16 16"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg></div>
+            <div class="artifact-body">
+              <div class="artifact-title"><code>fetch_noaa_weather(region, weeks_ahead)</code></div>
+              <div class="artifact-desc">Forecast deltas from NOAA, normalized to anomaly score.</div>
+              <div class="artifact-derived"><svg viewBox="0 0 16 16"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg> derived from <em>"Pull current weather forecasts from NOAA"</em></div>
+            </div>
+            <a href="#" class="artifact-edit">Edit</a>
+          </div>
+          <div class="artifact">
+            <div class="artifact-icon"><svg viewBox="0 0 16 16"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg></div>
+            <div class="artifact-body">
+              <div class="artifact-title"><code>list_skus(category?, region?)</code> · <code>get_inventory_status(sku, store)</code></div>
+              <div class="artifact-desc">Catalog and inventory lookups.</div>
+            </div>
+            <a href="#" class="artifact-edit">Edit</a>
+          </div>
+        </div>
+
+        <div style="font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">User behaviour (simulated)</div>
+        <div class="artifact-list" style="margin-bottom: 18px;">
+          <div class="artifact">
+            <div class="artifact-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.5"/><path d="M3 14 C3 11 5 10 8 10 C11 10 13 11 13 14"/></svg></div>
+            <div class="artifact-body">
+              <div class="artifact-title">Supply chain analyst · Monday morning markdown review</div>
+              <div class="artifact-desc">Opens markdown report 9:00 PT each Monday, asks the agent to forecast next 4 weeks per region, drills into anything flagged high severity.</div>
+              <div class="artifact-derived"><svg viewBox="0 0 16 16"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg> inferred from supply chain forecasting domain pattern</div>
+            </div>
+            <a href="#" class="artifact-edit">Edit</a>
+          </div>
+          <div class="artifact">
+            <div class="artifact-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="6" r="2.5"/><path d="M3 14 C3 11 5 10 8 10 C11 10 13 11 13 14"/></svg></div>
+            <div class="artifact-body">
+              <div class="artifact-title">Supply Chain VP · daily alert triage</div>
+              <div class="artifact-desc">Reviews fired markdown alerts daily, approves/rejects each, comments form new eval cases.</div>
+              <div class="artifact-derived"><svg viewBox="0 0 16 16"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg> derived from <em>"The supply chain VP reviews markdown alerts daily"</em></div>
+            </div>
+            <a href="#" class="artifact-edit">Edit</a>
+          </div>
+        </div>
+
+        <div style="font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">Environment generators</div>
+        <div class="artifact-list">
+          <div class="artifact">
+            <div class="artifact-icon"><svg viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg></div>
+            <div class="artifact-body">
+              <div class="artifact-title">Synthetic SKU catalog · 8,400 SKUs across 6 categories</div>
+              <div class="artifact-desc">Mirrors your real catalog distribution: footwear (winter/summer), apparel, accessories, etc. Names and IDs randomized.</div>
+            </div>
+          </div>
+          <div class="artifact">
+            <div class="artifact-icon"><svg viewBox="0 0 16 16"><path d="M2 8 L8 14 L14 8 L8 2 Z"/></svg></div>
+            <div class="artifact-body">
+              <div class="artifact-title">Supplier behaviour · 12 suppliers, 3-12wk lead times, monthly price drift</div>
+              <div class="artifact-desc">Reproduces the supplier price-build dynamic mentioned in your description.</div>
+              <div class="artifact-derived"><svg viewBox="0 0 16 16"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg> derived from <em>"Account for seasonality, supplier price-build"</em></div>
+            </div>
+          </div>
+          <div class="artifact">
+            <div class="artifact-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="3"/><path d="M8 1 L8 4 M8 12 L8 15 M15 8 L12 8 M4 8 L1 8"/></svg></div>
+            <div class="artifact-body">
+              <div class="artifact-title">Weather generator · NOAA-shaped anomalies</div>
+              <div class="artifact-desc">Generates realistic weather forecasts with anomaly events (PNW cold snaps, Southeast hurricanes, etc.) for cold-weather category testing.</div>
+              <div class="artifact-derived"><svg viewBox="0 0 16 16"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg> derived from <em>"Pull current weather forecasts from NOAA for cold-weather categories"</em></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── Section 2: Eval cases ─── -->
+      <section class="gen-section">
+        <div class="gen-section-head">
+          <div class="gen-section-title-row">
+            <div class="gen-section-icon">
+              <svg viewBox="0 0 18 18"><path d="M3 4 L15 4 L15 14 L3 14 Z M3 8 L15 8 M9 8 L9 14"/></svg>
+            </div>
+            <div>
+              <div class="gen-section-title">Eval cases · 12 generated</div>
+              <div class="gen-section-meta">3 from your past misses · 4 regression checks · 5 generated edge cases</div>
+            </div>
+          </div>
+          <div class="gen-section-actions">
+            <button class="btn btn-ghost" style="font-size: 12px;">↻ Regenerate</button>
+            <button class="btn btn-secondary" style="font-size: 12px;">+ Add case</button>
+          </div>
+        </div>
+
+        <div class="eval-table">
+          <div class="eval-row head">
+            <div>#</div><div>Case</div><div>Type</div><div>Severity</div><div></div>
+          </div>
+          <div class="eval-row">
+            <div class="eval-num">1</div>
+            <div>
+              <div class="eval-name">PNW winter boot 2025-W47 (replay)</div>
+              <div class="eval-source">From: <em>"missed the 2025 Pacific NW winter boot spike by 4 weeks"</em></div>
+            </div>
+            <div><span class="pill amber">Past miss</span></div>
+            <div><span class="pill red">High</span></div>
+            <div><a href="#" style="font-size: 11px; color: var(--accent);">Edit</a></div>
+          </div>
+          <div class="eval-row">
+            <div class="eval-num">2</div>
+            <div>
+              <div class="eval-name">Promo bundle uplift Q4 2024 (replay)</div>
+              <div class="eval-source">From: <em>"underweight promotional uplift on bundled SKUs"</em></div>
+            </div>
+            <div><span class="pill amber">Past miss</span></div>
+            <div><span class="pill amber">Medium</span></div>
+            <div><a href="#" style="font-size: 11px; color: var(--accent);">Edit</a></div>
+          </div>
+          <div class="eval-row">
+            <div class="eval-num">3</div>
+            <div>
+              <div class="eval-name">Promo bundle uplift Q4 2025 (replay)</div>
+              <div class="eval-source">From: <em>"underweight promotional uplift on bundled SKUs"</em></div>
+            </div>
+            <div><span class="pill amber">Past miss</span></div>
+            <div><span class="pill amber">Medium</span></div>
+            <div><a href="#" style="font-size: 11px; color: var(--accent);">Edit</a></div>
+          </div>
+          <div class="eval-row">
+            <div class="eval-num">4</div>
+            <div>
+              <div class="eval-name">Steady-demand baseline (no anomaly)</div>
+              <div class="eval-source">Regression: agent must NOT fire false alerts when demand is normal</div>
+            </div>
+            <div><span class="pill outline">Regression</span></div>
+            <div><span class="pill outline">Low</span></div>
+            <div><a href="#" style="font-size: 11px; color: var(--accent);">Edit</a></div>
+          </div>
+          <div class="eval-row">
+            <div class="eval-num">5</div>
+            <div>
+              <div class="eval-name">Inventory-pegged forecast (low stock)</div>
+              <div class="eval-source">Regression: forecast should not exceed available inventory under any signal</div>
+            </div>
+            <div><span class="pill outline">Regression</span></div>
+            <div><span class="pill outline">Low</span></div>
+            <div><a href="#" style="font-size: 11px; color: var(--accent);">Edit</a></div>
+          </div>
+          <div class="eval-row">
+            <div class="eval-num">6</div>
+            <div>
+              <div class="eval-name">Cold snap surge · winter coats Northeast 2024-W44</div>
+              <div class="eval-source">Edge case: weather-driven anomaly, narrow window</div>
+            </div>
+            <div><span class="pill accent">Edge</span></div>
+            <div><span class="pill amber">Medium</span></div>
+            <div><a href="#" style="font-size: 11px; color: var(--accent);">Edit</a></div>
+          </div>
+          <div class="eval-row">
+            <div class="eval-num">7</div>
+            <div>
+              <div class="eval-name">Supplier delay · 12wk lead time SKUs</div>
+              <div class="eval-source">Edge case: supply-side disruption affects forecast accuracy</div>
+            </div>
+            <div><span class="pill accent">Edge</span></div>
+            <div><span class="pill amber">Medium</span></div>
+            <div><a href="#" style="font-size: 11px; color: var(--accent);">Edit</a></div>
+          </div>
+          <div class="eval-row">
+            <div class="eval-num">8</div>
+            <div>
+              <div class="eval-name">Regional variance · Southeast hurricane evacuation</div>
+              <div class="eval-source">Edge case: localized demand displacement</div>
+            </div>
+            <div><span class="pill accent">Edge</span></div>
+            <div><span class="pill red">High</span></div>
+            <div><a href="#" style="font-size: 11px; color: var(--accent);">Edit</a></div>
+          </div>
+          <div class="eval-row">
+            <div class="eval-num">9-12</div>
+            <div>
+              <div class="eval-name">+ 4 more cases (new SKU intro, EOL, returns spike, holiday shift)</div>
+              <div class="eval-source">Standard supply-chain edge cases for the catalog</div>
+            </div>
+            <div><span class="pill outline">Mixed</span></div>
+            <div><span class="pill outline">—</span></div>
+            <div><a href="#" style="font-size: 11px; color: var(--accent);">View</a></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── Section 3: Success metric ─── -->
+      <section class="gen-section">
+        <div class="gen-section-head">
+          <div class="gen-section-title-row">
+            <div class="gen-section-icon">
+              <svg viewBox="0 0 18 18"><path d="M3 13 L7 7 L11 11 L15 4"/></svg>
+            </div>
+            <div>
+              <div class="gen-section-title">Success metric</div>
+              <div class="gen-section-meta">Composite of precision, recall, and discount accuracy</div>
+            </div>
+          </div>
+          <div class="gen-section-actions">
+            <button class="btn btn-ghost" style="font-size: 12px;">↻ Regenerate</button>
+            <button class="btn btn-secondary" style="font-size: 12px;">Edit definition</button>
+          </div>
+        </div>
+
+        <div class="metric-def"><span class="key">metric:</span> markdown_window_composite
+
+  <span class="key">precision</span> = correct_alerts / total_alerts_fired
+  <span class="key">recall</span>    = correct_alerts / total_actual_markdowns
+  <span class="key">discount_bp_accuracy</span> = mean( |recommended_discount − actual_discount| <= <span class="num">5</span>pp )
+
+  <span class="key">correct_alert</span> :=
+    alert fires within <span class="num">6</span> weeks of actual markdown event
+    AND alert.severity matches actual markdown size band
+
+  <span class="key">composite</span> = <span class="num">0.5</span> × precision + <span class="num">0.3</span> × recall + <span class="num">0.2</span> × discount_bp_accuracy
+
+  <span class="comment"># derived from your description: "an alert is correct if it lands</span>
+  <span class="comment"># within 6 weeks of the actual markdown event and the recommended</span>
+  <span class="comment"># discount is within 5pp of what we ultimately ran"</span>
+        </div>
+
+        <div style="display: flex; gap: 16px; margin-top: 14px; padding: 12px 16px; background: var(--surface); border-radius: 6px; font-size: 12.5px; color: var(--text-3);">
+          <span><strong style="color: var(--text);">Higher is better.</strong> Range: 0.0 – 1.0</span>
+          <span style="color: var(--text-faint);">·</span>
+          <span>Computed per eval case · aggregated as mean across 12 cases</span>
+          <span style="color: var(--text-faint);">·</span>
+          <span>Reported as % in dashboards</span>
+        </div>
+      </section>
+
+      <!-- ─── Section 4: UI primitives ─── -->
+      <section class="gen-section">
+        <div class="gen-section-head">
+          <div class="gen-section-title-row">
+            <div class="gen-section-icon">
+              <svg viewBox="0 0 18 18"><path d="M3 3 L8 3 L8 8 L3 8 Z M10 3 L15 3 L15 8 L10 8 Z M3 10 L15 10 L15 15 L3 15 Z"/></svg>
+            </div>
+            <div>
+              <div class="gen-section-title">Operate-view UI · 4 primitives selected</div>
+              <div class="gen-section-meta">What the analyst will see when operating this workflow</div>
+            </div>
+          </div>
+          <div class="gen-section-actions">
+            <button class="btn btn-ghost" style="font-size: 12px;">↻ Regenerate</button>
+            <a href="06-workflow-operate.html" class="btn btn-secondary" style="font-size: 12px;">Preview layout →</a>
+          </div>
+        </div>
+
+        <div class="prim-grid">
+          <div class="prim selected">
+            <div class="prim-icon"><svg viewBox="0 0 14 14"><path d="M2 2 L6 2 L6 6 L2 6 Z M8 2 L12 2 L12 6 L8 6 Z M2 8 L12 8 L12 12 L2 12 Z"/></svg></div>
+            <span class="prim-name">MetricCards</span>
+            <span class="prim-check"><svg viewBox="0 0 14 14"><path d="M3 7 L6 10 L11 4"/></svg></span>
+          </div>
+          <div class="prim selected">
+            <div class="prim-icon"><svg viewBox="0 0 14 14"><path d="M2 11 L5 8 L8 9 L12 4"/></svg></div>
+            <span class="prim-name">TimeSeriesChart</span>
+            <span class="prim-check"><svg viewBox="0 0 14 14"><path d="M3 7 L6 10 L11 4"/></svg></span>
+          </div>
+          <div class="prim selected">
+            <div class="prim-icon"><svg viewBox="0 0 14 14"><path d="M2 3 L12 3 L12 11 L2 11 Z M2 6 L12 6 M5 6 L5 11"/></svg></div>
+            <span class="prim-name">TableView</span>
+            <span class="prim-check"><svg viewBox="0 0 14 14"><path d="M3 7 L6 10 L11 4"/></svg></span>
+          </div>
+          <div class="prim selected">
+            <div class="prim-icon"><svg viewBox="0 0 14 14"><path d="M7 1 L13 12 L1 12 Z M7 5 L7 9 M7 10 L7 10.5"/></svg></div>
+            <span class="prim-name">AlertList</span>
+            <span class="prim-check"><svg viewBox="0 0 14 14"><path d="M3 7 L6 10 L11 4"/></svg></span>
+          </div>
+          <div class="prim">
+            <div class="prim-icon"><svg viewBox="0 0 14 14"><path d="M2 3 L6 3 L6 11 L2 11 Z M8 3 L12 3 L12 11 L8 11 Z"/></svg></div>
+            <span class="prim-name">KanbanBoard</span>
+            <span class="prim-check"><svg viewBox="0 0 14 14"><path d="M3 7 L11 7"/></svg></span>
+          </div>
+          <div class="prim">
+            <div class="prim-icon"><svg viewBox="0 0 14 14"><path d="M2 3 L12 3 L12 9 L7 9 L4 12 L4 9 L2 9 Z"/></svg></div>
+            <span class="prim-name">ConversationView</span>
+            <span class="prim-check"><svg viewBox="0 0 14 14"><path d="M3 7 L11 7"/></svg></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom action row -->
+      <div class="gen-action-row">
+        <div class="gen-action-left">
+          <a href="03-new-workflow-step1.html" class="btn btn-secondary">‹ Back to description</a>
+          <button class="btn btn-ghost">Save draft</button>
+        </div>
+        <a href="05-workflow-overview.html" class="btn btn-primary" style="padding: 10px 20px;">Run baseline →</a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>

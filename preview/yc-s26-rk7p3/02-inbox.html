@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Inbox — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  .filters { display: flex; gap: 6px; margin-bottom: 16px; }
+  .filter-chip { padding: 6px 12px; border-radius: 20px; font-size: 13px; color: var(--text-3); border: 1px solid var(--border); background: var(--bg); cursor: pointer; transition: background 0.12s; }
+  .filter-chip:hover { background: var(--surface-2); }
+  .filter-chip.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .filter-chip .count { font-weight: 500; opacity: 0.7; margin-left: 4px; }
+
+  .inbox { display: flex; flex-direction: column; gap: 8px; }
+  .inbox-item {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px 18px; box-shadow: var(--shadow-sm);
+    display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 14px; align-items: start;
+    cursor: pointer; transition: border-color 0.12s, box-shadow 0.12s;
+  }
+  .inbox-item:hover { border-color: var(--border-light); box-shadow: var(--shadow); }
+  .inbox-item.featured { border-left: 3px solid var(--accent); padding-left: 16px; }
+
+  .inbox-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .inbox-icon.proposal { background: var(--accent-muted); color: var(--accent); }
+  .inbox-icon.escalation { background: var(--amber-soft); color: var(--amber); }
+  .inbox-icon.regression { background: var(--red-soft); color: var(--red); }
+  .inbox-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  .inbox-body { min-width: 0; }
+  .inbox-meta-row { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; font-size: 11.5px; }
+  .inbox-source { color: var(--text-3); font-weight: 500; }
+  .inbox-dot { color: var(--text-faint); }
+  .inbox-age { color: var(--text-muted); }
+  .inbox-title { font-size: 14.5px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .inbox-summary { font-size: 13px; color: var(--text-3); line-height: 1.5; margin-bottom: 8px; }
+  .inbox-foot { display: flex; gap: 12px; font-size: 12px; color: var(--text-muted); align-items: center; }
+  .inbox-foot .gate-badge { display: inline-flex; align-items: center; gap: 4px; color: var(--green); font-weight: 500; }
+  .inbox-foot .gate-badge.fail { color: var(--red); }
+
+  .inbox-action { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+
+  .inbox-empty-section { font-size: 11.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; padding: 16px 4px 8px; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>02 / 10</code> ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+
+    <div class="workspace-switcher">
+      <span class="workspace-avatar">A</span>
+      <span class="nav-label">Acme Distribution</span>
+      <span class="chev">▾</span>
+    </div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg>
+      <span class="nav-label">Health</span>
+    </a>
+    <a href="02-inbox.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg>
+      <span class="nav-label">Inbox</span>
+      <span class="nav-badge">12</span>
+    </a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Demand prediction</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Labour management</span>
+      <span class="nav-badge">4</span>
+    </a>
+    <a href="10-contract-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Union contract review</span>
+      <span class="nav-badge">2</span>
+    </a>
+    <a href="09-support-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Customer support</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+      <span class="nav-label">New workflow</span>
+    </a>
+
+    <div class="nav-section">Library</div>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg>
+      <span class="nav-label">Skills</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg>
+      <span class="nav-label">Traces</span>
+    </a>
+    <a href="08-audit.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg>
+      <span class="nav-label">Audit</span>
+    </a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;">
+        <svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg>
+        <span class="nav-label" id="themeLabel">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">Inbox</h1>
+        <p class="page-subtitle">12 items needing review · across 4 workflows · refreshed 1 min ago</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-secondary">
+          <svg class="btn-icon" viewBox="0 0 16 16"><path d="M3 5 L8 10 L13 5"/></svg>
+          Sort: Newest
+        </button>
+      </div>
+    </header>
+
+    <div class="filters">
+      <button class="filter-chip active">All<span class="count">16</span></button>
+      <button class="filter-chip">Proposals<span class="count">12</span></button>
+      <button class="filter-chip">Escalations<span class="count">3</span></button>
+      <button class="filter-chip">Regression alerts<span class="count">1</span></button>
+    </div>
+
+    <div class="inbox">
+      <!-- Featured: the demo proposal (links to 07) -->
+      <a href="07-proposal-detail.html" class="inbox-item featured" style="text-decoration: none;">
+        <div class="inbox-icon proposal">
+          <svg viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 11 L9 11 L6 14 L6 11 L2 11 Z M5 7 L11 7 M5 9 L9 9"/></svg>
+        </div>
+        <div class="inbox-body">
+          <div class="inbox-meta-row">
+            <span class="inbox-source">Demand prediction</span>
+            <span class="inbox-dot">·</span>
+            <span class="pill accent">Proposal</span>
+            <span class="pill amber">High impact</span>
+            <span class="inbox-dot">·</span>
+            <span class="inbox-age">2h ago</span>
+          </div>
+          <div class="inbox-title">Detect seasonal anomaly in winter footwear demand 6+ weeks earlier</div>
+          <div class="inbox-summary">
+            Cluster of 14 traces shows the agent missed the early-November demand spike for winter boots in the Pacific Northwest region — markdown alerts fired 4 weeks too late. Proposed change adds an early-signal detector that combines weather forecast deltas with prior-year YoY shape comparison.
+          </div>
+          <div class="inbox-foot">
+            <span class="gate-badge">
+              <svg style="width: 12px; height: 12px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8 L7 12 L13 4"/></svg>
+              Gate: 12 / 12 eval cases passing
+            </span>
+            <span>·</span>
+            <span>Source: <a href="#" style="color: var(--accent);">cluster #ce-2284</a></span>
+            <span>·</span>
+            <span>Proposed by agent</span>
+          </div>
+        </div>
+        <div class="inbox-action">
+          <span class="btn btn-primary" style="font-size: 12px; padding: 6px 12px;">Review →</span>
+        </div>
+      </a>
+
+      <!-- Other proposals -->
+      <a href="#" class="inbox-item" style="text-decoration: none;">
+        <div class="inbox-icon proposal">
+          <svg viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 11 L9 11 L6 14 L6 11 L2 11 Z M5 7 L11 7 M5 9 L9 9"/></svg>
+        </div>
+        <div class="inbox-body">
+          <div class="inbox-meta-row">
+            <span class="inbox-source">Labour management</span>
+            <span class="inbox-dot">·</span>
+            <span class="pill accent">Proposal</span>
+            <span class="inbox-dot">·</span>
+            <span class="inbox-age">5h ago</span>
+          </div>
+          <div class="inbox-title">Cap weekend overtime under union limit (24h / 4-week period)</div>
+          <div class="inbox-summary">
+            Agent scheduled 6 workers above the union-negotiated weekend OT cap last cycle. Proposed change adds a hard pre-schedule check against the rolling 4-week OT total per worker.
+          </div>
+          <div class="inbox-foot">
+            <span class="gate-badge">
+              <svg style="width: 12px; height: 12px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8 L7 12 L13 4"/></svg>
+              Gate: 8 / 8 passing
+            </span>
+            <span>·</span>
+            <span>Source: <a href="#" style="color: var(--accent);">cluster #ce-2261</a></span>
+          </div>
+        </div>
+        <div class="inbox-action">
+          <span class="btn btn-secondary" style="font-size: 12px; padding: 6px 12px;">Review</span>
+        </div>
+      </a>
+
+      <!-- Escalation -->
+      <a href="#" class="inbox-item" style="text-decoration: none;">
+        <div class="inbox-icon escalation">
+          <svg viewBox="0 0 16 16"><path d="M8 1 L15 14 L1 14 Z M8 6 L8 10 M8 12 L8 12.5"/></svg>
+        </div>
+        <div class="inbox-body">
+          <div class="inbox-meta-row">
+            <span class="inbox-source">Customer support</span>
+            <span class="inbox-dot">·</span>
+            <span class="pill amber">Escalation</span>
+            <span class="inbox-dot">·</span>
+            <span class="inbox-age">9h ago</span>
+          </div>
+          <div class="inbox-title">Refund request $5,200 — exceeds agent autonomous limit</div>
+          <div class="inbox-summary">
+            Ticket #28471 from Lakeside Co. Agent confirmed entitlement and reason; refund amount is above $5k threshold and requires human authorisation.
+          </div>
+          <div class="inbox-foot">
+            <span>Customer: Lakeside Co. · Acct exec: D. Park</span>
+            <span>·</span>
+            <span><a href="#" style="color: var(--accent);">View ticket #28471 →</a></span>
+          </div>
+        </div>
+        <div class="inbox-action">
+          <span class="btn btn-secondary" style="font-size: 12px; padding: 6px 12px;">Decide</span>
+        </div>
+      </a>
+
+      <!-- Proposal -->
+      <a href="#" class="inbox-item" style="text-decoration: none;">
+        <div class="inbox-icon proposal">
+          <svg viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 11 L9 11 L6 14 L6 11 L2 11 Z M5 7 L11 7 M5 9 L9 9"/></svg>
+        </div>
+        <div class="inbox-body">
+          <div class="inbox-meta-row">
+            <span class="inbox-source">Customer support</span>
+            <span class="inbox-dot">·</span>
+            <span class="pill accent">Proposal</span>
+            <span class="inbox-dot">·</span>
+            <span class="inbox-age">6h ago</span>
+          </div>
+          <div class="inbox-title">Add entitlement check before quoting refund amount</div>
+          <div class="inbox-summary">
+            Cluster of 9 tickets where agent quoted a refund without verifying customer's plan entitlement, causing back-and-forth clarification. Proposed skill addition: explicit `check_entitlement` step before any refund amount is mentioned.
+          </div>
+          <div class="inbox-foot">
+            <span class="gate-badge">
+              <svg style="width: 12px; height: 12px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8 L7 12 L13 4"/></svg>
+              Gate: 24 / 24 passing
+            </span>
+            <span>·</span>
+            <span>Source: <a href="#" style="color: var(--accent);">cluster #ce-2278</a></span>
+          </div>
+        </div>
+        <div class="inbox-action">
+          <span class="btn btn-secondary" style="font-size: 12px; padding: 6px 12px;">Review</span>
+        </div>
+      </a>
+
+      <!-- Regression alert -->
+      <a href="#" class="inbox-item" style="text-decoration: none;">
+        <div class="inbox-icon regression">
+          <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M5 11 L11 5 M5 5 L11 11"/></svg>
+        </div>
+        <div class="inbox-body">
+          <div class="inbox-meta-row">
+            <span class="inbox-source">Labour management</span>
+            <span class="inbox-dot">·</span>
+            <span class="pill red">Regression blocked</span>
+            <span class="inbox-dot">·</span>
+            <span class="inbox-age">2d ago</span>
+          </div>
+          <div class="inbox-title">Proposed shift-rebalancing change blocked by regression gate</div>
+          <div class="inbox-summary">
+            Agent's proposed shift-rebalancing skill update would have regressed 3 of 12 compliance eval cases (specifically: California meal-break enforcement). No change applied. Cluster reopened for new proposal.
+          </div>
+          <div class="inbox-foot">
+            <span class="gate-badge fail">
+              <svg style="width: 12px; height: 12px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 5 L11 11 M5 11 L11 5"/></svg>
+              Gate: 9 / 12 (3 regressions)
+            </span>
+            <span>·</span>
+            <span><a href="#" style="color: var(--accent);">View blocked diff →</a></span>
+          </div>
+        </div>
+        <div class="inbox-action">
+          <span class="btn btn-secondary" style="font-size: 12px; padding: 6px 12px;">Investigate</span>
+        </div>
+      </a>
+
+      <!-- Proposal -->
+      <a href="#" class="inbox-item" style="text-decoration: none;">
+        <div class="inbox-icon proposal">
+          <svg viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 11 L9 11 L6 14 L6 11 L2 11 Z M5 7 L11 7 M5 9 L9 9"/></svg>
+        </div>
+        <div class="inbox-body">
+          <div class="inbox-meta-row">
+            <span class="inbox-source">Union contract review</span>
+            <span class="inbox-dot">·</span>
+            <span class="pill accent">Proposal</span>
+            <span class="inbox-dot">·</span>
+            <span class="inbox-age">1d ago</span>
+          </div>
+          <div class="inbox-title">Add jurisdictional carve-out check for state-level wage minimums</div>
+          <div class="inbox-summary">
+            Reviewer found 3 historical contracts where the agent missed a state-mandated minimum that overrode the negotiated rate. Adding a per-state lookup before any wage-floor analysis.
+          </div>
+          <div class="inbox-foot">
+            <span class="gate-badge">
+              <svg style="width: 12px; height: 12px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8 L7 12 L13 4"/></svg>
+              Gate: 18 / 18 passing
+            </span>
+            <span>·</span>
+            <span>Source: <a href="#" style="color: var(--accent);">manual reviewer flag</a></span>
+          </div>
+        </div>
+        <div class="inbox-action">
+          <span class="btn btn-secondary" style="font-size: 12px; padding: 6px 12px;">Review</span>
+        </div>
+      </a>
+
+      <div class="inbox-empty-section">+ 10 more proposals — scroll to view all</div>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Demand prediction · Operate — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  /* Workflow header (reused from 05) */
+  .wf-back { display: inline-flex; align-items: center; gap: 4px; color: var(--text-muted); font-size: 12px; margin-bottom: 8px; }
+  .wf-back:hover { color: var(--text-2); }
+  .wf-title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .wf-title { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+  .wf-buyer { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+  .tab { padding: 10px 14px; font-size: 13px; color: var(--text-3); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+  /* Filter row */
+  .filter-row { display: flex; gap: 8px; align-items: center; padding: 12px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-label { font-size: 11.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+  .filter-pill { padding: 4px 10px; border-radius: 6px; font-size: 12.5px; color: var(--text-2); background: var(--bg); border: 1px solid var(--border); cursor: pointer; }
+  .filter-pill:hover { border-color: var(--border-light); }
+  .filter-pill.selected { background: var(--accent); color: white; border-color: var(--accent); }
+  .filter-divider { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+
+  /* Operate-page layout */
+  .op-grid-top { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 16px; margin-bottom: 16px; }
+  @media (max-width: 1100px) { .op-grid-top { grid-template-columns: 1fr; } }
+
+  /* Forecast chart specific */
+  .forecast-chart .chart-line.actual { stroke: var(--accent); }
+  .forecast-chart .chart-line.forecast { stroke: var(--green); stroke-dasharray: none; }
+  .forecast-chart .chart-line.forecast-future { stroke: var(--green); stroke-dasharray: 4 3; opacity: 0.7; }
+  .forecast-band { fill: var(--green); opacity: 0.10; }
+
+  /* Active alerts column */
+  .alerts-section { display: flex; flex-direction: column; height: 100%; }
+  .alerts-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+  .alerts-title { font-size: 13px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .alerts-count { font-size: 11.5px; color: var(--text-muted); }
+
+  /* Table customization */
+  .sku-cell { display: flex; flex-direction: column; gap: 2px; }
+  .sku-id { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 11.5px; color: var(--text-muted); }
+  .sku-name { font-size: 13px; color: var(--text-2); }
+
+  .severity-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
+  .severity-dot.high { background: var(--red); }
+  .severity-dot.medium { background: var(--amber); }
+  .severity-dot.low { background: var(--accent); }
+  .severity-dot.none { background: var(--text-faint); }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>06 / 10</code> · workflow operate view (primitive composition) ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+
+    <div class="workspace-switcher">
+      <span class="workspace-avatar">A</span>
+      <span class="nav-label">Acme Distribution</span>
+      <span class="chev">▾</span>
+    </div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg>
+      <span class="nav-label">Health</span>
+    </a>
+    <a href="02-inbox.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg>
+      <span class="nav-label">Inbox</span>
+      <span class="nav-badge">12</span>
+    </a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Demand prediction</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Labour management</span>
+      <span class="nav-badge">4</span>
+    </a>
+    <a href="10-contract-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Union contract review</span>
+      <span class="nav-badge">2</span>
+    </a>
+    <a href="09-support-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Customer support</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+      <span class="nav-label">New workflow</span>
+    </a>
+
+    <div class="nav-section">Library</div>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg>
+      <span class="nav-label">Skills</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg>
+      <span class="nav-label">Traces</span>
+    </a>
+    <a href="08-audit.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg>
+      <span class="nav-label">Audit</span>
+    </a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;">
+        <svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg>
+        <span class="nav-label" id="themeLabel">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div style="margin-bottom: 6px;">
+      <a href="01-health.html" class="wf-back">‹ Workflows</a>
+      <div class="wf-title-row">
+        <h1 class="wf-title">Demand prediction</h1>
+        <span class="pill green">● Active</span>
+        <span class="pill outline">v23</span>
+      </div>
+      <p class="wf-buyer">Owner: Maria Chen · Supply Chain VP · Last forecast 14 min ago</p>
+    </div>
+
+    <div class="tabs">
+      <a href="05-workflow-overview.html" class="tab">Overview</a>
+      <a href="#" class="tab active">Operate</a>
+      <a href="#" class="tab">Failures</a>
+      <a href="#" class="tab">Eval cases <span class="muted" style="margin-left: 4px; font-size: 11px;">128</span></a>
+      <a href="#" class="tab">Skills <span class="muted" style="margin-left: 4px; font-size: 11px;">9</span></a>
+      <a href="08-audit.html" class="tab">Audit</a>
+      <a href="#" class="tab">Triggers</a>
+      <a href="#" class="tab">Integrations</a>
+      <a href="#" class="tab">Permissions</a>
+    </div>
+
+    <!-- Filter row -->
+    <div class="filter-row">
+      <span class="filter-label">Region</span>
+      <button class="filter-pill selected">All</button>
+      <button class="filter-pill">Pacific NW</button>
+      <button class="filter-pill">Northeast</button>
+      <button class="filter-pill">Southeast</button>
+      <button class="filter-pill">Midwest</button>
+      <button class="filter-pill">+ 8 more</button>
+      <span class="filter-divider"></span>
+      <span class="filter-label">Category</span>
+      <button class="filter-pill selected">Footwear</button>
+      <button class="filter-pill">Apparel</button>
+      <button class="filter-pill">Accessories</button>
+      <span class="filter-divider"></span>
+      <span class="filter-label">Window</span>
+      <button class="filter-pill">4 wk</button>
+      <button class="filter-pill selected">12 wk</button>
+      <button class="filter-pill">26 wk</button>
+      <span style="margin-left: auto; font-size: 12px; color: var(--text-muted);">Showing 1,284 of 8,400 SKUs</span>
+    </div>
+
+    <!-- ── MetricCards ── -->
+    <div class="metrics" style="margin-bottom: 16px;">
+      <div class="metric">
+        <div class="metric-label">Forecast accuracy · 30d</div>
+        <div class="metric-value">91.2<span class="metric-unit">%</span></div>
+        <div class="metric-delta up">▲ 5.4 pts vs baseline</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Active markdown alerts</div>
+        <div class="metric-value">14</div>
+        <div class="metric-delta down">▲ 3 new this week</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Markdown $ at risk</div>
+        <div class="metric-value">$2.8<span class="metric-unit">M</span></div>
+        <div class="metric-delta up">▼ $340k vs last fcst</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Coverage</div>
+        <div class="metric-value">142<span class="metric-unit">/142 stores</span></div>
+        <div class="metric-delta flat">all stores forecast</div>
+      </div>
+    </div>
+
+    <!-- ── Top grid: chart + alerts ── -->
+    <div class="op-grid-top">
+      <!-- Forecast chart -->
+      <div class="chart forecast-chart">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Footwear demand · forecast vs actual · last 8 wk + next 12 wk</div>
+            <div class="chart-subtitle">Weekly units · vertical line = current week (W18)</div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary" style="font-size: 12px; padding: 4px 10px;">Export CSV</button>
+          </div>
+        </div>
+
+        <svg viewBox="0 0 720 260" class="chart-svg" style="height: 260px;" aria-label="Forecast vs actual demand">
+          <!-- grid -->
+          <g class="chart-grid">
+            <line x1="60" y1="220" x2="700" y2="220"/>
+            <line x1="60" y1="172" x2="700" y2="172"/>
+            <line x1="60" y1="124" x2="700" y2="124"/>
+            <line x1="60" y1="76" x2="700" y2="76"/>
+            <line x1="60" y1="28" x2="700" y2="28"/>
+          </g>
+
+          <!-- Y-axis labels -->
+          <g class="chart-axis">
+            <text x="50" y="224" text-anchor="end">0</text>
+            <text x="50" y="176" text-anchor="end">5k</text>
+            <text x="50" y="128" text-anchor="end">10k</text>
+            <text x="50" y="80" text-anchor="end">15k</text>
+            <text x="50" y="32" text-anchor="end">20k</text>
+          </g>
+
+          <!-- X-axis labels -->
+          <g class="chart-axis">
+            <text x="100" y="244" text-anchor="middle">W11</text>
+            <text x="232" y="244" text-anchor="middle">W14</text>
+            <text x="364" y="244" text-anchor="middle">W17</text>
+            <text x="496" y="244" text-anchor="middle">W20</text>
+            <text x="628" y="244" text-anchor="middle">W23</text>
+          </g>
+
+          <!-- "now" line -->
+          <line x1="364" y1="20" x2="364" y2="220" stroke="var(--text-faint)" stroke-dasharray="3 3" stroke-width="1"/>
+          <text x="368" y="24" fill="var(--text-muted)" font-size="10" font-weight="500">NOW · W18</text>
+
+          <!-- forecast confidence band (future weeks) -->
+          <path d="M364,140 L408,128 L452,104 L496,68 L540,44 L584,40 L628,52 L672,60 L716,80 L716,120 L672,108 L628,96 L584,84 L540,88 L496,116 L452,148 L408,176 L364,180 Z" class="forecast-band"/>
+
+          <!-- Past actual line (W11-W18) -->
+          <path d="M60,196 L100,188 L144,176 L188,180 L232,168 L276,160 L320,148 L364,160" class="chart-line actual" stroke-width="2"/>
+
+          <!-- Past forecast line (overlay W11-W18) -->
+          <path d="M60,200 L100,192 L144,180 L188,176 L232,172 L276,156 L320,144 L364,156" class="chart-line forecast" stroke-width="1.5"/>
+
+          <!-- Future forecast line (W18+, dashed) -->
+          <path d="M364,160 L408,152 L452,128 L496,84 L540,56 L584,52 L628,64 L672,72 L716,92" class="chart-line forecast-future" stroke-width="2"/>
+
+          <!-- Spike alert marker (peak around W21) -->
+          <circle cx="540" cy="56" r="5" fill="var(--red)" stroke="var(--bg)" stroke-width="2"/>
+          <text x="548" y="50" fill="var(--red)" font-size="10.5" font-weight="500">Anomaly spike</text>
+
+          <!-- Current marker -->
+          <circle cx="364" cy="160" r="4" fill="var(--accent)" stroke="var(--bg)" stroke-width="2"/>
+        </svg>
+
+        <div class="chart-legend">
+          <span class="chart-legend-item"><span class="chart-legend-dot" style="background: var(--accent);"></span>Actual demand</span>
+          <span class="chart-legend-item"><span class="chart-legend-dot" style="background: var(--green);"></span>Forecast</span>
+          <span class="chart-legend-item"><span class="chart-legend-dot" style="background: var(--green); opacity: 0.5;"></span>Future forecast (dashed)</span>
+          <span class="chart-legend-item"><span class="chart-legend-dot" style="background: var(--green); opacity: 0.2;"></span>80% confidence band</span>
+        </div>
+      </div>
+
+      <!-- Alerts column -->
+      <div class="alerts-section">
+        <div class="alerts-head">
+          <span class="alerts-title">Active markdown alerts</span>
+          <span class="alerts-count">14 alerts · 3 high</span>
+        </div>
+        <div class="alerts">
+          <div class="alert high">
+            <svg class="alert-icon" viewBox="0 0 16 16"><path d="M8 1 L15 14 L1 14 Z M8 6 L8 10 M8 12 L8 12.5"/></svg>
+            <div class="alert-body">
+              <div class="alert-title">BOOT-W42 · Pacific NW · markdown by W22</div>
+              <div class="alert-meta">3,400 units exposure · $187k risk · weather + YoY signal</div>
+            </div>
+          </div>
+          <div class="alert high">
+            <svg class="alert-icon" viewBox="0 0 16 16"><path d="M8 1 L15 14 L1 14 Z M8 6 L8 10 M8 12 L8 12.5"/></svg>
+            <div class="alert-body">
+              <div class="alert-title">COAT-N18 · Northeast · markdown by W21</div>
+              <div class="alert-meta">2,100 units · $124k risk · cold snap forecast</div>
+            </div>
+          </div>
+          <div class="alert high">
+            <svg class="alert-icon" viewBox="0 0 16 16"><path d="M8 1 L15 14 L1 14 Z M8 6 L8 10 M8 12 L8 12.5"/></svg>
+            <div class="alert-body">
+              <div class="alert-title">SCRF-W08 · Pacific NW · markdown by W23</div>
+              <div class="alert-meta">1,800 units · $42k risk</div>
+            </div>
+          </div>
+          <div class="alert medium">
+            <svg class="alert-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 5 L8 9 M8 11 L8 11.5"/></svg>
+            <div class="alert-body">
+              <div class="alert-title">GLV-Y04 · Midwest · markdown by W24</div>
+              <div class="alert-meta">950 units · $18k risk</div>
+            </div>
+          </div>
+          <div class="alert medium">
+            <svg class="alert-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 5 L8 9 M8 11 L8 11.5"/></svg>
+            <div class="alert-body">
+              <div class="alert-title">BOOT-S22 · Northeast · markdown by W25</div>
+              <div class="alert-meta">820 units · $36k risk · YoY signal</div>
+            </div>
+          </div>
+          <div class="alert low">
+            <svg class="alert-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 5 L8 9 M8 11 L8 11.5"/></svg>
+            <div class="alert-body">
+              <div class="alert-title">+ 9 more lower-severity alerts</div>
+              <div class="alert-meta">Cumulative $174k risk</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Detail table ── -->
+    <div style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: baseline;">
+      <span class="alerts-title" style="text-transform: uppercase; font-size: 13px; font-weight: 500; color: var(--text-2); letter-spacing: 0.06em;">SKU detail · sorted by markdown risk</span>
+      <span style="font-size: 12px; color: var(--text-muted);">Showing 8 of 1,284</span>
+    </div>
+
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Region</th>
+            <th class="num">Inventory</th>
+            <th class="num">Forecast (4wk)</th>
+            <th class="num">Coverage</th>
+            <th>Risk</th>
+            <th class="num">$ at risk</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="sku-cell"><span class="sku-name strong">Snowforge winter boot W42</span><span class="sku-id">BOOT-W42-PNW</span></div></td>
+            <td>Pacific NW</td>
+            <td class="num">3,847</td>
+            <td class="num">312</td>
+            <td class="num">12.3 wk</td>
+            <td><span class="severity-dot high"></span>High</td>
+            <td class="num"><strong>$187,400</strong></td>
+          </tr>
+          <tr>
+            <td><div class="sku-cell"><span class="sku-name strong">Aurora insulated coat N18</span><span class="sku-id">COAT-N18-NE</span></div></td>
+            <td>Northeast</td>
+            <td class="num">2,140</td>
+            <td class="num">428</td>
+            <td class="num">5.0 wk</td>
+            <td><span class="severity-dot high"></span>High</td>
+            <td class="num"><strong>$124,200</strong></td>
+          </tr>
+          <tr>
+            <td><div class="sku-cell"><span class="sku-name strong">Cascade scarf W08</span><span class="sku-id">SCRF-W08-PNW</span></div></td>
+            <td>Pacific NW</td>
+            <td class="num">1,820</td>
+            <td class="num">198</td>
+            <td class="num">9.2 wk</td>
+            <td><span class="severity-dot high"></span>High</td>
+            <td class="num"><strong>$42,100</strong></td>
+          </tr>
+          <tr>
+            <td><div class="sku-cell"><span class="sku-name strong">Yeti work glove Y04</span><span class="sku-id">GLV-Y04-MW</span></div></td>
+            <td>Midwest</td>
+            <td class="num">950</td>
+            <td class="num">182</td>
+            <td class="num">5.2 wk</td>
+            <td><span class="severity-dot medium"></span>Medium</td>
+            <td class="num">$18,200</td>
+          </tr>
+          <tr>
+            <td><div class="sku-cell"><span class="sku-name strong">Snowforge mid boot S22</span><span class="sku-id">BOOT-S22-NE</span></div></td>
+            <td>Northeast</td>
+            <td class="num">820</td>
+            <td class="num">194</td>
+            <td class="num">4.2 wk</td>
+            <td><span class="severity-dot medium"></span>Medium</td>
+            <td class="num">$36,400</td>
+          </tr>
+          <tr>
+            <td><div class="sku-cell"><span class="sku-name strong">Cascade fleece pullover F11</span><span class="sku-id">FLC-F11-PNW</span></div></td>
+            <td>Pacific NW</td>
+            <td class="num">624</td>
+            <td class="num">156</td>
+            <td class="num">4.0 wk</td>
+            <td><span class="severity-dot medium"></span>Medium</td>
+            <td class="num">$22,800</td>
+          </tr>
+          <tr>
+            <td><div class="sku-cell"><span class="sku-name strong">Tahoe ski sock T03</span><span class="sku-id">SOCK-T03-MW</span></div></td>
+            <td>Midwest</td>
+            <td class="num">412</td>
+            <td class="num">148</td>
+            <td class="num">2.8 wk</td>
+            <td><span class="severity-dot low"></span>Low</td>
+            <td class="num">$8,400</td>
+          </tr>
+          <tr>
+            <td><div class="sku-cell"><span class="sku-name strong">Aurora hat A09</span><span class="sku-id">HAT-A09-NE</span></div></td>
+            <td>Northeast</td>
+            <td class="num">388</td>
+            <td class="num">122</td>
+            <td class="num">3.2 wk</td>
+            <td><span class="severity-dot none"></span>—</td>
+            <td class="num">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>
