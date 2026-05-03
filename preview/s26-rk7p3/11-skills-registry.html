@@ -42,6 +42,15 @@
   .retention-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 500; padding: 2px 7px; border-radius: 10px; background: var(--green-soft); color: var(--green); }
   .retention-chip svg { width: 9px; height: 9px; stroke: currentColor; fill: none; stroke-width: 2.5; }
   .retention-chip.none { background: var(--surface-2); color: var(--text-faint); }
+
+  /* Workflow scope chip (shown when ?workflow= is in URL) */
+  .scope-chip { display: none; align-items: center; gap: 10px; padding: 9px 14px; background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 8px; margin-bottom: 14px; font-size: 12.5px; color: var(--text-2); }
+  .scope-chip.show { display: flex; }
+  .scope-chip-label { color: var(--text-muted); }
+  .scope-chip-value { color: var(--accent); font-weight: 500; }
+  .scope-chip-meta { color: var(--text-muted); margin-left: auto; }
+  .scope-chip-clear { color: var(--accent); font-size: 12px; padding: 3px 9px; border-radius: 4px; cursor: pointer; }
+  .scope-chip-clear:hover { background: rgba(59, 130, 246, 0.12); }
 </style>
 </head>
 <body>
@@ -176,6 +185,14 @@
       </div>
     </div>
 
+    <!-- Workflow scope chip — shown when ?workflow= param is set -->
+    <div class="scope-chip" id="scopeChip">
+      <span class="scope-chip-label">Filtered to workflow:</span>
+      <span class="scope-chip-value" id="scopeChipName">—</span>
+      <span class="scope-chip-meta" id="scopeChipMeta"></span>
+      <a href="11-skills-registry.html" class="scope-chip-clear">Clear ✕</a>
+    </div>
+
     <!-- Filters -->
     <div class="reg-filters">
       <input class="search-input" type="search" name="search" placeholder="Search skills…" aria-label="Search skills">
@@ -221,7 +238,7 @@
         <div></div>
       </div>
 
-      <a href="07-proposal-detail.html" class="skill-row" style="text-decoration: none;">
+      <a href="07-proposal-detail.html" class="skill-row" style="text-decoration: none;" data-workflow="demand-prediction">
         <div class="skill-name-cell">
           <span class="skill-name">seasonal-anomaly-detector</span>
           <span class="skill-source">Demand prediction</span>
@@ -238,7 +255,7 @@
         <span class="skill-chev">›</span>
       </a>
 
-      <a href="#" class="skill-row" style="text-decoration: none;">
+      <a href="#" class="skill-row" style="text-decoration: none;" data-workflow="demand-prediction">
         <div class="skill-name-cell">
           <span class="skill-name">price-build-handler</span>
           <span class="skill-source">Demand prediction</span>
@@ -255,7 +272,7 @@
         <span class="skill-chev">›</span>
       </a>
 
-      <a href="#" class="skill-row" style="text-decoration: none;">
+      <a href="#" class="skill-row" style="text-decoration: none;" data-workflow="demand-prediction">
         <div class="skill-name-cell">
           <span class="skill-name">regional-weights</span>
           <span class="skill-source">Demand prediction</span>
@@ -271,7 +288,7 @@
         <span class="skill-chev">›</span>
       </a>
 
-      <a href="#" class="skill-row" style="text-decoration: none;">
+      <a href="#" class="skill-row" style="text-decoration: none;" data-workflow="demand-prediction">
         <div class="skill-name-cell">
           <span class="skill-name">promo-uplift-handler</span>
           <span class="skill-source">Demand prediction</span>
@@ -288,7 +305,7 @@
         <span class="skill-chev">›</span>
       </a>
 
-      <a href="#" class="skill-row" style="text-decoration: none;">
+      <a href="#" class="skill-row" style="text-decoration: none;" data-workflow="labour-management">
         <div class="skill-name-cell">
           <span class="skill-name">shift-rebalancer</span>
           <span class="skill-source">Labour management</span>
@@ -304,7 +321,7 @@
         <span class="skill-chev">›</span>
       </a>
 
-      <a href="#" class="skill-row" style="text-decoration: none;">
+      <a href="#" class="skill-row" style="text-decoration: none;" data-workflow="labour-management">
         <div class="skill-name-cell">
           <span class="skill-name">ot-cap-checker</span>
           <span class="skill-source">Labour management</span>
@@ -321,7 +338,7 @@
         <span class="skill-chev">›</span>
       </a>
 
-      <a href="#" class="skill-row" style="text-decoration: none;">
+      <a href="#" class="skill-row" style="text-decoration: none;" data-workflow="union-contract-review">
         <div class="skill-name-cell">
           <span class="skill-name">clause-risk-flagger</span>
           <span class="skill-source">Union contract review</span>
@@ -338,7 +355,7 @@
         <span class="skill-chev">›</span>
       </a>
 
-      <a href="#" class="skill-row" style="text-decoration: none;">
+      <a href="#" class="skill-row" style="text-decoration: none;" data-workflow="customer-support">
         <div class="skill-name-cell">
           <span class="skill-name">refund-handler</span>
           <span class="skill-source">Customer support</span>
@@ -355,7 +372,7 @@
         <span class="skill-chev">›</span>
       </a>
 
-      <a href="#" class="skill-row" style="text-decoration: none;">
+      <a href="#" class="skill-row" style="text-decoration: none;" data-workflow="customer-support">
         <div class="skill-name-cell">
           <span class="skill-name">entitlement-checker</span>
           <span class="skill-source">Customer support</span>
@@ -394,6 +411,39 @@
       localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
       label.textContent = isDark ? 'Dark mode' : 'Light mode';
     });
+  })();
+
+  // Workflow scope filter — driven by ?workflow= query param
+  (function() {
+    const SLUG_TO_NAME = {
+      'demand-prediction': 'Demand prediction',
+      'labour-management': 'Labour management',
+      'union-contract-review': 'Union contract review',
+      'customer-support': 'Customer support',
+    };
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('workflow');
+    if (!slug || !SLUG_TO_NAME[slug]) return;
+
+    const chip = document.getElementById('scopeChip');
+    document.getElementById('scopeChipName').textContent = SLUG_TO_NAME[slug];
+    chip.classList.add('show');
+
+    const rows = document.querySelectorAll('.skill-row[data-workflow]');
+    let visible = 0;
+    rows.forEach(r => {
+      const match = r.getAttribute('data-workflow') === slug;
+      r.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    document.getElementById('scopeChipMeta').textContent = `${visible} of ${rows.length} skills shown`;
+
+    const sel = document.querySelector('select[name="workflow"]');
+    if (sel) {
+      Array.from(sel.options).forEach(opt => {
+        if (opt.text === SLUG_TO_NAME[slug]) sel.value = opt.value;
+      });
+    }
   })();
 </script>
 </body>

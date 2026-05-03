@@ -16,6 +16,15 @@
   .search-input { padding: 6px 12px 6px 30px; border-radius: 6px; font-size: 12.5px; color: var(--text); background: var(--bg); border: 1px solid var(--border); width: 240px; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3e%3ccircle cx='6' cy='6' r='4' fill='none' stroke='%2364748b' stroke-width='1.5'/%3e%3cpath stroke='%2364748b' stroke-width='1.5' stroke-linecap='round' d='M9 9l3 3'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: 9px center; font-family: ui-monospace, monospace; }
   .filter-divider { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
 
+  /* Workflow scope chip (shown when ?workflow= is in URL) */
+  .scope-chip { display: none; align-items: center; gap: 10px; padding: 9px 14px; background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 8px; margin-bottom: 14px; font-size: 12.5px; color: var(--text-2); }
+  .scope-chip.show { display: flex; }
+  .scope-chip-label { color: var(--text-muted); }
+  .scope-chip-value { color: var(--accent); font-weight: 500; }
+  .scope-chip-meta { color: var(--text-muted); margin-left: auto; }
+  .scope-chip-clear { color: var(--accent); font-size: 12px; padding: 3px 9px; border-radius: 4px; cursor: pointer; }
+  .scope-chip-clear:hover { background: rgba(59, 130, 246, 0.12); }
+
   /* Two-col trace browser */
   .trace-browser { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 16px; align-items: start; }
   @media (max-width: 1100px) { .trace-browser { grid-template-columns: 1fr; } }
@@ -130,6 +139,14 @@
       </div>
     </header>
 
+    <!-- Workflow scope chip — shown when ?workflow= param is set -->
+    <div class="scope-chip" id="scopeChip">
+      <span class="scope-chip-label">Filtered to workflow:</span>
+      <span class="scope-chip-value" id="scopeChipName">—</span>
+      <span class="scope-chip-meta" id="scopeChipMeta"></span>
+      <a href="15-traces.html" class="scope-chip-clear">Clear ✕</a>
+    </div>
+
     <div class="stats-row">
       <div class="card"><div class="card-title">Traces · 24h</div><div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">412</div><div style="font-size: 11.5px; color: var(--text-muted);">avg 17 / hour</div></div>
       <div class="card"><div class="card-title">Tool calls · 24h</div><div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">3,094</div><div style="font-size: 11.5px; color: var(--text-muted);">7.5 avg per trace</div></div>
@@ -161,49 +178,49 @@
       <div class="trace-list">
         <div class="trace-list-head"><span>Recent traces</span><span>412</span></div>
 
-        <div class="trace-row">
+        <div class="trace-row" data-workflow="demand-prediction">
           <div class="trace-id">tr-9f4c12-2026-04-21</div>
           <div class="trace-summary">forecast_demand · BOOT-W42</div>
           <div class="trace-meta"><span class="status-dot ok"></span>2.4s · 8 tools · Demand pred · 17m ago</div>
         </div>
 
-        <div class="trace-row selected">
+        <div class="trace-row selected" data-workflow="demand-prediction">
           <div class="trace-id">tr-9f4c13-2026-04-21</div>
           <div class="trace-summary">forecast_demand · COAT-N18</div>
           <div class="trace-meta"><span class="status-dot warn"></span>3.1s · 9 tools · Demand pred · 18m ago</div>
         </div>
 
-        <div class="trace-row">
+        <div class="trace-row" data-workflow="demand-prediction">
           <div class="trace-id">tr-9f4c14-2026-04-21</div>
           <div class="trace-summary">forecast_demand · GLV-Y04</div>
           <div class="trace-meta"><span class="status-dot ok"></span>1.8s · 6 tools · Demand pred · 19m ago</div>
         </div>
 
-        <div class="trace-row">
+        <div class="trace-row" data-workflow="customer-support">
           <div class="trace-id">tr-7c20f8-2026-04-21</div>
           <div class="trace-summary">refund_handle · ticket #28471</div>
           <div class="trace-meta"><span class="status-dot ok"></span>4.2s · 11 tools · Support · 22m ago</div>
         </div>
 
-        <div class="trace-row">
+        <div class="trace-row" data-workflow="labour-management">
           <div class="trace-id">tr-2a8e44-2026-04-21</div>
           <div class="trace-summary">balance_shifts · week 2026-W19</div>
           <div class="trace-meta"><span class="status-dot ok"></span>6.1s · 14 tools · Labour · 28m ago</div>
         </div>
 
-        <div class="trace-row">
+        <div class="trace-row" data-workflow="demand-prediction">
           <div class="trace-id">tr-c8f102-2026-04-21</div>
           <div class="trace-summary">forecast_demand · SCRF-W08</div>
           <div class="trace-meta"><span class="status-dot ok"></span>2.9s · 8 tools · Demand pred · 31m ago</div>
         </div>
 
-        <div class="trace-row">
+        <div class="trace-row" data-workflow="union-contract-review">
           <div class="trace-id">tr-de4118-2026-04-21</div>
           <div class="trace-summary">review_clause · §4.2 wage min.</div>
           <div class="trace-meta"><span class="status-dot ok"></span>5.4s · 7 tools · Contract · 41m ago</div>
         </div>
 
-        <div class="trace-row">
+        <div class="trace-row" data-workflow="demand-prediction">
           <div class="trace-id">tr-4b0a9c-2026-04-21</div>
           <div class="trace-summary">forecast_demand · BOOT-S22</div>
           <div class="trace-meta"><span class="status-dot error"></span>1.2s · 4 tools · Demand pred · 48m ago</div>
@@ -341,6 +358,39 @@
       localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
       label.textContent = isDark ? 'Dark mode' : 'Light mode';
     });
+  })();
+
+  // Workflow scope filter — driven by ?workflow= query param
+  (function() {
+    const SLUG_TO_NAME = {
+      'demand-prediction': 'Demand prediction',
+      'labour-management': 'Labour management',
+      'union-contract-review': 'Union contract review',
+      'customer-support': 'Customer support',
+    };
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('workflow');
+    if (!slug || !SLUG_TO_NAME[slug]) return;
+
+    const chip = document.getElementById('scopeChip');
+    document.getElementById('scopeChipName').textContent = SLUG_TO_NAME[slug];
+    chip.classList.add('show');
+
+    const rows = document.querySelectorAll('.trace-row[data-workflow]');
+    let visible = 0;
+    rows.forEach(r => {
+      const match = r.getAttribute('data-workflow') === slug;
+      r.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    document.getElementById('scopeChipMeta').textContent = `${visible} of ${rows.length} traces shown`;
+
+    const sel = document.querySelector('select[name="workflow"]');
+    if (sel) {
+      Array.from(sel.options).forEach(opt => {
+        if (opt.text === SLUG_TO_NAME[slug]) sel.value = opt.value;
+      });
+    }
   })();
 </script>
 </body>
