@@ -1117,113 +1117,108 @@
   <div class="section-inner">
     <div class="how-grid">
       <div class="how-diagram">
-        <svg viewBox="0 0 640 630" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="loop-title">
-          <title id="loop-title">The improvement loop. Bootstrap stem (Define, then Generate sim and evals and metric) feeds into the cycle (Run, Capture, Cluster by root cause, Eval grows, Propose, Approve and steer, Ship, returning to Run). Eval set, plus skill layer and history, sits at the center.</title>
+        <svg viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="loop-title">
+          <title id="loop-title">The improvement loop. The domain expert (top center) directs both Define (workflow + requirements, top right) and Approve + steer (plain-language steering, anytime). Six blocks ride a circle of radius 200 around the eval set: clockwise from 1 o'clock — Run, Capture, Cluster by root cause, Eval grows, Propose, Approve + steer — then ship back to Run. Eval set, plus skill layer and history, sits at the center.</title>
           <defs>
             <marker id="ld-arr-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L9,5 L0,10 z" fill="#6B7280"/></marker>
             <marker id="ld-arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L9,5 L0,10 z" fill="#3b82f6"/></marker>
           </defs>
 
-          <!-- ── Bootstrap stem ── -->
+          <!-- ── Domain expert (top center) ── -->
+          <g class="ld-person">
+            <circle cx="320" cy="28" r="9" fill="#FFFFFF" stroke="#0B0E14" stroke-width="1.6"/>
+            <path d="M 304 60 C 304 43 336 43 336 60" fill="#FFFFFF" stroke="#0B0E14" stroke-width="1.6" stroke-linecap="round"/>
+            <text x="320" y="80" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#6B7280" letter-spacing="0.12em">DOMAIN EXPERT</text>
+          </g>
+
+          <!-- Domain expert → Define (short, down-right) -->
+          <path d="M 336 54 Q 388 70 438 90" stroke="#6B7280" stroke-width="1.4" stroke-dasharray="4,3" fill="none" marker-end="url(#ld-arr-grey)"/>
+          <!-- Domain expert → Approve + steer (down-left, entering Approve+steer from its top-left to clear the closing-arc area) -->
+          <path d="M 304 54 Q 200 112 175 173" stroke="#6B7280" stroke-width="1.4" stroke-dasharray="4,3" fill="none" marker-end="url(#ld-arr-grey)"/>
+
+          <!-- ── Bootstrap stem: Define (top-right corner, outside the cycle ring) ── -->
           <g class="ld-stem">
-            <rect x="40" y="22" width="190" height="68" rx="4" fill="#FFFFFF" stroke="#D1D5DB" stroke-dasharray="3,3"/>
-            <circle cx="56" cy="44" r="3.2" fill="#9CA3AF"/>
-            <text x="68" y="48" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Define</text>
-            <text x="68" y="68" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Requirements + workflow</text>
+            <rect x="430" y="86" width="170" height="78" rx="4" fill="#FFFFFF" stroke="#D1D5DB" stroke-dasharray="3,3"/>
+            <circle cx="446" cy="108" r="3.2" fill="#9CA3AF"/>
+            <text x="458" y="112" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Define</text>
+            <text x="446" y="132" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Workflow + requirements</text>
+            <text x="446" y="150" font-family="'JetBrains Mono', monospace" font-size="9" fill="#9CA3AF" letter-spacing="0.04em">→ sim, evals, metric</text>
 
-            <rect x="410" y="22" width="190" height="68" rx="4" fill="#FFFFFF" stroke="#D1D5DB" stroke-dasharray="3,3"/>
-            <circle cx="426" cy="44" r="3.2" fill="#9CA3AF"/>
-            <text x="438" y="48" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Generate</text>
-            <text x="438" y="68" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Sim + evals + metric</text>
-
-            <path d="M 230 56 L 405 56" stroke="#6B7280" stroke-width="1.4" stroke-dasharray="4,3" fill="none" marker-end="url(#ld-arr-grey)"/>
-            <path d="M 480 92 Q 405 220 365 348" stroke="#6B7280" stroke-width="1.4" stroke-dasharray="4,3" fill="none" marker-end="url(#ld-arr-grey)"/>
+            <!-- Define → Run (down-left into Run's top edge) -->
+            <path d="M 488 164 Q 478 172 462 175" stroke="#6B7280" stroke-width="1.4" stroke-dasharray="4,3" fill="none" marker-end="url(#ld-arr-grey)"/>
           </g>
 
           <!-- ── Center: Eval set ── -->
           <g class="ld-center">
-            <circle cx="320" cy="365" r="78" fill="none" stroke="#E5E7EB" stroke-width="1"/>
-            <text x="320" y="362" text-anchor="middle" font-family="'Outfit', sans-serif" font-size="16" font-weight="700" fill="#0B0E14">Eval set</text>
-            <text x="320" y="384" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.06em">+ skill layer + history</text>
+            <circle cx="320" cy="380" r="80" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+            <text x="320" y="377" text-anchor="middle" font-family="'Outfit', sans-serif" font-size="16" font-weight="700" fill="#0B0E14">Eval set</text>
+            <text x="320" y="399" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.06em">+ skill layer + history</text>
           </g>
 
-          <!-- ── Cycle nodes (clockwise from top: Run, Capture, Eval grows, Propose, Approve+steer, Ship) ── -->
+          <!-- ── Cycle nodes — six blocks evenly spaced 60° apart on a circle of radius 200 around (320, 380). Approve+steer (11) ↔ Run (1), Propose (9) ↔ Capture (3), Eval grows (7) ↔ Cluster (5). The closing arc Approve+steer→Run carries the "ship · redeploy" step. -->
 
-          <!-- Run (top) -->
+          <!-- Approve + steer (11 o'clock — center 220,207) -->
           <g>
-            <rect x="250" y="180" width="140" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
-            <circle cx="265" cy="200" r="3.2" fill="#3b82f6" class="ld-cycle-dot d1"/>
-            <text x="277" y="204" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Run</text>
-            <text x="277" y="224" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Production</text>
+            <rect x="140" y="176" width="160" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
+            <circle cx="155" cy="196" r="3.2" fill="#3b82f6" class="ld-cycle-dot d6"/>
+            <text x="167" y="200" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Approve + steer</text>
+            <text x="167" y="220" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Plain language · anytime</text>
           </g>
 
-          <!-- Capture (top-right) -->
+          <!-- Run (1 o'clock — center 420,207) -->
           <g>
-            <rect x="430" y="240" width="160" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
-            <circle cx="445" cy="260" r="3.2" fill="#3b82f6" class="ld-cycle-dot d2"/>
-            <text x="457" y="264" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Capture</text>
-            <text x="457" y="284" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Failure trace</text>
+            <rect x="340" y="176" width="160" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
+            <circle cx="355" cy="196" r="3.2" fill="#3b82f6" class="ld-cycle-dot d1"/>
+            <text x="367" y="200" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Run</text>
+            <text x="367" y="220" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Production</text>
           </g>
 
-          <!-- Cluster (intermediate, smaller) -->
+          <!-- Capture (3 o'clock — center 520,380) -->
           <g>
-            <rect x="455" y="338" width="110" height="42" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
-            <circle cx="468" cy="352" r="2.8" fill="#3b82f6" class="ld-cycle-dot d3"/>
-            <text x="478" y="355" font-family="'Outfit', sans-serif" font-size="12" font-weight="600" fill="#0B0E14">Cluster</text>
-            <text x="478" y="371" font-family="'JetBrains Mono', monospace" font-size="8.5" fill="#6B7280" letter-spacing="0.04em">By root cause</text>
+            <rect x="440" y="349" width="160" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
+            <circle cx="455" cy="369" r="3.2" fill="#3b82f6" class="ld-cycle-dot d2"/>
+            <text x="467" y="373" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Capture</text>
+            <text x="467" y="393" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Failure trace</text>
           </g>
 
-          <!-- Eval grows (bottom-right) -->
+          <!-- Cluster (5 o'clock — center 420,553) -->
           <g>
-            <rect x="430" y="408" width="160" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
-            <circle cx="445" cy="428" r="3.2" fill="#3b82f6" class="ld-cycle-dot d4"/>
-            <text x="457" y="432" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Eval grows</text>
-            <text x="457" y="452" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">+ new test case</text>
+            <rect x="340" y="522" width="160" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
+            <circle cx="355" cy="542" r="3.2" fill="#3b82f6" class="ld-cycle-dot d3"/>
+            <text x="367" y="546" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Cluster</text>
+            <text x="367" y="566" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">By root cause</text>
           </g>
 
-          <!-- Propose (bottom) -->
+          <!-- Eval grows (7 o'clock — center 220,553) -->
           <g>
-            <rect x="250" y="488" width="140" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
-            <circle cx="265" cy="508" r="3.2" fill="#3b82f6" class="ld-cycle-dot d5"/>
-            <text x="277" y="512" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Propose</text>
-            <text x="277" y="532" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Regression-tested</text>
+            <rect x="140" y="522" width="160" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
+            <circle cx="155" cy="542" r="3.2" fill="#3b82f6" class="ld-cycle-dot d4"/>
+            <text x="167" y="546" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Eval grows</text>
+            <text x="167" y="566" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">+ new test case</text>
           </g>
 
-          <!-- Approve + steer (bottom-left) -->
+          <!-- Propose (9 o'clock — center 120,380) -->
           <g>
-            <rect x="50" y="408" width="180" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
-            <circle cx="65" cy="428" r="3.2" fill="#3b82f6" class="ld-cycle-dot d6"/>
-            <text x="77" y="432" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Approve + steer</text>
-            <text x="77" y="452" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Plain language</text>
+            <rect x="40" y="349" width="160" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
+            <circle cx="55" cy="369" r="3.2" fill="#3b82f6" class="ld-cycle-dot d5"/>
+            <text x="67" y="373" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Propose</text>
+            <text x="67" y="393" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Regression-tested</text>
           </g>
 
-          <!-- Ship (top-left) -->
-          <g>
-            <rect x="70" y="240" width="140" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
-            <circle cx="85" cy="260" r="3.2" fill="#3b82f6" class="ld-cycle-dot d7"/>
-            <text x="97" y="264" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Ship</text>
-            <text x="97" y="284" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">→ back to Run</text>
-          </g>
-
-          <!-- ── Cycle arrows (clockwise, each an arc of the ellipse rx=195 ry=165) ── -->
+          <!-- ── Cycle arrows (clockwise, arcs of the radius-200 circle around 320,380) ── -->
           <!-- Run → Capture -->
-          <path d="M 390 211 A 195 165 0 0 1 447 240" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <path d="M 500 207 A 200 200 0 0 1 520 349" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
           <!-- Capture → Cluster -->
-          <path d="M 500 302 A 195 165 0 0 1 512 338" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <path d="M 520 411 A 200 200 0 0 1 500 522" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
           <!-- Cluster → Eval grows -->
-          <path d="M 514 380 A 195 165 0 0 1 508 408" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <path d="M 340 580 A 200 200 0 0 1 300 580" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
           <!-- Eval grows → Propose -->
-          <path d="M 470 470 A 195 165 0 0 1 390 519" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <path d="M 140 522 A 200 200 0 0 1 120 411" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
           <!-- Propose → Approve + steer -->
-          <path d="M 250 519 A 195 165 0 0 1 170 470" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
-          <!-- Approve + steer → Ship -->
-          <path d="M 132 408 A 195 165 0 0 1 140 302" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
-          <!-- Ship → Run -->
-          <path d="M 193 240 A 195 165 0 0 1 250 211" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
-
-          <!-- ── Inner sub-loop: Approve + steer → Propose (steer / refine) ── -->
-          <path d="M 140 470 C 140 605 320 605 320 553" stroke="#6B7280" stroke-width="1.4" stroke-dasharray="4,3" fill="none" marker-end="url(#ld-arr-grey)"/>
-          <text x="230" y="617" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#6B7280" letter-spacing="0.05em">steer · re-gate · re-review</text>
+          <path d="M 120 349 A 200 200 0 0 1 140 238" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <!-- Approve + steer → Run (closes the loop; carries the "ship · redeploy" step) -->
+          <path d="M 300 207 Q 320 168 340 207" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <text x="320" y="164" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#6B7280" letter-spacing="0.08em">ship · redeploy</text>
         </svg>
       </div>
 
@@ -1243,7 +1238,6 @@
           <li><span class="step-id">04</span><span><strong>Eval grows</strong> — each cluster becomes a reusable eval case. The seed set compounds with every cycle.</span></li>
           <li><span class="step-id">05</span><span><strong>Propose</strong> — a candidate fix passes two gates: it must resolve the new failure and leave every prior fix intact. The eval set is the gate.</span></li>
           <li><span class="step-id">06</span><span><strong>Approve + steer</strong> — the domain expert directs the agent in plain language at any time. Approve to ship; redirect to refine; reject to create an eval case. Workflow edits go through the same gate, with tradeoffs visible before commit.</span></li>
-          <li><span class="step-id">07</span><span><strong>Ship</strong> — the agent redeploys, measurably better than the cycle before. Auditable, exportable, yours.</span></li>
         </ol>
       </div>
     </div>
