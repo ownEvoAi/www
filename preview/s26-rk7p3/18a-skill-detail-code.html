@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>feature_engineer.py — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SE1GLT6JSD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SE1GLT6JSD', {
+    content_group: 'preview'
+  });
+</script>
+
+<style>
+  .crumb-row { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
+  .crumb-row a { color: var(--text-3); }
+  .crumb-row a:hover { color: var(--text); }
+  .crumb-row .sep { color: var(--text-faint); }
+
+  .skill-header { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 22px 26px; margin-bottom: 18px; box-shadow: var(--shadow-sm); }
+  .skill-header-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
+  .skill-name-h { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 22px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+  .skill-pills { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  .cap-tag { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 10px; background: var(--surface-2); color: var(--text-3); }
+  .skill-actions { display: flex; gap: 6px; }
+
+  .meta-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .meta-cell { display: flex; flex-direction: column; gap: 2px; }
+  .meta-label { font-size: 10.5px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; }
+  .meta-value { font-size: 13px; color: var(--text-2); font-weight: 500; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { padding: 10px 14px; font-size: 13px; color: var(--text-3); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; cursor: pointer; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+  /* Content layout */
+  .skill-grid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; align-items: start; }
+  @media (max-width: 1100px) { .skill-grid { grid-template-columns: 1fr; } }
+
+  .section-title { font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin: 24px 0 10px; }
+  .section-title:first-of-type { margin-top: 0; }
+
+  /* Code card */
+  .code-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-sm); overflow: hidden; }
+  .code-head { padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .code-head-actions { display: flex; gap: 6px; }
+  .code-head-actions a { font-size: 11px; color: var(--text-muted); text-transform: none; letter-spacing: 0; padding: 3px 8px; border-radius: 3px; }
+  .code-head-actions a:hover { background: var(--bg); color: var(--accent); }
+  .code-body { padding: 0; max-height: 560px; overflow-y: auto; }
+  pre.code-block { margin: 0; padding: 18px 0; font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 12.5px; line-height: 1.6; color: var(--text-2); background: transparent; }
+  pre.code-block .code-line { display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: baseline; }
+  pre.code-block .ln { color: var(--text-faint); text-align: right; padding-right: 14px; user-select: none; font-size: 11px; }
+  pre.code-block .ln-content { padding-right: 18px; white-space: pre-wrap; word-break: break-word; }
+  /* diff variants */
+  pre.code-block .code-line.added { background: rgba(34, 197, 94, 0.10); }
+  pre.code-block .code-line.added .ln { color: rgba(34, 197, 94, 0.75); }
+  pre.code-block .code-line.added .ln::after { content: " +"; color: rgba(34, 197, 94, 0.75); }
+  pre.code-block .code-line.removed { background: rgba(239, 68, 68, 0.10); text-decoration: line-through; opacity: 0.85; }
+  pre.code-block .code-line.removed .ln { color: rgba(239, 68, 68, 0.75); }
+  pre.code-block .code-line.removed .ln::after { content: " -"; color: rgba(239, 68, 68, 0.75); }
+  pre.code-block .code-line.context .ln::after { content: "  "; }
+  /* syntax tokens */
+  .tok-kw { color: #c084fc; font-weight: 500; }
+  .tok-fn { color: #60a5fa; }
+  .tok-str { color: #34d399; }
+  .tok-num { color: #fb923c; }
+  .tok-com { color: var(--text-muted); font-style: italic; }
+  .tok-cls { color: #facc15; }
+  [data-theme="light"] .tok-kw { color: #7c3aed; }
+  [data-theme="light"] .tok-fn { color: #2563eb; }
+  [data-theme="light"] .tok-str { color: #047857; }
+  [data-theme="light"] .tok-num { color: #c2410c; }
+  [data-theme="light"] .tok-cls { color: #b45309; }
+
+  /* Spec / signature card */
+  .sig-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 18px 22px; box-shadow: var(--shadow-sm); margin-top: 16px; }
+  .sig-row { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 14px; padding: 8px 0; border-bottom: 1px solid var(--border); align-items: baseline; font-size: 13px; }
+  .sig-row:first-child { padding-top: 0; }
+  .sig-row:last-child { border-bottom: 0; padding-bottom: 0; }
+  .sig-key { font-size: 11px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; }
+  .sig-val { color: var(--text-2); font-family: ui-monospace, monospace; font-size: 12.5px; line-height: 1.55; }
+  .sig-val .arg { color: var(--text-muted); }
+
+  /* Sidebar cards */
+  .sb-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; box-shadow: var(--shadow-sm); }
+  .sb-title { font-size: 11.5px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
+  .sb-list { display: flex; flex-direction: column; gap: 8px; }
+  .sb-item { display: flex; align-items: center; gap: 8px; font-size: 12.5px; }
+  .sb-item-name { color: var(--text-2); flex: 1; }
+  .sb-item-meta { color: var(--text-muted); font-size: 11.5px; }
+  .ver-list { display: flex; flex-direction: column; gap: 4px; }
+  .ver-row { display: grid; grid-template-columns: 30px minmax(0, 1fr) 60px; gap: 8px; padding: 5px 0; font-size: 12px; color: var(--text-3); align-items: center; }
+  .ver-tag { font-family: ui-monospace, monospace; font-weight: 500; color: var(--text); font-size: 11.5px; }
+  .ver-current { color: var(--accent); font-weight: 600; }
+  .ver-when { color: var(--text-muted); font-size: 11px; text-align: right; }
+
+  /* Diff stats banner */
+  .diff-banner { display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: rgba(59, 130, 246, 0.06); border: 1px solid rgba(59, 130, 246, 0.20); border-radius: 6px; font-size: 12.5px; color: var(--text-2); margin-bottom: 12px; }
+  .diff-banner .stat-add { color: rgba(34, 197, 94, 1); font-weight: 600; }
+  .diff-banner .stat-del { color: rgba(239, 68, 68, 1); font-weight: 600; }
+  .diff-banner .stat-meta { color: var(--text-muted); margin-left: auto; font-family: ui-monospace, monospace; font-size: 11.5px; }
+
+  /* Eval test list */
+  .eval-list { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-sm); overflow: hidden; }
+  .eval-row { display: grid; grid-template-columns: 60px 1fr 100px 110px; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--border); font-size: 12.5px; align-items: center; }
+  .eval-row:last-child { border-bottom: 0; }
+  .eval-row .eid { font-family: ui-monospace, monospace; color: var(--text-muted); font-size: 11.5px; }
+  .eval-row .name { color: var(--text-2); }
+  .eval-row .delta { font-family: ui-monospace, monospace; font-size: 11.5px; color: var(--text-muted); text-align: right; }
+  .eval-row .status-tag { font-size: 10.5px; font-weight: 500; padding: 2px 8px; border-radius: 10px; text-align: center; text-transform: uppercase; letter-spacing: 0.05em; }
+  .eval-row .status-tag.pass { background: rgba(34, 197, 94, 0.15); color: rgba(21, 128, 61, 1); }
+  .eval-row .status-tag.fixed { background: rgba(59, 130, 246, 0.15); color: var(--accent); }
+  [data-theme="dark"] .eval-row .status-tag.pass { color: rgba(74, 222, 128, 1); }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>18a / 32</code> · skill detail · Python code variant (M5 code-gen-loop) ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+    <div class="workspace-switcher"><span class="workspace-avatar">A</span><span class="nav-label">Acme Distribution</span><span class="chev">▾</span></div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg><span class="nav-label">Health</span></a>
+    <a href="02-inbox.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg><span class="nav-label">Inbox</span><span class="nav-badge">12</span></a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Demand prediction</span><span class="nav-badge">3</span></a>
+    <a href="20-labour-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Labour management</span><span class="nav-badge">4</span></a>
+    <a href="22-contract-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Union contract review</span><span class="nav-badge">2</span></a>
+    <a href="21-support-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Customer support</span><span class="nav-badge">3</span></a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg><span class="nav-label">New workflow</span></a>
+
+    <div class="nav-section">Library</div>
+    <a href="11-skills-registry.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg><span class="nav-label">Skills</span></a>
+    <a href="15-traces.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg><span class="nav-label">Traces</span></a>
+    <a href="27-primitives.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5"/><rect x="9" y="2" width="5" height="5"/><rect x="2" y="9" width="5" height="5"/><rect x="9" y="9" width="5" height="5"/></svg><span class="nav-label">Views</span></a>
+    <a href="08-audit.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg><span class="nav-label">Audit</span></a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg><span class="nav-label">Settings</span></a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg><span class="nav-label" id="themeLabel">Dark mode</span></button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <nav class="crumb-row">
+      <a href="11-skills-registry.html">Skills</a>
+      <span class="sep">/</span>
+      <a href="05-workflow-overview.html" style="color: var(--text-3);">Demand prediction</a>
+      <span class="sep">/</span>
+      <span>feature_engineer.py</span>
+    </nav>
+
+    <!-- Skill header -->
+    <div class="skill-header">
+      <div class="skill-header-top">
+        <div>
+          <div class="skill-name-h">feature_engineer.py</div>
+          <div class="skill-pills">
+            <span class="pill outline">v4</span>
+            <span class="pill green">● Active in prod</span>
+            <span class="cap-tag">code-skill</span>
+            <span class="cap-tag">feature-engineering</span>
+            <span class="cap-tag">m5</span>
+          </div>
+        </div>
+        <div class="skill-actions">
+          <button class="btn btn-secondary"><svg class="btn-icon" viewBox="0 0 16 16"><path d="M8 2 L8 11 M5 8 L8 11 L11 8 M3 14 L13 14"/></svg> Export</button>
+          <button class="btn btn-secondary">Revert to v3</button>
+          <button class="btn btn-primary">Edit code</button>
+        </div>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-cell"><span class="meta-label">Workflow</span><span class="meta-value"><a href="05-workflow-overview.html" style="color: var(--accent);">Demand prediction</a></span></div>
+        <div class="meta-cell"><span class="meta-label">Author</span><span class="meta-value">ownEvo agent</span></div>
+        <div class="meta-cell"><span class="meta-label">Generated</span><span class="meta-value">M5 day 12 · cluster #14</span></div>
+        <div class="meta-cell"><span class="meta-label">Last update</span><span class="meta-value">3h ago · v3 → v4</span></div>
+        <div class="meta-cell"><span class="meta-label">Sandbox</span><span class="meta-value">Modal · py-3.11 · pinned</span></div>
+        <div class="meta-cell"><span class="meta-label">Eval coverage</span><span class="meta-value">38 cases</span></div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <a href="#" class="tab" data-tab="content">Content</a>
+      <a href="#" class="tab active" data-tab="diff">Diff <span class="muted" style="margin-left: 4px; font-size: 11px;">v3 → v4</span></a>
+      <a href="#" class="tab" data-tab="versions">Versions <span class="muted" style="margin-left: 4px; font-size: 11px;">4</span></a>
+      <a href="#" class="tab" data-tab="usedby">Used by <span class="muted" style="margin-left: 4px; font-size: 11px;">1</span></a>
+      <a href="17-eval-cases.html" class="tab">Eval cases <span class="muted" style="margin-left: 4px; font-size: 11px;">38</span></a>
+      <a href="08-audit.html?workflow=demand-prediction" class="tab">Audit</a>
+    </div>
+
+    <div class="skill-grid">
+      <!-- Main: code + signature + recent eval results -->
+      <div>
+        <h2 class="section-title">Diff · v3 → v4</h2>
+        <div class="diff-banner">
+          <span><span class="stat-add">+9 lines</span> added, <span class="stat-del">−4 lines</span> removed</span>
+          <span style="color: var(--text-muted);">·</span>
+          <span><strong style="color: var(--text);">Hypothesis:</strong> seasonal turn signal needs 1-week-prior-promotion overlap as a feature; cluster #14 (Pacific NW Q4 winter footwear) shows agent under-predicts when promo overlaps with cold snap.</span>
+          <span class="stat-meta">approved 3h ago · audit <a href="08-audit.html" style="color: var(--accent);">#m5-d12-14</a></span>
+        </div>
+        <div class="code-card">
+          <div class="code-head">
+            <span>feature_engineer.py · 92 lines · 3.1 KB</span>
+            <div class="code-head-actions">
+              <a href="#">Copy v4</a>
+              <a href="#">Download v4</a>
+              <a href="#">View raw diff</a>
+            </div>
+          </div>
+          <div class="code-body">
+<pre class="code-block"><span class="code-line context"><span class="ln">1</span><span class="ln-content"><span class="tok-kw">from</span> <span class="tok-fn">__future__</span> <span class="tok-kw">import</span> annotations</span></span><span class="code-line context"><span class="ln">2</span><span class="ln-content"><span class="tok-kw">import</span> pandas <span class="tok-kw">as</span> pd</span></span><span class="code-line context"><span class="ln">3</span><span class="ln-content"><span class="tok-kw">import</span> numpy <span class="tok-kw">as</span> np</span></span><span class="code-line context"><span class="ln">4</span><span class="ln-content"></span></span><span class="code-line context"><span class="ln">5</span><span class="ln-content"><span class="tok-kw">def</span> <span class="tok-fn">build_calendar_features</span>(df: pd.DataFrame) -> pd.DataFrame:</span></span><span class="code-line context"><span class="ln">6</span><span class="ln-content">    <span class="tok-com"># week-of-year, day-of-week, holiday flags</span></span></span><span class="code-line context"><span class="ln">7</span><span class="ln-content">    df[<span class="tok-str">"woy"</span>] = df[<span class="tok-str">"date"</span>].dt.isocalendar().week</span></span><span class="code-line context"><span class="ln">8</span><span class="ln-content">    df[<span class="tok-str">"dow"</span>] = df[<span class="tok-str">"date"</span>].dt.dayofweek</span></span><span class="code-line context"><span class="ln">9</span><span class="ln-content">    df[<span class="tok-str">"is_snap_day"</span>] = df[<span class="tok-str">"snap_TX"</span>] | df[<span class="tok-str">"snap_CA"</span>] | df[<span class="tok-str">"snap_WI"</span>]</span></span><span class="code-line context"><span class="ln">10</span><span class="ln-content">    <span class="tok-kw">return</span> df</span></span><span class="code-line context"><span class="ln">11</span><span class="ln-content"></span></span><span class="code-line context"><span class="ln">12</span><span class="ln-content"><span class="tok-kw">def</span> <span class="tok-fn">build_lag_features</span>(df: pd.DataFrame, lags: <span class="tok-cls">list</span>[<span class="tok-cls">int</span>] = [<span class="tok-num">7</span>, <span class="tok-num">14</span>, <span class="tok-num">28</span>]) -> pd.DataFrame:</span></span><span class="code-line context"><span class="ln">13</span><span class="ln-content">    <span class="tok-kw">for</span> lag <span class="tok-kw">in</span> lags:</span></span><span class="code-line context"><span class="ln">14</span><span class="ln-content">        df[<span class="tok-str">f"sales_lag_{lag}"</span>] = df.groupby(<span class="tok-str">"id"</span>)[<span class="tok-str">"sales"</span>].shift(lag)</span></span><span class="code-line context"><span class="ln">15</span><span class="ln-content">    <span class="tok-kw">return</span> df</span></span><span class="code-line context"><span class="ln">16</span><span class="ln-content"></span></span><span class="code-line context"><span class="ln">17</span><span class="ln-content"><span class="tok-kw">def</span> <span class="tok-fn">build_rolling_features</span>(df: pd.DataFrame, windows: <span class="tok-cls">list</span>[<span class="tok-cls">int</span>] = [<span class="tok-num">7</span>, <span class="tok-num">28</span>]) -> pd.DataFrame:</span></span><span class="code-line removed"><span class="ln">18</span><span class="ln-content">    <span class="tok-kw">for</span> w <span class="tok-kw">in</span> windows:</span></span><span class="code-line removed"><span class="ln">19</span><span class="ln-content">        df[<span class="tok-str">f"roll_mean_{w}"</span>] = df.groupby(<span class="tok-str">"id"</span>)[<span class="tok-str">"sales"</span>].rolling(w).mean().values</span></span><span class="code-line removed"><span class="ln">20</span><span class="ln-content">        df[<span class="tok-str">f"roll_std_{w}"</span>]  = df.groupby(<span class="tok-str">"id"</span>)[<span class="tok-str">"sales"</span>].rolling(w).std().values</span></span><span class="code-line removed"><span class="ln">21</span><span class="ln-content">    <span class="tok-kw">return</span> df</span></span><span class="code-line added"><span class="ln">18</span><span class="ln-content">    <span class="tok-kw">for</span> w <span class="tok-kw">in</span> windows:</span></span><span class="code-line added"><span class="ln">19</span><span class="ln-content">        grp = df.groupby(<span class="tok-str">"id"</span>)[<span class="tok-str">"sales"</span>]</span></span><span class="code-line added"><span class="ln">20</span><span class="ln-content">        df[<span class="tok-str">f"roll_mean_{w}"</span>] = grp.rolling(w, min_periods=<span class="tok-num">1</span>).mean().values</span></span><span class="code-line added"><span class="ln">21</span><span class="ln-content">        df[<span class="tok-str">f"roll_std_{w}"</span>]  = grp.rolling(w, min_periods=<span class="tok-num">1</span>).std().values</span></span><span class="code-line added"><span class="ln">22</span><span class="ln-content">    <span class="tok-kw">return</span> df</span></span><span class="code-line context"><span class="ln">23</span><span class="ln-content"></span></span><span class="code-line added"><span class="ln">24</span><span class="ln-content"><span class="tok-com"># NEW v4 — addresses cluster #14 (Pacific NW Q4 winter footwear under-prediction)</span></span></span><span class="code-line added"><span class="ln">25</span><span class="ln-content"><span class="tok-kw">def</span> <span class="tok-fn">build_promo_overlap_features</span>(df: pd.DataFrame) -> pd.DataFrame:</span></span><span class="code-line added"><span class="ln">26</span><span class="ln-content">    <span class="tok-com"># 1-week-prior promotion flag — when promo runs the week BEFORE the forecast week</span></span></span><span class="code-line added"><span class="ln">27</span><span class="ln-content">    df[<span class="tok-str">"promo_lag_1w"</span>] = df.groupby(<span class="tok-str">"id"</span>)[<span class="tok-str">"sell_price"</span>].pct_change(<span class="tok-num">7</span>).fillna(<span class="tok-num">0</span>) &lt; -<span class="tok-num">0.10</span></span></span><span class="code-line added"><span class="ln">28</span><span class="ln-content">    <span class="tok-com"># cold-snap regional flag — temp anomaly for Pacific NW stores in current week</span></span></span><span class="code-line added"><span class="ln">29</span><span class="ln-content">    df[<span class="tok-str">"cold_snap_pnw"</span>] = (df[<span class="tok-str">"region"</span>] == <span class="tok-str">"PNW"</span>) &amp; (df[<span class="tok-str">"temp_anomaly"</span>] &lt; -<span class="tok-num">5</span>)</span></span><span class="code-line added"><span class="ln">30</span><span class="ln-content">    <span class="tok-com"># interaction term: promo overlap × cold snap — the cluster #14 root cause</span></span></span><span class="code-line added"><span class="ln">31</span><span class="ln-content">    df[<span class="tok-str">"promo_x_cold_pnw"</span>] = df[<span class="tok-str">"promo_lag_1w"</span>] &amp; df[<span class="tok-str">"cold_snap_pnw"</span>]</span></span><span class="code-line added"><span class="ln">32</span><span class="ln-content">    <span class="tok-kw">return</span> df</span></span><span class="code-line context"><span class="ln">33</span><span class="ln-content"></span></span><span class="code-line context"><span class="ln">34</span><span class="ln-content"><span class="tok-kw">def</span> <span class="tok-fn">build_features</span>(df: pd.DataFrame) -> pd.DataFrame:</span></span><span class="code-line context"><span class="ln">35</span><span class="ln-content">    df = build_calendar_features(df)</span></span><span class="code-line context"><span class="ln">36</span><span class="ln-content">    df = build_lag_features(df)</span></span><span class="code-line context"><span class="ln">37</span><span class="ln-content">    df = build_rolling_features(df)</span></span><span class="code-line added"><span class="ln">38</span><span class="ln-content">    df = build_promo_overlap_features(df)</span></span><span class="code-line context"><span class="ln">39</span><span class="ln-content">    <span class="tok-kw">return</span> df.fillna(<span class="tok-num">0</span>)</span></span></pre>
+          </div>
+        </div>
+
+        <h2 class="section-title">Function signatures (extracted)</h2>
+        <div class="sig-card">
+          <div class="sig-row">
+            <span class="sig-key">Entrypoint</span>
+            <span class="sig-val">build_features(df: <span class="arg">pd.DataFrame</span>) -&gt; pd.DataFrame</span>
+          </div>
+          <div class="sig-row">
+            <span class="sig-key">Inputs</span>
+            <span class="sig-val">DataFrame columns: <span class="arg">id, date, sales, sell_price, snap_TX, snap_CA, snap_WI, region, temp_anomaly</span></span>
+          </div>
+          <div class="sig-row">
+            <span class="sig-key">Outputs</span>
+            <span class="sig-val">Same DataFrame + columns: <span class="arg">woy, dow, is_snap_day, sales_lag_{7,14,28}, roll_mean_{7,28}, roll_std_{7,28}, promo_lag_1w, cold_snap_pnw, promo_x_cold_pnw</span></span>
+          </div>
+          <div class="sig-row">
+            <span class="sig-key">Sandbox</span>
+            <span class="sig-val">Modal · py-3.11 · pandas==2.2.* numpy==1.26.* (pinned in lockfile)</span>
+          </div>
+          <div class="sig-row">
+            <span class="sig-key">Determinism</span>
+            <span class="sig-val">No randomness · same input DataFrame → same output (verified by replay test)</span>
+          </div>
+        </div>
+
+        <h2 class="section-title">Eval cases this change moved</h2>
+        <div class="eval-list">
+          <div class="eval-row">
+            <span class="eid">eval-247</span>
+            <span class="name">cluster-14: Pacific NW winter footwear, promo-overlap weeks</span>
+            <span class="delta">RMSE 0.41 → 0.28</span>
+            <span class="status-tag fixed">fixed</span>
+          </div>
+          <div class="eval-row">
+            <span class="eid">eval-248</span>
+            <span class="name">cluster-14: PNW cold-snap weeks (no promo)</span>
+            <span class="delta">RMSE 0.39 → 0.31</span>
+            <span class="status-tag fixed">fixed</span>
+          </div>
+          <div class="eval-row">
+            <span class="eid">eval-91</span>
+            <span class="name">long-tail SKU sparse-sales weeks (regression check)</span>
+            <span class="delta">RMSE 0.62 → 0.62</span>
+            <span class="status-tag pass">no regress</span>
+          </div>
+          <div class="eval-row">
+            <span class="eid">eval-156</span>
+            <span class="name">SNAP-day spike weeks (regression check)</span>
+            <span class="delta">RMSE 0.34 → 0.33</span>
+            <span class="status-tag pass">no regress</span>
+          </div>
+          <div class="eval-row">
+            <span class="eid">eval-202</span>
+            <span class="name">holiday window forecast accuracy (regression check)</span>
+            <span class="delta">RMSE 0.29 → 0.29</span>
+            <span class="status-tag pass">no regress</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside>
+        <div class="sb-card">
+          <div class="sb-title">Version history</div>
+          <div class="ver-list">
+            <div class="ver-row">
+              <span class="ver-tag ver-current">v4</span>
+              <span style="color: var(--text); font-weight: 500;">Promo-overlap × cold-snap features</span>
+              <span class="ver-when">3h ago</span>
+            </div>
+            <div class="ver-row">
+              <span class="ver-tag">v3</span>
+              <span>Rolling-window features added</span>
+              <span class="ver-when">2d ago</span>
+            </div>
+            <div class="ver-row">
+              <span class="ver-tag">v2</span>
+              <span>SNAP-day binary flag</span>
+              <span class="ver-when">5d ago</span>
+            </div>
+            <div class="ver-row">
+              <span class="ver-tag">v1</span>
+              <span>Day-1 baseline · agent-written</span>
+              <span class="ver-when">12d ago</span>
+            </div>
+          </div>
+          <a href="#" style="font-size: 12px; color: var(--accent); margin-top: 10px; display: inline-block;">View full diff history →</a>
+        </div>
+
+        <div class="sb-card">
+          <div class="sb-title">Used by pipeline</div>
+          <div class="sb-list">
+            <div class="sb-item">
+              <svg style="width: 14px; height: 14px; color: var(--text-muted);" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+              <span class="sb-item-name"><a href="05-workflow-overview.html" style="color: var(--text-2);">Demand prediction</a></span>
+              <span class="sb-item-meta">M5 loop</span>
+            </div>
+          </div>
+          <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 10px; line-height: 1.5;">Imported by <code style="font-family: ui-monospace, monospace; background: var(--surface); padding: 1px 4px; border-radius: 3px;">model_trainer.py</code>, <code style="font-family: ui-monospace, monospace; background: var(--surface); padding: 1px 4px; border-radius: 3px;">predictor.py</code></div>
+        </div>
+
+        <div class="sb-card">
+          <div class="sb-title">Capability tags</div>
+          <div class="sb-list" style="flex-direction: row; flex-wrap: wrap; gap: 4px;">
+            <span class="cap-tag">code-skill</span>
+            <span class="cap-tag">feature-engineering</span>
+            <span class="cap-tag">m5</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; line-height: 1.45;">Queryable via <code style="font-family: ui-monospace, monospace; background: var(--surface); padding: 1px 4px; border-radius: 3px;">list_skills(capability="feature-engineering")</code></div>
+        </div>
+
+        <div class="sb-card">
+          <div class="sb-title">Provenance</div>
+          <div style="font-size: 12.5px; color: var(--text-3); line-height: 1.55;">Generated by ownEvo agent · proposal in response to <a href="16-failures.html" style="color: var(--accent);">cluster #14</a> · gate passed 47/48 prior eval cases · approved by <em>founder@ownevo.ai</em></div>
+        </div>
+
+        <div class="sb-card">
+          <div class="sb-title">Sandbox</div>
+          <div style="font-size: 12.5px; color: var(--text-3); line-height: 1.55;">Modal · python:3.11 · deps pinned in lockfile · 30s timeout · 4GB memory · audit-chain entry on every execution</div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>

@@ -280,6 +280,77 @@
       </div>
     </section>
 
+    <!-- ── Agent anatomy ── -->
+    <section style="margin-bottom: 22px;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px;">
+        <div style="font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em;">Agent anatomy</div>
+        <a href="11-skills-registry.html?workflow=demand-prediction" style="font-size: 12px; color: var(--accent);">View skill registry →</a>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: stretch;">
+
+        <!-- Skills card -->
+        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <div style="font-size: 13px; font-weight: 500; color: var(--text);">Skills active</div>
+            <span style="font-size: 11.5px; color: var(--text-muted);">9 versions</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 5px;">
+            <a href="18a-skill-detail-code.html" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-radius: 4px; font-size: 12.5px; color: var(--text-2); transition: background 0.12s;" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='transparent'">
+              <span style="font-family: ui-monospace, monospace; font-size: 12px;">feature_engineer.py</span>
+              <span style="display: flex; gap: 6px; align-items: center;"><span class="pill outline" style="font-size: 10px;">v4</span><span class="pill green" style="font-size: 10px;">● live</span></span>
+            </a>
+            <a href="18a-skill-detail-code.html" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-radius: 4px; font-size: 12.5px; color: var(--text-2); transition: background 0.12s;" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='transparent'">
+              <span style="font-family: ui-monospace, monospace; font-size: 12px;">model_trainer.py</span>
+              <span style="display: flex; gap: 6px; align-items: center;"><span class="pill outline" style="font-size: 10px;">v3</span><span class="pill green" style="font-size: 10px;">● live</span></span>
+            </a>
+            <a href="18a-skill-detail-code.html" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-radius: 4px; font-size: 12.5px; color: var(--text-2); transition: background 0.12s;" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='transparent'">
+              <span style="font-family: ui-monospace, monospace; font-size: 12px;">outlier_handler.py</span>
+              <span style="display: flex; gap: 6px; align-items: center;"><span class="pill outline" style="font-size: 10px;">v2</span><span class="pill green" style="font-size: 10px;">● live</span></span>
+            </a>
+            <a href="18-skill-detail.html" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-radius: 4px; font-size: 12.5px; color: var(--text-2); transition: background 0.12s;" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='transparent'">
+              <span style="font-family: ui-monospace, monospace; font-size: 12px;">seasonal-anomaly-detector</span>
+              <span style="display: flex; gap: 6px; align-items: center;"><span class="pill outline" style="font-size: 10px;">v4</span><span class="pill green" style="font-size: 10px;">● live</span></span>
+            </a>
+            <a href="11-skills-registry.html?workflow=demand-prediction" style="font-size: 11.5px; color: var(--accent); padding: 4px 8px;">+5 more skills →</a>
+          </div>
+        </div>
+
+        <!-- Tools card -->
+        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <div style="font-size: 13px; font-weight: 500; color: var(--text);">Tools available</div>
+            <span style="font-size: 11.5px; color: var(--text-muted);">7 tools</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 5px;">
+            <div style="padding: 6px 8px; font-size: 12px; color: var(--text-3); font-family: ui-monospace, monospace;">query_sap_sales(<span style="color: var(--text-muted);">sku, region, years</span>)</div>
+            <div style="padding: 6px 8px; font-size: 12px; color: var(--text-3); font-family: ui-monospace, monospace;">fetch_noaa_weather(<span style="color: var(--text-muted);">region, weeks_ahead</span>)</div>
+            <div style="padding: 6px 8px; font-size: 12px; color: var(--text-3); font-family: ui-monospace, monospace;">get_inventory_status(<span style="color: var(--text-muted);">sku, store</span>)</div>
+            <div style="padding: 6px 8px; font-size: 12px; color: var(--text-3); font-family: ui-monospace, monospace;">read_skill(<span style="color: var(--text-muted);">skill_id</span>)</div>
+            <div style="padding: 6px 8px; font-size: 12px; color: var(--text-3); font-family: ui-monospace, monospace;">run_pipeline(<span style="color: var(--text-muted);">version_id, fold</span>)</div>
+            <div style="padding: 6px 8px; font-size: 12px; color: var(--text-3); font-family: ui-monospace, monospace;">analyze_failures(<span style="color: var(--text-muted);">run_id, k</span>)</div>
+            <div style="padding: 6px 8px; font-size: 12px; color: var(--text-3); font-family: ui-monospace, monospace;">fire_markdown_alert(<span style="color: var(--text-muted);">sku, severity</span>)</div>
+          </div>
+        </div>
+
+        <!-- Topology + entry-point card -->
+        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 12px;">
+          <div>
+            <div style="font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px;">Topology</div>
+            <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--surface); border: 1px dashed var(--border); border-radius: 6px; font-size: 12.5px; color: var(--text-2);">
+              <svg style="width: 14px; height: 14px; color: var(--accent); flex-shrink: 0;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="8" cy="8" r="3"/><circle cx="8" cy="8" r="6.5" stroke-dasharray="2 2" opacity="0.5"/></svg>
+              <span><strong style="color: var(--text);">Single-agent loop</strong> · proposer + gate · improvement loop wraps the agent</span>
+            </div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px; line-height: 1.5;">Multi-agent topology graph view shipping in <a href="#" style="color: var(--accent);">Phase 2 (post-Demo-Day)</a> — composing this workflow with the labour-management agent.</div>
+          </div>
+          <div>
+            <div style="font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px;">Entry point prompt</div>
+            <div style="padding: 8px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; font-size: 11.5px; color: var(--text-3); font-family: ui-monospace, monospace; line-height: 1.55;">You are a demand-forecasting agent. Forecast weekly demand at SKU-store level. Flag SKUs likely to need markdown within 4 weeks. Read skills lazily via <code style="color: var(--accent);">read_skill</code>. Cite sources for every forecast. <a href="14-workflow-permissions.html" style="color: var(--accent); font-family: inherit;">view full →</a></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
     <!-- ── Active clusters + recent improvements ── -->
     <div class="two-col">
       <section>
