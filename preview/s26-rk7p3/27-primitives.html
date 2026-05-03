@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
-<title>Render primitives — ownEvo</title>
+<title>Views — ownEvo</title>
 <link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
 <link rel="stylesheet" href="shell.css">
 <link rel="stylesheet" href="primitives.css">
@@ -41,7 +41,7 @@
 </head>
 <body>
 <div class="preview-banner">
-  <strong>PREVIEW</strong> · static UI mock · screen <code>27</code> · primitive library viewer ·
+  <strong>PREVIEW</strong> · static UI mock · screen <code>27</code> · views library ·
   <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
 </div>
 
@@ -106,7 +106,7 @@
     </a>
     <a href="27-primitives.html" class="nav-item active">
       <svg class="nav-icon" viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5"/><rect x="9" y="2" width="5" height="5"/><rect x="2" y="9" width="5" height="5"/><rect x="9" y="9" width="5" height="5"/></svg>
-      <span class="nav-label">Primitives</span>
+      <span class="nav-label">Views</span>
     </a>
     <a href="08-audit.html" class="nav-item">
       <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg>
@@ -128,8 +128,8 @@
   <main class="main">
     <div class="page-header">
       <a href="index.html" class="page-back">‹ All screens</a>
-      <h1 class="page-title">Render primitives</h1>
-      <p class="page-sub">The 8 visual primitives every workflow can render. Pick one when you create a workflow — or let the inferred-workflow step pick for you. Each primitive is a typed contract: skill output → primitive input → screen.</p>
+      <h1 class="page-title">Views</h1>
+      <p class="page-sub">How the agent's output is shown. Pick one when you create a workflow — or let the inferred-workflow step pick for you. Each view is a typed contract: skill output → view input → screen the operator works in.</p>
     </div>
 
     <nav class="toc">
@@ -138,6 +138,7 @@
       <a href="#table-view">TableView</a>
       <a href="#alert-list">AlertList</a>
       <a href="#kanban">KanbanBoard</a>
+      <a href="#schedule-grid">ScheduleGrid</a>
       <a href="#conversation">ConversationView</a>
       <a href="#side-by-side">SideBySideView</a>
       <a href="#document">DocumentReader</a>
@@ -389,7 +390,101 @@
       </div>
     </section>
 
-    <!-- 6 · ConversationView -->
+    <!-- 6 · ScheduleGrid -->
+    <section class="primitive-section" id="schedule-grid">
+      <div class="primitive-head">
+        <div>
+          <div class="primitive-name">ScheduleGrid <code>v1</code></div>
+          <div class="primitive-meta">A 2-D grid of resource × time, with cell-level status. Used for shift schedules, content calendars, capacity boards, room booking, on-call rotations.</div>
+        </div>
+        <div class="primitive-tags">
+          <span class="primitive-tag workflow">labour</span>
+          <span class="primitive-tag workflow">capacity-planning</span>
+        </div>
+      </div>
+      <div class="primitive-demo">
+        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-sm); overflow: hidden;">
+          <div style="display: grid; grid-template-columns: 90px repeat(5, 1fr); gap: 1px; background: var(--border);">
+            <div style="background: var(--surface); padding: 8px 10px; font-size: 10.5px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em;">Shift</div>
+            <div style="background: var(--surface); padding: 8px 10px; font-size: 10.5px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em;">Mon<div style="font-size: 9.5px; color: var(--text-muted); margin-top: 1px; font-weight: 400;">May 4</div></div>
+            <div style="background: var(--surface); padding: 8px 10px; font-size: 10.5px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em;">Tue<div style="font-size: 9.5px; color: var(--text-muted); margin-top: 1px; font-weight: 400;">May 5</div></div>
+            <div style="background: var(--surface); padding: 8px 10px; font-size: 10.5px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em;">Wed<div style="font-size: 9.5px; color: var(--text-muted); margin-top: 1px; font-weight: 400;">May 6</div></div>
+            <div style="background: var(--surface); padding: 8px 10px; font-size: 10.5px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em;">Thu<div style="font-size: 9.5px; color: var(--text-muted); margin-top: 1px; font-weight: 400;">May 7</div></div>
+            <div style="background: var(--surface); padding: 8px 10px; font-size: 10.5px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em;">Fri<div style="font-size: 9.5px; color: var(--text-muted); margin-top: 1px; font-weight: 400;">May 8</div></div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 90px repeat(5, 1fr); gap: 1px; background: var(--border);">
+            <div style="background: var(--bg); padding: 10px; min-height: 56px; display: flex; align-items: center; font-size: 11.5px; color: var(--text-2); font-weight: 500;">Morning<br><span style="color: var(--text-muted); font-weight: 400; font-size: 10.5px;">06–14</span></div>
+            <div style="background: var(--bg); padding: 8px 10px; min-height: 56px; display: flex; flex-direction: column; gap: 3px;">
+              <div style="font-size: 13px; color: var(--text); font-weight: 500;">22</div>
+              <div style="font-size: 10.5px; color: var(--text-muted);">target 22</div>
+              <span style="font-size: 9.5px; padding: 1px 5px; border-radius: 3px; align-self: flex-start; margin-top: auto; background: rgba(34, 197, 94, 0.12); color: var(--green);">✓ ok</span>
+            </div>
+            <div style="background: rgba(245, 158, 11, 0.05); padding: 8px 10px; min-height: 56px; display: flex; flex-direction: column; gap: 3px;">
+              <div style="font-size: 13px; color: var(--text); font-weight: 500;">19</div>
+              <div style="font-size: 10.5px; color: var(--text-muted);">target 22</div>
+              <span style="font-size: 9.5px; padding: 1px 5px; border-radius: 3px; align-self: flex-start; margin-top: auto; background: rgba(245, 158, 11, 0.15); color: var(--amber);">−3 short</span>
+            </div>
+            <div style="background: var(--bg); padding: 8px 10px; min-height: 56px; display: flex; flex-direction: column; gap: 3px;">
+              <div style="font-size: 13px; color: var(--text); font-weight: 500;">22</div>
+              <div style="font-size: 10.5px; color: var(--text-muted);">target 22</div>
+              <span style="font-size: 9.5px; padding: 1px 5px; border-radius: 3px; align-self: flex-start; margin-top: auto; background: rgba(34, 197, 94, 0.12); color: var(--green);">✓ ok</span>
+            </div>
+            <div style="background: rgba(239, 68, 68, 0.06); padding: 8px 10px; min-height: 56px; display: flex; flex-direction: column; gap: 3px;">
+              <div style="font-size: 13px; color: var(--text); font-weight: 500;">26</div>
+              <div style="font-size: 10.5px; color: var(--text-muted);">target 26</div>
+              <span style="font-size: 9.5px; padding: 1px 5px; border-radius: 3px; align-self: flex-start; margin-top: auto; background: rgba(239, 68, 68, 0.12); color: var(--red);">cert gap</span>
+            </div>
+            <div style="background: var(--bg); padding: 8px 10px; min-height: 56px; display: flex; flex-direction: column; gap: 3px;">
+              <div style="font-size: 13px; color: var(--text); font-weight: 500;">22</div>
+              <div style="font-size: 10.5px; color: var(--text-muted);">target 22</div>
+              <span style="font-size: 9.5px; padding: 1px 5px; border-radius: 3px; align-self: flex-start; margin-top: auto; background: rgba(34, 197, 94, 0.12); color: var(--green);">✓ ok</span>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 90px repeat(5, 1fr); gap: 1px; background: var(--border);">
+            <div style="background: var(--bg); padding: 10px; min-height: 56px; display: flex; align-items: center; font-size: 11.5px; color: var(--text-2); font-weight: 500;">Afternoon<br><span style="color: var(--text-muted); font-weight: 400; font-size: 10.5px;">14–22</span></div>
+            <div style="background: var(--bg); padding: 8px 10px; min-height: 56px; display: flex; flex-direction: column; gap: 3px;">
+              <div style="font-size: 13px; color: var(--text); font-weight: 500;">26</div>
+              <div style="font-size: 10.5px; color: var(--text-muted);">target 26</div>
+              <span style="font-size: 9.5px; padding: 1px 5px; border-radius: 3px; align-self: flex-start; margin-top: auto; background: rgba(34, 197, 94, 0.12); color: var(--green);">✓ ok</span>
+            </div>
+            <div style="background: var(--bg); padding: 8px 10px; min-height: 56px; display: flex; flex-direction: column; gap: 3px;">
+              <div style="font-size: 13px; color: var(--text); font-weight: 500;">26</div>
+              <div style="font-size: 10.5px; color: var(--text-muted);">target 26</div>
+              <span style="font-size: 9.5px; padding: 1px 5px; border-radius: 3px; align-self: flex-start; margin-top: auto; background: rgba(34, 197, 94, 0.12); color: var(--green);">✓ ok</span>
+            </div>
+            <div style="background: var(--bg); padding: 8px 10px; min-height: 56px; display: flex; flex-direction: column; gap: 3px;">
+              <div style="font-size: 13px; color: var(--text); font-weight: 500;">26</div>
+              <div style="font-size: 10.5px; color: var(--text-muted);">target 26</div>
+              <span style="font-size: 9.5px; padding: 1px 5px; border-radius: 3px; align-self: flex-start; margin-top: auto; background: rgba(34, 197, 94, 0.12); color: var(--green);">✓ ok</span>
+            </div>
+            <div style="background: var(--bg); padding: 8px 10px; min-height: 56px; display: flex; flex-direction: column; gap: 3px;">
+              <div style="font-size: 13px; color: var(--text); font-weight: 500;">26</div>
+              <div style="font-size: 10.5px; color: var(--text-muted);">target 26</div>
+              <span style="font-size: 9.5px; padding: 1px 5px; border-radius: 3px; align-self: flex-start; margin-top: auto; background: rgba(34, 197, 94, 0.12); color: var(--green);">✓ ok</span>
+            </div>
+            <div style="background: var(--bg); padding: 8px 10px; min-height: 56px; display: flex; flex-direction: column; gap: 3px;">
+              <div style="font-size: 13px; color: var(--text); font-weight: 500;">26</div>
+              <div style="font-size: 10.5px; color: var(--text-muted);">target 26</div>
+              <span style="font-size: 9.5px; padding: 1px 5px; border-radius: 3px; align-self: flex-start; margin-top: auto; background: rgba(34, 197, 94, 0.12); color: var(--green);">✓ ok</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="primitive-spec">
+        <div class="spec-grid">
+          <div class="spec-label">Input shape</div>
+          <div class="spec-value"><code>{ rows: { key, label }[], cols: { key, label, sub? }[], cells: { row_key, col_key, value, target?, status: "ok"|"warn"|"error", tag? }[] }</code></div>
+          <div class="spec-label">Best for</div>
+          <div class="spec-value">Shift schedules · capacity boards · content calendars · room booking · on-call rotations · anything resource × time</div>
+          <div class="spec-label">Avoid when</div>
+          <div class="spec-value">Time isn't an axis (use TableView) · single-day view (use AlertList or KanbanBoard)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 · ConversationView -->
     <section class="primitive-section" id="conversation">
       <div class="primitive-head">
         <div>
@@ -538,9 +633,9 @@ emit forecast.run with
     </section>
 
     <div style="background: var(--bg); border: 1px dashed var(--border-light); border-radius: 8px; padding: 18px 22px; margin-top: 18px;">
-      <div style="font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px;">Need a primitive that isn't here?</div>
+      <div style="font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px;">Need a view that isn't here?</div>
       <div style="font-size: 12.5px; color: var(--text-muted); line-height: 1.6;">
-        We're deliberately holding the set small — every primitive multiplies the surface area we have to keep stable across themes, eval, and accessibility. If you have a workflow that doesn't fit one of the 8, tell us at <a href="#" style="color: var(--accent);">primitives@ownevo.ai</a> with a sketch.
+        We deliberately keep the set small — every view multiplies the surface area we have to keep stable across themes, eval, and accessibility. If you have a workflow that doesn't fit one of the 9, tell us at <a href="#" style="color: var(--accent);">views@ownevo.ai</a> with a sketch.
       </div>
     </div>
   </main>
