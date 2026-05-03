@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Union contract review — Acme Distribution</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  body { background: var(--surface); }
+
+  /* Same operator top bar pattern as 28 */
+  .op-bar { display: flex; align-items: center; gap: 18px; padding: 10px 22px; background: var(--bg); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .op-bar-brand { display: flex; align-items: center; gap: 8px; }
+  .op-bar-brand .brand-mark { width: 22px; height: 22px; }
+  .op-bar-brand-label { font-size: 13px; font-weight: 500; color: var(--text); }
+  .op-bar-sep { color: var(--text-faint); font-weight: 200; }
+  .op-bar-workflow { display: flex; align-items: center; gap: 8px; padding: 5px 10px; border-radius: 6px; cursor: pointer; }
+  .op-bar-workflow:hover { background: var(--surface); }
+  .op-bar-workflow-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .op-bar-workflow-meta { font-size: 11.5px; color: var(--text-muted); }
+  .op-bar-spacer { flex: 1; }
+  .op-bar-action { font-size: 12px; color: var(--text-3); padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+  .op-bar-action:hover { color: var(--text); background: var(--surface); }
+  .op-bar-user { display: flex; align-items: center; gap: 8px; padding: 4px 10px 4px 4px; border-radius: 999px; cursor: pointer; }
+  .op-bar-user:hover { background: var(--surface); }
+  .op-bar-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
+  .op-bar-username { font-size: 12.5px; color: var(--text-2); }
+
+  /* Layout: queue rail | document | annotations rail */
+  .op-shell { display: grid; grid-template-columns: 280px 1fr 320px; gap: 0; height: calc(100vh - 81px); }
+  @media (max-width: 1200px) { .op-shell { grid-template-columns: 1fr; height: auto; } }
+
+  /* Left: doc queue */
+  .op-queue { background: var(--bg); border-right: 1px solid var(--border); overflow-y: auto; padding: 14px 0; }
+  .op-queue-head { padding: 0 16px 10px; display: flex; justify-content: space-between; align-items: center; }
+  .op-queue-title { font-size: 11.5px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .op-queue-count { font-size: 11px; color: var(--text-muted); }
+  .op-queue-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 6px; padding: 0 12px; }
+  .op-queue-tab { font-size: 12px; padding: 6px 10px; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; }
+  .op-queue-tab:hover { color: var(--text); }
+  .op-queue-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+  .op-doc-row { padding: 10px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.12s; }
+  .op-doc-row:hover { background: var(--surface); }
+  .op-doc-row.selected { background: rgba(59, 130, 246, 0.05); border-left: 2px solid var(--accent); padding-left: 14px; }
+  .op-doc-row-title { font-size: 12.5px; color: var(--text); font-weight: 500; }
+  .op-doc-row-meta { font-size: 11px; color: var(--text-muted); margin-top: 3px; display: flex; gap: 6px; align-items: center; }
+  .op-doc-row-pill { font-size: 9.5px; padding: 1px 5px; border-radius: 3px; background: var(--surface); color: var(--text-3); }
+  .op-doc-row-pill.urgent { background: rgba(239, 68, 68, 0.1); color: var(--red); }
+  .op-doc-row-pill.review { background: rgba(245, 158, 11, 0.1); color: var(--amber); }
+  .op-doc-row-pill.done { background: rgba(34, 197, 94, 0.1); color: var(--green); }
+
+  /* Center: document */
+  .op-doc { background: var(--bg); overflow-y: auto; padding: 24px 32px 60px; position: relative; }
+  .op-doc-header { padding-bottom: 18px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+  .op-doc-meta-row { display: flex; gap: 8px; align-items: center; font-size: 11.5px; color: var(--text-muted); margin-bottom: 6px; }
+  .op-doc-pill { font-size: 10.5px; padding: 2px 7px; border-radius: 4px; background: var(--surface); color: var(--text-2); }
+  .op-doc-title { font-size: 19px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+  .op-doc-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+  .op-doc-body { font-size: 14px; line-height: 1.75; color: var(--text-2); max-width: 720px; }
+  .op-doc-body h2 { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin: 28px 0 8px; }
+  .op-doc-body p { margin: 12px 0; }
+  .op-doc-body .clause-num { font-weight: 600; color: var(--text); }
+
+  /* Highlights inside the document */
+  .hl { padding: 1px 0; border-bottom: 2px solid; cursor: pointer; transition: background 0.12s; }
+  .hl-amber { border-color: var(--amber); background: rgba(245, 158, 11, 0.08); }
+  .hl-amber:hover { background: rgba(245, 158, 11, 0.18); }
+  .hl-red { border-color: var(--red); background: rgba(239, 68, 68, 0.08); }
+  .hl-red:hover { background: rgba(239, 68, 68, 0.18); }
+  .hl-blue { border-color: var(--accent); background: rgba(59, 130, 246, 0.06); }
+  .hl-blue:hover { background: rgba(59, 130, 246, 0.14); }
+  .hl-green { border-color: var(--green); background: rgba(34, 197, 94, 0.06); }
+  .hl-green:hover { background: rgba(34, 197, 94, 0.14); }
+
+  /* Sticky bottom bar — operator's actual decision */
+  .op-doc-footer { position: sticky; bottom: 0; left: 0; right: 0; padding: 14px 0 4px; margin-top: 24px; background: linear-gradient(to top, var(--bg) 70%, transparent); display: flex; align-items: center; gap: 10px; }
+  .op-doc-footer-meta { font-size: 12px; color: var(--text-muted); margin-right: auto; }
+  .op-doc-btn { font-size: 13px; padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text-2); cursor: pointer; font-family: inherit; }
+  .op-doc-btn:hover { border-color: var(--border-light); }
+  .op-doc-btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
+  .op-doc-btn.danger { color: var(--red); border-color: rgba(239, 68, 68, 0.3); }
+
+  /* Right: annotations */
+  .op-anno { background: var(--bg); border-left: 1px solid var(--border); overflow-y: auto; padding: 14px 0; }
+  .op-anno-head { padding: 0 16px 10px; display: flex; justify-content: space-between; align-items: center; }
+  .op-anno-title { font-size: 11.5px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .op-anno-count { font-size: 11px; color: var(--text-muted); }
+  .op-anno-summary { padding: 10px 16px 14px; border-bottom: 1px solid var(--border); margin-bottom: 6px; font-size: 12px; color: var(--text-2); line-height: 1.55; background: var(--surface); }
+  .op-anno-summary strong { color: var(--text); font-weight: 500; }
+
+  .op-anno-card { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .op-anno-card-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+  .op-anno-tag { font-size: 10px; padding: 2px 7px; border-radius: 3px; font-weight: 500; }
+  .op-anno-tag.amber { background: rgba(245, 158, 11, 0.12); color: var(--amber); }
+  .op-anno-tag.red { background: rgba(239, 68, 68, 0.12); color: var(--red); }
+  .op-anno-tag.blue { background: rgba(59, 130, 246, 0.12); color: var(--accent); }
+  .op-anno-tag.green { background: rgba(34, 197, 94, 0.12); color: var(--green); }
+  .op-anno-conf { font-size: 10.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .op-anno-card-title { font-size: 12.5px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .op-anno-card-body { font-size: 12px; color: var(--text-2); line-height: 1.55; }
+  .op-anno-card-body em { font-style: normal; color: var(--text); }
+  .op-anno-card-cite { font-size: 11px; color: var(--accent); margin-top: 6px; display: inline-block; cursor: pointer; }
+  .op-anno-card-actions { display: flex; gap: 6px; margin-top: 10px; }
+  .op-anno-mini-btn { font-size: 11px; padding: 4px 9px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg); color: var(--text-2); cursor: pointer; font-family: inherit; }
+  .op-anno-mini-btn:hover { border-color: var(--border-light); }
+  .op-anno-mini-btn.accept { color: var(--green); border-color: rgba(34, 197, 94, 0.3); }
+  .op-anno-mini-btn.dismiss { color: var(--text-muted); }
+  .op-anno-mini-btn.report { color: var(--red); border: 0; margin-left: auto; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>29</code> · <strong>operator shell</strong> · counsel reviewing agent annotations ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="op-bar">
+  <div class="op-bar-brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+      <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+      <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+    </svg>
+    <span class="op-bar-brand-label">Acme</span>
+  </div>
+  <span class="op-bar-sep">/</span>
+  <div class="op-bar-workflow">
+    <div>
+      <div class="op-bar-workflow-name">Union contract review</div>
+      <div class="op-bar-workflow-meta">v9 · attorney sign-off required</div>
+    </div>
+    <span style="color: var(--text-muted); font-size: 10px;">▾</span>
+  </div>
+  <span class="op-bar-spacer"></span>
+  <a href="22-contract-overview.html" class="op-bar-action" style="color: var(--accent);">view as owner →</a>
+  <div class="op-bar-user">
+    <div class="op-bar-avatar">AV</div>
+    <span class="op-bar-username">Anya Volkov</span>
+    <span style="color: var(--text-muted); font-size: 10px;">▾</span>
+  </div>
+</div>
+
+<div class="op-shell">
+  <!-- Left: queue -->
+  <aside class="op-queue">
+    <div class="op-queue-tabs">
+      <span class="op-queue-tab active">Inbox · 4</span>
+      <span class="op-queue-tab">In review · 2</span>
+      <span class="op-queue-tab">Signed · 12</span>
+    </div>
+
+    <div class="op-doc-row selected">
+      <div class="op-doc-row-title">CBA renewal · Local 247 · 2026</div>
+      <div class="op-doc-row-meta">
+        <span class="op-doc-row-pill urgent">due 2d</span>
+        <span>23 pages</span>
+        <span>·</span>
+        <span>14 annotations</span>
+      </div>
+    </div>
+
+    <div class="op-doc-row">
+      <div class="op-doc-row-title">MOU · seasonal labour pool · DC-Tacoma</div>
+      <div class="op-doc-row-meta">
+        <span class="op-doc-row-pill review">due 5d</span>
+        <span>8 pages</span>
+        <span>·</span>
+        <span>6 annotations</span>
+      </div>
+    </div>
+
+    <div class="op-doc-row">
+      <div class="op-doc-row-title">Side letter · meal break clarification</div>
+      <div class="op-doc-row-meta">
+        <span class="op-doc-row-pill review">due 7d</span>
+        <span>3 pages</span>
+        <span>·</span>
+        <span>2 annotations</span>
+      </div>
+    </div>
+
+    <div class="op-doc-row">
+      <div class="op-doc-row-title">Grievance procedure update · §12</div>
+      <div class="op-doc-row-meta">
+        <span class="op-doc-row-pill review">due 12d</span>
+        <span>5 pages</span>
+        <span>·</span>
+        <span>4 annotations</span>
+      </div>
+    </div>
+
+    <div style="padding: 12px 16px; font-size: 11.5px; color: var(--text-muted); text-align: center;">
+      <a href="#" style="color: var(--accent);">View signed archive →</a>
+    </div>
+  </aside>
+
+  <!-- Center: document -->
+  <main class="op-doc">
+    <div class="op-doc-header">
+      <div class="op-doc-meta-row">
+        <span class="op-doc-pill">CBA · 2026 renewal</span>
+        <span class="op-doc-pill">Local 247</span>
+        <span class="op-doc-pill" style="color: var(--red);">Due in 2 days</span>
+        <span style="color: var(--text-muted);">· received 2026-04-29 from union counsel · agent reviewed in 4m 12s</span>
+      </div>
+      <h1 class="op-doc-title">Collective Bargaining Agreement — Renewal Draft</h1>
+      <p class="op-doc-subtitle">Article XIV · Successor and Assigns · pages 18–19 of 23 · agent flagged 14 issues across full document</p>
+    </div>
+
+    <div class="op-doc-body">
+      <h2>§14.1 · Continuing Obligations</h2>
+      <p>The terms of this Agreement shall remain in full force and effect during any period of negotiation for a successor agreement, unless and until either party gives the other party at least sixty (60) days' written notice of intent to terminate.</p>
+
+      <h2>§14.2 · Mid-term Modifications</h2>
+      <p>No provision of this Agreement may be modified during its term except by mutual written agreement signed by authorized representatives of both parties. <span class="hl hl-blue" data-anno="2">Any side letters or memoranda of understanding entered into during the term of this Agreement shall be appended hereto and shall be considered part of this Agreement</span> for all purposes including grievance and arbitration.</p>
+
+      <h2>§14.3 · Successor and Assigns</h2>
+      <p><span class="clause-num">(a)</span> Either party may assign its rights or delegate its duties under this Agreement, in whole or in part, to <span class="hl hl-amber" data-anno="1">any successor entity arising from a merger, acquisition, or sale of substantially all of its assets</span>, without the consent of the other party, provided that such successor expressly assumes all obligations hereunder.</p>
+
+      <p><span class="clause-num">(b)</span> For all other assignments, the prior written consent of the non-assigning party shall be required, which consent <span class="hl hl-green" data-anno="3">shall not be unreasonably withheld, conditioned, or delayed</span>.</p>
+
+      <p><span class="clause-num">(c)</span> Any purported assignment in violation of this Section shall be null and void. <span class="hl hl-red" data-anno="4">The successor entity shall be jointly and severally liable with the assigning party for all obligations arising prior to the effective date of the assignment</span>, unless expressly released in writing by the non-assigning party.</p>
+
+      <h2>§14.4 · Notice of Corporate Change</h2>
+      <p>The Employer shall provide the Union with no less than thirty (30) days' written notice of any anticipated corporate change that would trigger the provisions of §14.3, including but not limited to mergers, acquisitions, divestitures, or substantial asset sales, except where such notice is prohibited by applicable securities law or confidentiality obligations to a counterparty.</p>
+    </div>
+
+    <div class="op-doc-footer">
+      <div class="op-doc-footer-meta">
+        Article XIV · 4 of 14 annotations · <a href="#" style="color: var(--accent);">jump to next →</a>
+      </div>
+      <button class="op-doc-btn">Save progress</button>
+      <button class="op-doc-btn danger">Reject &amp; send back</button>
+      <button class="op-doc-btn primary">Sign &amp; approve §XIV</button>
+    </div>
+  </main>
+
+  <!-- Right: annotations -->
+  <aside class="op-anno">
+    <div class="op-anno-head">
+      <div class="op-anno-title">Agent annotations · 4</div>
+      <div class="op-anno-count">on this section</div>
+    </div>
+
+    <div class="op-anno-summary">
+      <strong>Section summary.</strong> Largely unchanged from 2024 CBA. Two clauses warrant counsel review: <em>(1)</em> successor carve-out is broader than precedent, and <em>(4)</em> joint-and-several liability language is new. Other items are consistency-only.
+    </div>
+
+    <!-- Annotation 1 -->
+    <div class="op-anno-card">
+      <div class="op-anno-card-row">
+        <span class="op-anno-tag amber">⚠ Review · §14.3(a)</span>
+        <span class="op-anno-conf">conf 0.62</span>
+      </div>
+      <div class="op-anno-card-title">Successor carve-out broader than precedent</div>
+      <div class="op-anno-card-body">
+        Standard 2024 language used <em>"controlling interest acquisition"</em>. This draft expands to <em>"sale of substantially all assets,"</em> which captures asset-only deals where the buyer doesn't assume the corporate shell. Potentially favorable to Employer in a divestiture, but Union may object.
+      </div>
+      <a class="op-anno-card-cite">Compare with 2024 CBA §14.3 →</a>
+      <div class="op-anno-card-actions">
+        <button class="op-anno-mini-btn accept">✓ Accept flag</button>
+        <button class="op-anno-mini-btn dismiss">Dismiss</button>
+        <button class="op-anno-mini-btn report" title="Tell improvement team this annotation is wrong">⚠ Report</button>
+      </div>
+    </div>
+
+    <!-- Annotation 2 -->
+    <div class="op-anno-card">
+      <div class="op-anno-card-row">
+        <span class="op-anno-tag blue">i Note · §14.2</span>
+        <span class="op-anno-conf">conf 0.91</span>
+      </div>
+      <div class="op-anno-card-title">Side letter incorporation language present</div>
+      <div class="op-anno-card-body">
+        Standard "appended and considered part of this Agreement" language is present. Confirms our 3 active side letters carry forward into the renewal. ✓ no action needed.
+      </div>
+      <div class="op-anno-card-actions">
+        <button class="op-anno-mini-btn accept">✓ Accept flag</button>
+        <button class="op-anno-mini-btn dismiss">Dismiss</button>
+      </div>
+    </div>
+
+    <!-- Annotation 3 -->
+    <div class="op-anno-card">
+      <div class="op-anno-card-row">
+        <span class="op-anno-tag green">✓ Standard · §14.3(b)</span>
+        <span class="op-anno-conf">conf 0.96</span>
+      </div>
+      <div class="op-anno-card-title">"Reasonably withheld" language standard</div>
+      <div class="op-anno-card-body">
+        "Shall not be unreasonably withheld, conditioned, or delayed" is the industry-standard reasonableness backstop. Matches the 2024 CBA verbatim. ✓ no action needed.
+      </div>
+      <div class="op-anno-card-actions">
+        <button class="op-anno-mini-btn accept">✓ Accept flag</button>
+        <button class="op-anno-mini-btn dismiss">Dismiss</button>
+      </div>
+    </div>
+
+    <!-- Annotation 4 -->
+    <div class="op-anno-card">
+      <div class="op-anno-card-row">
+        <span class="op-anno-tag red">⚠ New language · §14.3(c)</span>
+        <span class="op-anno-conf">conf 0.78</span>
+      </div>
+      <div class="op-anno-card-title">Joint-and-several liability is new</div>
+      <div class="op-anno-card-body">
+        2024 CBA had successor liability only after written assumption. This draft <em>imposes joint-and-several liability</em> on the successor for pre-assignment obligations. Significant counsel attention recommended — exposure shifts in any future divestiture.
+      </div>
+      <a class="op-anno-card-cite">Compare with 2024 CBA §14.3(c) →</a>
+      <div class="op-anno-card-actions">
+        <button class="op-anno-mini-btn accept">✓ Accept flag</button>
+        <button class="op-anno-mini-btn dismiss">Dismiss</button>
+        <button class="op-anno-mini-btn report" title="Tell improvement team this annotation is wrong">⚠ Report</button>
+      </div>
+    </div>
+
+    <div style="padding: 14px 16px; font-size: 11.5px; color: var(--text-muted); text-align: center; border-top: 1px solid var(--border); margin-top: 4px;">
+      Showing annotations for §XIV. <a href="#" style="color: var(--accent);">View all 14 →</a>
+    </div>
+  </aside>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') root.setAttribute('data-theme', 'dark');
+  })();
+</script>
+</body>
+</html>

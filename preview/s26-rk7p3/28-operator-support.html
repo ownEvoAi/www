@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Customer support — Acme Distribution</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  body { background: var(--surface); }
+
+  /* Operator top bar — replaces the sidebar shell */
+  .op-bar { display: flex; align-items: center; gap: 18px; padding: 10px 22px; background: var(--bg); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .op-bar-brand { display: flex; align-items: center; gap: 8px; }
+  .op-bar-brand .brand-mark { width: 22px; height: 22px; }
+  .op-bar-brand-label { font-size: 13px; font-weight: 500; color: var(--text); }
+  .op-bar-sep { color: var(--text-faint); font-weight: 200; }
+  .op-bar-workflow { display: flex; align-items: center; gap: 8px; padding: 5px 10px; border-radius: 6px; cursor: pointer; }
+  .op-bar-workflow:hover { background: var(--surface); }
+  .op-bar-workflow-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .op-bar-workflow-meta { font-size: 11.5px; color: var(--text-muted); }
+  .op-bar-spacer { flex: 1; }
+  .op-bar-search { font-size: 12.5px; padding: 6px 11px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text-2); width: 240px; }
+  .op-bar-action { font-size: 12px; color: var(--text-3); padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+  .op-bar-action:hover { color: var(--text); background: var(--surface); }
+  .op-bar-user { display: flex; align-items: center; gap: 8px; padding: 4px 10px 4px 4px; border-radius: 999px; cursor: pointer; }
+  .op-bar-user:hover { background: var(--surface); }
+  .op-bar-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
+  .op-bar-username { font-size: 12.5px; color: var(--text-2); }
+
+  /* Main board layout */
+  .op-main { padding: 18px 22px 40px; }
+  .op-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .op-tab { font-size: 12.5px; padding: 5px 11px; border-radius: 999px; border: 1px solid transparent; color: var(--text-3); cursor: pointer; }
+  .op-tab:hover { color: var(--text); background: var(--bg); }
+  .op-tab.active { color: var(--accent); border-color: var(--accent); background: rgba(59, 130, 246, 0.06); }
+  .op-toolbar-spacer { flex: 1; }
+  .op-toolbar-meta { font-size: 11.5px; color: var(--text-muted); }
+  .op-toolbar-meta strong { color: var(--green); font-weight: 500; }
+
+  /* Kanban with side panel */
+  .op-board { display: grid; grid-template-columns: 1fr 380px; gap: 16px; align-items: start; }
+  @media (max-width: 1200px) { .op-board { grid-template-columns: 1fr; } }
+
+  .op-kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .op-col { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px; min-height: 460px; }
+  .op-col-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 4px; }
+  .op-col-title { font-size: 11.5px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .op-col-count { font-size: 11px; color: var(--text-muted); background: var(--surface); padding: 1px 7px; border-radius: 8px; }
+
+  .op-card { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 9px 11px; margin-bottom: 6px; cursor: pointer; transition: border-color 0.12s, box-shadow 0.12s; }
+  .op-card:hover { border-color: var(--border-light); }
+  .op-card.selected { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .op-card-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; gap: 8px; }
+  .op-card-id { font-size: 10.5px; color: var(--text-muted); font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+  .op-card-channel { font-size: 10.5px; padding: 1px 6px; border-radius: 3px; background: var(--surface); color: var(--text-3); }
+  .op-card-title { font-size: 12.5px; color: var(--text); font-weight: 500; line-height: 1.4; margin-bottom: 4px; }
+  .op-card-snippet { font-size: 11.5px; color: var(--text-muted); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .op-card-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+  .op-card-author { font-size: 10.5px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+  .op-card-author.agent { color: var(--accent); }
+  .op-card-time { font-size: 10.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+  /* Side panel: conversation view of selected card */
+  .op-panel { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; max-height: calc(100vh - 140px); position: sticky; top: 80px; }
+  .op-panel-head { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .op-panel-title { font-size: 13px; font-weight: 500; color: var(--text); }
+  .op-panel-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .op-panel-close { font-size: 16px; color: var(--text-muted); cursor: pointer; padding: 0 4px; }
+
+  .op-panel-body { padding: 14px 16px; flex: 1; overflow-y: auto; }
+  .op-panel-msg { display: flex; gap: 8px; margin-bottom: 12px; align-items: flex-start; }
+  .op-panel-msg.user { flex-direction: row-reverse; }
+  .op-panel-msg-avatar { width: 22px; height: 22px; border-radius: 4px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: white; }
+  .op-panel-msg-avatar.agent { background: var(--accent); }
+  .op-panel-msg-avatar.user { background: var(--text-3); }
+  .op-panel-msg-bubble { max-width: 78%; padding: 8px 11px; border-radius: 8px; font-size: 12.5px; line-height: 1.55; }
+  .op-panel-msg.agent .op-panel-msg-bubble { background: var(--surface); color: var(--text-2); }
+  .op-panel-msg.user .op-panel-msg-bubble { background: var(--accent); color: white; }
+  .op-panel-msg-meta { font-size: 10.5px; color: var(--text-muted); margin-top: 3px; padding: 0 2px; }
+  .op-panel-msg.user .op-panel-msg-meta { text-align: right; }
+
+  .op-panel-citation { display: inline-block; font-size: 9px; font-weight: 600; background: rgba(59, 130, 246, 0.15); color: var(--accent); padding: 0 5px; border-radius: 3px; margin-left: 3px; cursor: pointer; vertical-align: super; }
+
+  .op-panel-foot { padding: 12px 16px; border-top: 1px solid var(--border); background: var(--surface); }
+  .op-panel-draft-label { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .op-panel-draft-label .draft-pill { font-size: 9.5px; padding: 1px 6px; border-radius: 3px; background: rgba(59, 130, 246, 0.12); color: var(--accent); letter-spacing: 0; text-transform: none; font-weight: 500; }
+  .op-panel-draft { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 9px 11px; font-size: 12.5px; line-height: 1.55; color: var(--text); margin-bottom: 10px; }
+  .op-panel-actions { display: flex; gap: 6px; align-items: center; }
+  .op-panel-btn { font-size: 12px; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text-2); cursor: pointer; font-family: inherit; }
+  .op-panel-btn:hover { border-color: var(--border-light); }
+  .op-panel-btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
+  .op-panel-btn.primary:hover { background: var(--accent-hover, #2563eb); }
+  .op-panel-btn.report { color: var(--text-muted); border: 0; padding: 6px 8px; margin-left: auto; }
+  .op-panel-btn.report:hover { color: var(--red); background: var(--surface); }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>28</code> · <strong>operator shell</strong> (no command center) ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<!-- Operator top bar -->
+<div class="op-bar">
+  <div class="op-bar-brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+      <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+      <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+    </svg>
+    <span class="op-bar-brand-label">Acme</span>
+  </div>
+  <span class="op-bar-sep">/</span>
+  <div class="op-bar-workflow">
+    <div>
+      <div class="op-bar-workflow-name">Customer support</div>
+      <div class="op-bar-workflow-meta">v31 · live</div>
+    </div>
+    <span style="color: var(--text-muted); font-size: 10px;">▾</span>
+  </div>
+  <span class="op-bar-spacer"></span>
+  <input type="text" class="op-bar-search" placeholder="Search tickets…" name="op_search" aria-label="Search tickets">
+  <span class="op-bar-action" title="Notifications">🔔</span>
+  <a href="21-support-overview.html" class="op-bar-action" style="color: var(--accent);">view as owner →</a>
+  <div class="op-bar-user">
+    <div class="op-bar-avatar">RS</div>
+    <span class="op-bar-username">Rosa Santos</span>
+    <span style="color: var(--text-muted); font-size: 10px;">▾</span>
+  </div>
+</div>
+
+<main class="op-main">
+  <!-- Toolbar — operator's queue, no improvement surfaces -->
+  <div class="op-toolbar">
+    <button class="op-tab active">Assigned to me · 14</button>
+    <button class="op-tab">Team queue · 47</button>
+    <button class="op-tab">Watching · 8</button>
+    <span style="width: 1px; height: 18px; background: var(--border); margin: 0 4px;"></span>
+    <button class="op-tab">All channels</button>
+    <button class="op-tab">Chat only</button>
+    <button class="op-tab">Email only</button>
+    <span class="op-toolbar-spacer"></span>
+    <span class="op-toolbar-meta">Today: <strong>23 sent</strong> · 3 escalated · agent draft accept rate <strong>78%</strong></span>
+  </div>
+
+  <div class="op-board">
+    <div class="op-kanban">
+      <!-- New -->
+      <div class="op-col">
+        <div class="op-col-head">
+          <div class="op-col-title">New</div>
+          <span class="op-col-count">4</span>
+        </div>
+
+        <div class="op-card selected">
+          <div class="op-card-row">
+            <span class="op-card-id">#4821</span>
+            <span class="op-card-channel">chat</span>
+          </div>
+          <div class="op-card-title">Refund eligibility — annual plan</div>
+          <div class="op-card-snippet">Hi — I'd like to cancel my annual plan and get a refund for the unused months.</div>
+          <div class="op-card-foot">
+            <span class="op-card-author">Carla S.</span>
+            <span class="op-card-time">2m</span>
+          </div>
+        </div>
+
+        <div class="op-card">
+          <div class="op-card-row">
+            <span class="op-card-id">#4820</span>
+            <span class="op-card-channel">email</span>
+          </div>
+          <div class="op-card-title">Where is my package, no tracking</div>
+          <div class="op-card-snippet">Order placed 5 days ago, never got a tracking number…</div>
+          <div class="op-card-foot">
+            <span class="op-card-author">Marcus L.</span>
+            <span class="op-card-time">4m</span>
+          </div>
+        </div>
+
+        <div class="op-card">
+          <div class="op-card-row">
+            <span class="op-card-id">#4819</span>
+            <span class="op-card-channel">chat</span>
+          </div>
+          <div class="op-card-title">Add a seat to my team plan</div>
+          <div class="op-card-snippet">Need to add 2 more users this week before our launch.</div>
+          <div class="op-card-foot">
+            <span class="op-card-author">Priya N.</span>
+            <span class="op-card-time">7m</span>
+          </div>
+        </div>
+
+        <div class="op-card">
+          <div class="op-card-row">
+            <span class="op-card-id">#4818</span>
+            <span class="op-card-channel">email</span>
+          </div>
+          <div class="op-card-title">Reset 2FA — lost phone</div>
+          <div class="op-card-snippet">Lost my phone. Can you help me reset 2FA on my account?</div>
+          <div class="op-card-foot">
+            <span class="op-card-author">Devon K.</span>
+            <span class="op-card-time">9m</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Drafted by agent -->
+      <div class="op-col">
+        <div class="op-col-head">
+          <div class="op-col-title">Draft ready</div>
+          <span class="op-col-count">3</span>
+        </div>
+
+        <div class="op-card">
+          <div class="op-card-row">
+            <span class="op-card-id">#4815</span>
+            <span class="op-card-channel">chat</span>
+          </div>
+          <div class="op-card-title">Account merge — same email</div>
+          <div class="op-card-snippet">Two accounts under same email, one was old work account.</div>
+          <div class="op-card-foot">
+            <span class="op-card-author agent">↳ agent draft</span>
+            <span class="op-card-time">12m</span>
+          </div>
+        </div>
+
+        <div class="op-card">
+          <div class="op-card-row">
+            <span class="op-card-id">#4812</span>
+            <span class="op-card-channel">email</span>
+          </div>
+          <div class="op-card-title">Plan downgrade · team → solo</div>
+          <div class="op-card-snippet">Going solo next month, want to switch to the solo plan effective…</div>
+          <div class="op-card-foot">
+            <span class="op-card-author agent">↳ agent draft</span>
+            <span class="op-card-time">18m</span>
+          </div>
+        </div>
+
+        <div class="op-card">
+          <div class="op-card-row">
+            <span class="op-card-id">#4811</span>
+            <span class="op-card-channel">chat</span>
+          </div>
+          <div class="op-card-title">Invoice address change</div>
+          <div class="op-card-snippet">Need to update the billing address on our last 3 invoices.</div>
+          <div class="op-card-foot">
+            <span class="op-card-author agent">↳ agent draft</span>
+            <span class="op-card-time">22m</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sent (today) -->
+      <div class="op-col">
+        <div class="op-col-head">
+          <div class="op-col-title">Sent · today</div>
+          <span class="op-col-count">23</span>
+        </div>
+
+        <div class="op-card">
+          <div class="op-card-row">
+            <span class="op-card-id">#4809</span>
+            <span class="op-card-channel">chat</span>
+          </div>
+          <div class="op-card-title">Order confirmation — shipped</div>
+          <div class="op-card-snippet">Replied with tracking + ETA. Customer happy.</div>
+          <div class="op-card-foot">
+            <span class="op-card-author">You · 25m ago</span>
+            <span class="op-card-time">✓</span>
+          </div>
+        </div>
+
+        <div class="op-card">
+          <div class="op-card-row">
+            <span class="op-card-id">#4807</span>
+            <span class="op-card-channel">email</span>
+          </div>
+          <div class="op-card-title">Tracking link follow-up</div>
+          <div class="op-card-snippet">Sent updated tracking + carrier link.</div>
+          <div class="op-card-foot">
+            <span class="op-card-author">You · 31m ago</span>
+            <span class="op-card-time">✓</span>
+          </div>
+        </div>
+
+        <div class="op-card">
+          <div class="op-card-row">
+            <span class="op-card-id">#4805</span>
+            <span class="op-card-channel">chat</span>
+          </div>
+          <div class="op-card-title">Password reset link</div>
+          <div class="op-card-snippet">Sent reset link, customer confirmed access.</div>
+          <div class="op-card-foot">
+            <span class="op-card-author">You · 41m ago</span>
+            <span class="op-card-time">✓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Escalated -->
+      <div class="op-col">
+        <div class="op-col-head">
+          <div class="op-col-title">Escalated</div>
+          <span class="op-col-count">1</span>
+        </div>
+
+        <div class="op-card">
+          <div class="op-card-row">
+            <span class="op-card-id">#4798</span>
+            <span class="op-card-channel">chat</span>
+          </div>
+          <div class="op-card-title">Refund dispute — not satisfied with policy</div>
+          <div class="op-card-snippet">Customer asking for exception to no-refund-after-30 policy. Escalated to tier-2.</div>
+          <div class="op-card-foot">
+            <span class="op-card-author">Tier-2 · J. Park</span>
+            <span class="op-card-time">1h</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Side panel: selected card #4821 -->
+    <aside class="op-panel">
+      <div class="op-panel-head">
+        <div>
+          <div class="op-panel-title">#4821 · Refund eligibility</div>
+          <div class="op-panel-meta">chat · Carla S. · started 2m ago</div>
+        </div>
+        <span class="op-panel-close" title="Close">✕</span>
+      </div>
+
+      <div class="op-panel-body">
+        <div class="op-panel-msg user">
+          <div class="op-panel-msg-avatar user">CS</div>
+          <div>
+            <div class="op-panel-msg-bubble">Hi — I'd like to cancel my annual plan and get a refund for the unused months.</div>
+            <div class="op-panel-msg-meta">Carla · 12:04</div>
+          </div>
+        </div>
+
+        <div class="op-panel-msg agent">
+          <div class="op-panel-msg-avatar agent">AI</div>
+          <div>
+            <div class="op-panel-msg-bubble">Looking up your account now…</div>
+            <div class="op-panel-msg-meta">Agent · 12:04 · resolving customer record</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="op-panel-foot">
+        <div class="op-panel-draft-label">
+          Agent's drafted reply
+          <span class="draft-pill">cited from refund-policy.md</span>
+        </div>
+        <div class="op-panel-draft">
+          I can help cancel your plan. On refunds — our annual plan is non-refundable after the first 30 days<span class="op-panel-citation">1</span>, but I can stop it from auto-renewing so you're not billed again. Want me to do that?
+        </div>
+        <div class="op-panel-actions">
+          <button class="op-panel-btn primary">Send as-is</button>
+          <button class="op-panel-btn">Edit</button>
+          <button class="op-panel-btn">Escalate</button>
+          <button class="op-panel-btn report" title="Tell the team this draft is wrong">⚠ Report</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') root.setAttribute('data-theme', 'dark');
+  })();
+</script>
+</body>
+</html>
