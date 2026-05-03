@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Skills library — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  /* Filters */
+  .reg-filters { display: flex; gap: 8px; align-items: center; padding: 12px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-label { font-size: 11.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+  .filter-select { padding: 5px 28px 5px 12px; border-radius: 6px; font-size: 12.5px; color: var(--text-2); background: var(--bg); border: 1px solid var(--border); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3e%3cpath fill='none' stroke='%2364748b' stroke-width='1.5' d='M1 1l4 4 4-4'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 8px center; }
+  .search-input { padding: 6px 12px 6px 30px; border-radius: 6px; font-size: 12.5px; color: var(--text); background: var(--bg); border: 1px solid var(--border); width: 220px; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3e%3ccircle cx='6' cy='6' r='4' fill='none' stroke='%2364748b' stroke-width='1.5'/%3e%3cpath stroke='%2364748b' stroke-width='1.5' stroke-linecap='round' d='M9 9l3 3'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: 9px center; }
+  .filter-divider { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+
+  /* Skills list / table */
+  .skill-table { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-sm); }
+  .skill-row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1.6fr) 100px 80px 110px 110px 28px; gap: 14px; padding: 14px 18px; border-bottom: 1px solid var(--border); align-items: center; cursor: pointer; transition: background 0.12s; }
+  .skill-row:last-child { border-bottom: 0; }
+  .skill-row:hover { background: var(--surface); }
+  .skill-row.head { background: var(--surface); padding: 10px 18px; cursor: default; }
+  .skill-row.head:hover { background: var(--surface); }
+  .skill-row.head > div { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); }
+
+  .skill-name-cell { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .skill-name { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 13px; font-weight: 500; color: var(--text); }
+  .skill-source { font-size: 11.5px; color: var(--text-muted); }
+  .cap-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .cap-tag { font-size: 10.5px; font-weight: 500; padding: 2px 7px; border-radius: 10px; background: var(--surface-2); color: var(--text-3); white-space: nowrap; }
+  .skill-version { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 12px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .skill-used { font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+  .skill-update { font-size: 12px; color: var(--text-muted); }
+  .skill-chev { color: var(--text-faint); justify-self: end; }
+
+  /* Stats summary */
+  .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+
+  /* Retention contract chip */
+  .retention-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 500; padding: 2px 7px; border-radius: 10px; background: var(--green-soft); color: var(--green); }
+  .retention-chip svg { width: 9px; height: 9px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+  .retention-chip.none { background: var(--surface-2); color: var(--text-faint); }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>11 / 14</code> · skills library ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+
+    <div class="workspace-switcher">
+      <span class="workspace-avatar">A</span>
+      <span class="nav-label">Acme Distribution</span>
+      <span class="chev">▾</span>
+    </div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg>
+      <span class="nav-label">Health</span>
+    </a>
+    <a href="02-inbox.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg>
+      <span class="nav-label">Inbox</span>
+      <span class="nav-badge">12</span>
+    </a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Demand prediction</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Labour management</span>
+      <span class="nav-badge">4</span>
+    </a>
+    <a href="10-contract-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Union contract review</span>
+      <span class="nav-badge">2</span>
+    </a>
+    <a href="09-support-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Customer support</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+      <span class="nav-label">New workflow</span>
+    </a>
+
+    <div class="nav-section">Library</div>
+    <a href="11-skills-registry.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg>
+      <span class="nav-label">Skills</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg>
+      <span class="nav-label">Traces</span>
+    </a>
+    <a href="08-audit.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg>
+      <span class="nav-label">Audit</span>
+    </a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;">
+        <svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg>
+        <span class="nav-label" id="themeLabel">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">Skills library</h1>
+        <p class="page-subtitle">9 active skills · 23 total versions · across 4 workflows · workspace-scoped</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-secondary">
+          <svg class="btn-icon" viewBox="0 0 16 16"><path d="M8 2 L8 11 M5 8 L8 11 L11 8 M3 14 L13 14"/></svg>
+          Export
+        </button>
+        <button class="btn btn-primary">
+          <svg class="btn-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+          New skill
+        </button>
+      </div>
+    </header>
+
+    <!-- Stats summary -->
+    <div class="stats-summary">
+      <div class="card">
+        <div class="card-title">Active skills</div>
+        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">9</div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">across 4 workflows</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Retention contracts</div>
+        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">7 / 9</div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">2 skills missing contract</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Updated this week</div>
+        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">4</div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">all gate-passed</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Capability tags</div>
+        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">14</div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">queryable via list_skills(capability=…)</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="reg-filters">
+      <input class="search-input" type="search" name="search" placeholder="Search skills…" aria-label="Search skills">
+      <span class="filter-divider"></span>
+      <span class="filter-label">Workflow</span>
+      <select class="filter-select" name="workflow" aria-label="Filter by workflow">
+        <option>All workflows</option>
+        <option>Demand prediction</option>
+        <option>Labour management</option>
+        <option>Union contract review</option>
+        <option>Customer support</option>
+      </select>
+      <span class="filter-divider"></span>
+      <span class="filter-label">Capability</span>
+      <select class="filter-select" name="capability" aria-label="Filter by capability">
+        <option>Any capability</option>
+        <option>forecasting</option>
+        <option>scheduling</option>
+        <option>compliance</option>
+        <option>legal</option>
+        <option>refund</option>
+        <option>entitlement</option>
+      </select>
+      <span class="filter-divider"></span>
+      <span class="filter-label">Status</span>
+      <select class="filter-select" name="status" aria-label="Filter by status">
+        <option>Active</option>
+        <option>All</option>
+        <option>Deprecated</option>
+      </select>
+      <span style="margin-left: auto; font-size: 12px; color: var(--text-muted);">Showing 9 skills</span>
+    </div>
+
+    <!-- Skills table -->
+    <div class="skill-table">
+      <div class="skill-row head">
+        <div>Skill</div>
+        <div>Capabilities</div>
+        <div>Retention</div>
+        <div>Version</div>
+        <div>Used by</div>
+        <div>Last update</div>
+        <div></div>
+      </div>
+
+      <a href="07-proposal-detail.html" class="skill-row" style="text-decoration: none;">
+        <div class="skill-name-cell">
+          <span class="skill-name">seasonal-anomaly-detector</span>
+          <span class="skill-source">Demand prediction</span>
+        </div>
+        <div class="cap-tags">
+          <span class="cap-tag">forecasting</span>
+          <span class="cap-tag">anomaly-detection</span>
+          <span class="cap-tag">weather</span>
+        </div>
+        <div><span class="retention-chip"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>declared</span></div>
+        <div class="skill-version">v4</div>
+        <div class="skill-used">1 workflow</div>
+        <div class="skill-update">2h ago</div>
+        <span class="skill-chev">›</span>
+      </a>
+
+      <a href="#" class="skill-row" style="text-decoration: none;">
+        <div class="skill-name-cell">
+          <span class="skill-name">price-build-handler</span>
+          <span class="skill-source">Demand prediction</span>
+        </div>
+        <div class="cap-tags">
+          <span class="cap-tag">pricing</span>
+          <span class="cap-tag">supplier</span>
+          <span class="cap-tag">forecasting</span>
+        </div>
+        <div><span class="retention-chip"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>declared</span></div>
+        <div class="skill-version">v3</div>
+        <div class="skill-used">1 workflow</div>
+        <div class="skill-update">9d ago</div>
+        <span class="skill-chev">›</span>
+      </a>
+
+      <a href="#" class="skill-row" style="text-decoration: none;">
+        <div class="skill-name-cell">
+          <span class="skill-name">regional-weights</span>
+          <span class="skill-source">Demand prediction</span>
+        </div>
+        <div class="cap-tags">
+          <span class="cap-tag">forecasting</span>
+          <span class="cap-tag">regional</span>
+        </div>
+        <div><span class="retention-chip"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>declared</span></div>
+        <div class="skill-version">v2</div>
+        <div class="skill-used">1 workflow</div>
+        <div class="skill-update">17d ago</div>
+        <span class="skill-chev">›</span>
+      </a>
+
+      <a href="#" class="skill-row" style="text-decoration: none;">
+        <div class="skill-name-cell">
+          <span class="skill-name">promo-uplift-handler</span>
+          <span class="skill-source">Demand prediction</span>
+        </div>
+        <div class="cap-tags">
+          <span class="cap-tag">forecasting</span>
+          <span class="cap-tag">promotion</span>
+          <span class="cap-tag">bundle</span>
+        </div>
+        <div><span class="retention-chip"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>declared</span></div>
+        <div class="skill-version">v2</div>
+        <div class="skill-used">1 workflow</div>
+        <div class="skill-update">24d ago</div>
+        <span class="skill-chev">›</span>
+      </a>
+
+      <a href="#" class="skill-row" style="text-decoration: none;">
+        <div class="skill-name-cell">
+          <span class="skill-name">shift-rebalancer</span>
+          <span class="skill-source">Labour management</span>
+        </div>
+        <div class="cap-tags">
+          <span class="cap-tag">scheduling</span>
+          <span class="cap-tag">optimization</span>
+        </div>
+        <div><span class="retention-chip none">not declared</span></div>
+        <div class="skill-version">v6</div>
+        <div class="skill-used">1 workflow</div>
+        <div class="skill-update">1d ago</div>
+        <span class="skill-chev">›</span>
+      </a>
+
+      <a href="#" class="skill-row" style="text-decoration: none;">
+        <div class="skill-name-cell">
+          <span class="skill-name">ot-cap-checker</span>
+          <span class="skill-source">Labour management</span>
+        </div>
+        <div class="cap-tags">
+          <span class="cap-tag">compliance</span>
+          <span class="cap-tag">scheduling</span>
+          <span class="cap-tag">union</span>
+        </div>
+        <div><span class="retention-chip"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>declared</span></div>
+        <div class="skill-version">v3</div>
+        <div class="skill-used">1 workflow</div>
+        <div class="skill-update">5h ago</div>
+        <span class="skill-chev">›</span>
+      </a>
+
+      <a href="#" class="skill-row" style="text-decoration: none;">
+        <div class="skill-name-cell">
+          <span class="skill-name">clause-risk-flagger</span>
+          <span class="skill-source">Union contract review</span>
+        </div>
+        <div class="cap-tags">
+          <span class="cap-tag">legal</span>
+          <span class="cap-tag">risk-detection</span>
+          <span class="cap-tag">jurisdictional</span>
+        </div>
+        <div><span class="retention-chip"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>declared</span></div>
+        <div class="skill-version">v5</div>
+        <div class="skill-used">1 workflow</div>
+        <div class="skill-update">2d ago</div>
+        <span class="skill-chev">›</span>
+      </a>
+
+      <a href="#" class="skill-row" style="text-decoration: none;">
+        <div class="skill-name-cell">
+          <span class="skill-name">refund-handler</span>
+          <span class="skill-source">Customer support</span>
+        </div>
+        <div class="cap-tags">
+          <span class="cap-tag">refund</span>
+          <span class="cap-tag">entitlement</span>
+          <span class="cap-tag">policy</span>
+        </div>
+        <div><span class="retention-chip"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>declared</span></div>
+        <div class="skill-version">v9</div>
+        <div class="skill-used">1 workflow</div>
+        <div class="skill-update">6h ago</div>
+        <span class="skill-chev">›</span>
+      </a>
+
+      <a href="#" class="skill-row" style="text-decoration: none;">
+        <div class="skill-name-cell">
+          <span class="skill-name">entitlement-checker</span>
+          <span class="skill-source">Customer support</span>
+        </div>
+        <div class="cap-tags">
+          <span class="cap-tag">entitlement</span>
+          <span class="cap-tag">lookup</span>
+        </div>
+        <div><span class="retention-chip none">not declared</span></div>
+        <div class="skill-version">v2</div>
+        <div class="skill-used">1 workflow</div>
+        <div class="skill-update">12d ago</div>
+        <span class="skill-chev">›</span>
+      </a>
+    </div>
+
+    <div style="margin-top: 24px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; display: flex; gap: 12px; align-items: flex-start;">
+      <svg style="width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="8" cy="8" r="6.5"/><path d="M8 5 L8 9 M8 11 L8 11.5"/></svg>
+      <div style="font-size: 12.5px; color: var(--text-3); line-height: 1.55;">
+        Skills are <strong style="color: var(--text);">lazy-loaded</strong> — agents fetch them via <code style="font-family: ui-monospace, monospace; font-size: 11.5px; background: var(--bg); padding: 1px 5px; border-radius: 3px;">read_skill(skill_id)</code> on demand, not pre-injected. Skills are also <strong style="color: var(--text);">queryable by capability</strong>: <code style="font-family: ui-monospace, monospace; font-size: 11.5px; background: var(--bg); padding: 1px 5px; border-radius: 3px;">list_skills(capability="forecasting")</code> returns a filtered list. Retention contracts declare what state each skill keeps across turns — violations are caught by the regression gate as a regression class.
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>

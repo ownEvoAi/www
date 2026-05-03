@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Demand prediction · Permissions — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  .wf-back { display: inline-flex; align-items: center; gap: 4px; color: var(--text-muted); font-size: 12px; margin-bottom: 8px; }
+  .wf-back:hover { color: var(--text-2); }
+  .wf-title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .wf-title { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+  .wf-buyer { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
+  .tab { padding: 10px 14px; font-size: 13px; color: var(--text-3); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+  .section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; margin-top: 24px; }
+  .section-head:first-of-type { margin-top: 0; }
+  .section-title { font-size: 13px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .section-sub { font-size: 12px; color: var(--text-muted); margin-left: 8px; }
+
+  /* Role grid */
+  .role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+  .role-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 18px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+  .role-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .role-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .role-icon.reviewer { background: var(--accent-muted); color: var(--accent); }
+  .role-icon.observer { background: var(--surface-2); color: var(--text-3); }
+  .role-icon.admin { background: var(--amber-soft); color: var(--amber); }
+  .role-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.75; }
+  .role-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .role-count { font-size: 11.5px; color: var(--text-muted); }
+  .role-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 14px; }
+
+  .user-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .user-row { display: flex; gap: 10px; align-items: center; padding: 6px 8px; border-radius: 6px; background: var(--surface); }
+  .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--text-3); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+  .user-info { flex: 1; min-width: 0; }
+  .user-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .user-email { font-size: 11.5px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .user-tag { font-size: 10px; font-weight: 500; padding: 1px 6px; border-radius: 8px; background: var(--accent-muted); color: var(--accent); white-space: nowrap; }
+  .user-remove { color: var(--text-faint); font-size: 14px; cursor: pointer; padding: 0 4px; }
+  .user-remove:hover { color: var(--red); }
+
+  .role-add-btn { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border: 1px dashed var(--border-light); border-radius: 6px; color: var(--text-3); font-size: 12px; background: transparent; transition: border-color 0.12s, color 0.12s; cursor: pointer; }
+  .role-add-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .role-add-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  /* Approval policy */
+  .policy-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 18px 22px; box-shadow: var(--shadow-sm); }
+  .policy-row { display: grid; grid-template-columns: 110px minmax(0, 1fr) auto; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--border); align-items: center; }
+  .policy-row:first-child { padding-top: 0; }
+  .policy-row:last-child { border-bottom: 0; padding-bottom: 0; }
+  .policy-cond { font-size: 13px; font-weight: 500; color: var(--text); }
+  .policy-cond .pill { margin-left: 0; }
+  .policy-rule { font-size: 13px; color: var(--text-3); }
+  .policy-rule .key { font-weight: 500; color: var(--text); }
+  .policy-edit { font-size: 12px; color: var(--accent); }
+
+  /* Notification list */
+  .notif-list { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-sm); }
+  .notif-row { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); align-items: center; }
+  .notif-row:last-child { border-bottom: 0; }
+  .notif-icon { color: var(--text-3); }
+  .notif-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.75; }
+  .notif-name { font-size: 13px; color: var(--text); }
+  .notif-meta { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+  .toggle { width: 32px; height: 18px; border-radius: 9px; background: var(--accent); position: relative; cursor: pointer; }
+  .toggle::after { content: ''; position: absolute; top: 2px; left: 16px; width: 14px; height: 14px; border-radius: 50%; background: white; }
+  .toggle.off { background: var(--border-light); }
+  .toggle.off::after { left: 2px; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>14 / 14</code> · workflow permissions ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+
+    <div class="workspace-switcher">
+      <span class="workspace-avatar">A</span>
+      <span class="nav-label">Acme Distribution</span>
+      <span class="chev">▾</span>
+    </div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg>
+      <span class="nav-label">Health</span>
+    </a>
+    <a href="02-inbox.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg>
+      <span class="nav-label">Inbox</span>
+      <span class="nav-badge">12</span>
+    </a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Demand prediction</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Labour management</span>
+      <span class="nav-badge">4</span>
+    </a>
+    <a href="10-contract-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Union contract review</span>
+      <span class="nav-badge">2</span>
+    </a>
+    <a href="09-support-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Customer support</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+      <span class="nav-label">New workflow</span>
+    </a>
+
+    <div class="nav-section">Library</div>
+    <a href="11-skills-registry.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg>
+      <span class="nav-label">Skills</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg>
+      <span class="nav-label">Traces</span>
+    </a>
+    <a href="08-audit.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg>
+      <span class="nav-label">Audit</span>
+    </a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;">
+        <svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg>
+        <span class="nav-label" id="themeLabel">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div style="margin-bottom: 6px;">
+      <a href="01-health.html" class="wf-back">‹ Workflows</a>
+      <div class="wf-title-row">
+        <h1 class="wf-title">Demand prediction</h1>
+        <span class="pill green">● Active</span>
+        <span class="pill outline">v23</span>
+      </div>
+      <p class="wf-buyer">Owner: Maria Chen · Supply Chain VP · 7 people across 3 roles</p>
+    </div>
+
+    <div class="tabs">
+      <a href="05-workflow-overview.html" class="tab">Overview</a>
+      <a href="06-workflow-operate.html" class="tab">Operate</a>
+      <a href="#" class="tab">Failures</a>
+      <a href="#" class="tab">Eval cases <span class="muted" style="margin-left: 4px; font-size: 11px;">128</span></a>
+      <a href="11-skills-registry.html" class="tab">Skills <span class="muted" style="margin-left: 4px; font-size: 11px;">9</span></a>
+      <a href="08-audit.html" class="tab">Audit</a>
+      <a href="12-workflow-triggers.html" class="tab">Triggers</a>
+      <a href="13-workflow-integrations.html" class="tab">Integrations</a>
+      <a href="14-workflow-permissions.html" class="tab active">Permissions</a>
+    </div>
+
+    <!-- Role buckets -->
+    <div class="section-head">
+      <div>
+        <span class="section-title">Roles</span>
+        <span class="section-sub">who can do what on this workflow</span>
+      </div>
+    </div>
+
+    <div class="role-grid">
+      <!-- Reviewers -->
+      <div class="role-card">
+        <div class="role-head">
+          <div class="role-icon reviewer">
+            <svg viewBox="0 0 16 16"><path d="M3 8 L7 12 L13 4"/></svg>
+          </div>
+          <div>
+            <div class="role-name">Reviewers</div>
+            <div class="role-count">2 people · can approve proposals</div>
+          </div>
+        </div>
+        <p class="role-desc">Receive proposals in their inbox, can approve / reject / request changes. Approvals trigger gate runs and (if green) deploy.</p>
+        <div class="user-list">
+          <div class="user-row">
+            <div class="user-avatar" style="background: #6366f1;">MC</div>
+            <div class="user-info">
+              <div class="user-name">Maria Chen</div>
+              <div class="user-email">maria.chen@acme.example</div>
+            </div>
+            <span class="user-tag">primary</span>
+          </div>
+          <div class="user-row">
+            <div class="user-avatar" style="background: #0891b2;">RA</div>
+            <div class="user-info">
+              <div class="user-name">Ravi Anantharaman</div>
+              <div class="user-email">ravi.a@acme.example</div>
+            </div>
+            <span class="user-remove" title="Remove">×</span>
+          </div>
+        </div>
+        <button class="role-add-btn">
+          <svg viewBox="0 0 12 12"><path d="M6 2 L6 10 M2 6 L10 6"/></svg>
+          Add reviewer
+        </button>
+      </div>
+
+      <!-- Observers -->
+      <div class="role-card">
+        <div class="role-head">
+          <div class="role-icon observer">
+            <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M1 8 C2.5 5 5 3 8 3 C11 3 13.5 5 15 8 C13.5 11 11 13 8 13 C5 13 2.5 11 1 8 Z"/></svg>
+          </div>
+          <div>
+            <div class="role-name">Observers</div>
+            <div class="role-count">3 people · read-only access</div>
+          </div>
+        </div>
+        <p class="role-desc">Can view dashboards, traces, audit log, and lift charts. Cannot approve or modify. Useful for compliance, audit, and stakeholder visibility.</p>
+        <div class="user-list">
+          <div class="user-row">
+            <div class="user-avatar" style="background: #475569;">DG</div>
+            <div class="user-info">
+              <div class="user-name">David Goldman</div>
+              <div class="user-email">david.g@acme.example</div>
+            </div>
+            <span class="user-tag" style="background: var(--surface-2); color: var(--text-3);">CFO</span>
+          </div>
+          <div class="user-row">
+            <div class="user-avatar" style="background: #475569;">SP</div>
+            <div class="user-info">
+              <div class="user-name">Sarah Park</div>
+              <div class="user-email">sarah.p@acme.example</div>
+            </div>
+            <span class="user-tag" style="background: var(--surface-2); color: var(--text-3);">Finance ops</span>
+          </div>
+          <div class="user-row">
+            <div class="user-avatar" style="background: #475569;">EW</div>
+            <div class="user-info">
+              <div class="user-name">Eli Whitfield</div>
+              <div class="user-email">eli.w@acme.example</div>
+            </div>
+            <span class="user-tag" style="background: var(--surface-2); color: var(--text-3);">Compliance</span>
+          </div>
+        </div>
+        <button class="role-add-btn">
+          <svg viewBox="0 0 12 12"><path d="M6 2 L6 10 M2 6 L10 6"/></svg>
+          Add observer
+        </button>
+      </div>
+
+      <!-- Admins -->
+      <div class="role-card">
+        <div class="role-head">
+          <div class="role-icon admin">
+            <svg viewBox="0 0 16 16"><path d="M8 1 L13 4 L13 9 C13 12 10.5 14 8 15 C5.5 14 3 12 3 9 L3 4 Z M6 8 L7.5 9.5 L10 6.5"/></svg>
+          </div>
+          <div>
+            <div class="role-name">Admins</div>
+            <div class="role-count">2 people · manage roles + policy</div>
+          </div>
+        </div>
+        <p class="role-desc">Configure reviewers, observers, approval policy, triggers, integrations. Cannot bypass gate or audit chain — actions are logged.</p>
+        <div class="user-list">
+          <div class="user-row">
+            <div class="user-avatar" style="background: #6366f1;">MC</div>
+            <div class="user-info">
+              <div class="user-name">Maria Chen</div>
+              <div class="user-email">maria.chen@acme.example</div>
+            </div>
+            <span class="user-tag">owner</span>
+          </div>
+          <div class="user-row">
+            <div class="user-avatar" style="background: #0d9488;">DP</div>
+            <div class="user-info">
+              <div class="user-name">Devon Park</div>
+              <div class="user-email">devon.p@acme.example</div>
+            </div>
+            <span class="user-remove" title="Remove">×</span>
+          </div>
+        </div>
+        <button class="role-add-btn">
+          <svg viewBox="0 0 12 12"><path d="M6 2 L6 10 M2 6 L10 6"/></svg>
+          Add admin
+        </button>
+      </div>
+    </div>
+
+    <!-- Approval policy -->
+    <div class="section-head">
+      <div>
+        <span class="section-title">Approval policy</span>
+        <span class="section-sub">when does a proposal need human review</span>
+      </div>
+      <button class="btn btn-secondary" style="font-size: 12px;">Edit policy</button>
+    </div>
+
+    <div class="policy-card">
+      <div class="policy-row">
+        <span class="policy-cond"><span class="pill outline">Low severity</span></span>
+        <span class="policy-rule">Auto-approve if gate passes <span class="key">AND</span> impact estimate &lt; 1 pt lift <span class="key">AND</span> no production-data dependencies</span>
+        <a href="#" class="policy-edit">Edit</a>
+      </div>
+      <div class="policy-row">
+        <span class="policy-cond"><span class="pill amber">Medium severity</span></span>
+        <span class="policy-rule">Require <span class="key">1 reviewer</span> approval. SLA: 24h. Escalate to admin if not actioned.</span>
+        <a href="#" class="policy-edit">Edit</a>
+      </div>
+      <div class="policy-row">
+        <span class="policy-cond"><span class="pill red">High severity</span></span>
+        <span class="policy-rule">Require <span class="key">2 reviewer</span> approvals. SLA: 4h. Notify all reviewers immediately.</span>
+        <a href="#" class="policy-edit">Edit</a>
+      </div>
+      <div class="policy-row">
+        <span class="policy-cond"><span class="pill accent">Markdown alerts</span></span>
+        <span class="policy-rule">Skill change always requires human review (override on low severity). <em style="color: var(--text-muted);">Workflow-specific override.</em></span>
+        <a href="#" class="policy-edit">Edit</a>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="section-head">
+      <div>
+        <span class="section-title">Notifications</span>
+        <span class="section-sub">how reviewers get notified of pending work</span>
+      </div>
+    </div>
+
+    <div class="notif-list">
+      <div class="notif-row">
+        <div class="notif-icon">
+          <svg viewBox="0 0 16 16"><path d="M2 5 L2 14 L16 14 L16 5 M2 5 L9 10 L16 5"/></svg>
+        </div>
+        <div>
+          <div class="notif-name">Email · per proposal</div>
+          <div class="notif-meta">Each reviewer gets an email when a proposal lands in their inbox</div>
+        </div>
+        <div class="toggle"></div>
+      </div>
+      <div class="notif-row">
+        <div class="notif-icon">
+          <svg viewBox="0 0 16 16"><path d="M5 11 A1.5 1.5 0 0 0 3.5 12.5 A1.5 1.5 0 0 0 5 14 A1.5 1.5 0 0 0 6.5 12.5 L6.5 11 Z M9 6 A1.5 1.5 0 0 0 10.5 7.5 A1.5 1.5 0 0 0 12 6 A1.5 1.5 0 0 0 10.5 4.5 L9 4.5 Z"/></svg>
+        </div>
+        <div>
+          <div class="notif-name">Slack · #demand-prediction-reviews</div>
+          <div class="notif-meta">Real-time channel post on every proposal · respects high-severity ping</div>
+        </div>
+        <div class="toggle"></div>
+      </div>
+      <div class="notif-row">
+        <div class="notif-icon">
+          <svg viewBox="0 0 16 16"><path d="M2 4 L14 4 L14 12 L2 12 Z M5 8 L11 8"/></svg>
+        </div>
+        <div>
+          <div class="notif-name">Daily digest · 9am PT</div>
+          <div class="notif-meta">Summary of pending proposals, average time-to-decision, and SLA breaches</div>
+        </div>
+        <div class="toggle"></div>
+      </div>
+      <div class="notif-row">
+        <div class="notif-icon">
+          <svg viewBox="0 0 16 16"><path d="M8 1 L15 14 L1 14 Z M8 6 L8 10 M8 12 L8 12.5"/></svg>
+        </div>
+        <div>
+          <div class="notif-name">PagerDuty · gate blocks only</div>
+          <div class="notif-meta">Page on-call when a proposed change is blocked by the regression gate</div>
+        </div>
+        <div class="toggle off"></div>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; display: flex; gap: 12px; align-items: flex-start;">
+      <svg style="width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="8" cy="8" r="6.5"/><path d="M8 5 L8 9 M8 11 L8 11.5"/></svg>
+      <div style="font-size: 12.5px; color: var(--text-3); line-height: 1.55;">
+        Permissions are <strong style="color: var(--text);">workflow-scoped</strong>. A reviewer on Demand prediction has no access to Customer support unless explicitly added there. All role changes are recorded in the <a href="08-audit.html" style="color: var(--accent);">audit chain</a>.
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Demand prediction · Triggers — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  .wf-back { display: inline-flex; align-items: center; gap: 4px; color: var(--text-muted); font-size: 12px; margin-bottom: 8px; }
+  .wf-back:hover { color: var(--text-2); }
+  .wf-title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .wf-title { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+  .wf-buyer { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
+  .tab { padding: 10px 14px; font-size: 13px; color: var(--text-3); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+  /* Section heading */
+  .section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .section-title { font-size: 13px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* Trigger list */
+  .trigger-list { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: 24px; }
+  .trigger-row { display: grid; grid-template-columns: 36px minmax(0, 1.5fr) minmax(0, 1.4fr) 130px 130px 90px 32px; gap: 14px; padding: 16px 18px; border-bottom: 1px solid var(--border); align-items: center; }
+  .trigger-row:last-child { border-bottom: 0; }
+  .trigger-row.head { background: var(--surface); padding: 10px 18px; }
+  .trigger-row.head > div { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); }
+  .trigger-row:not(.head):hover { background: var(--surface); cursor: pointer; }
+
+  .trigger-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .trigger-icon.cron { background: rgba(99, 102, 241, 0.10); color: #4f46e5; }
+  .trigger-icon.event { background: var(--amber-soft); color: var(--amber); }
+  .trigger-icon.webhook { background: var(--green-soft); color: var(--green); }
+  .trigger-icon.manual { background: var(--surface-2); color: var(--text-3); }
+  .trigger-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.75; }
+
+  .trigger-name-cell { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .trigger-name { font-size: 14px; font-weight: 500; color: var(--text); }
+  .trigger-type { font-size: 11.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+
+  .trigger-condition { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 12px; color: var(--text-3); background: var(--surface); padding: 4px 8px; border-radius: 4px; display: inline-block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .trigger-condition.text { font-family: 'Outfit', sans-serif; background: transparent; padding: 0; }
+
+  .trigger-meta { display: flex; flex-direction: column; gap: 2px; }
+  .trigger-meta-label { font-size: 10.5px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .trigger-meta-value { font-size: 12.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+  /* Stats */
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>12 / 14</code> · workflow triggers ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+
+    <div class="workspace-switcher">
+      <span class="workspace-avatar">A</span>
+      <span class="nav-label">Acme Distribution</span>
+      <span class="chev">▾</span>
+    </div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg>
+      <span class="nav-label">Health</span>
+    </a>
+    <a href="02-inbox.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg>
+      <span class="nav-label">Inbox</span>
+      <span class="nav-badge">12</span>
+    </a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Demand prediction</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Labour management</span>
+      <span class="nav-badge">4</span>
+    </a>
+    <a href="10-contract-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Union contract review</span>
+      <span class="nav-badge">2</span>
+    </a>
+    <a href="09-support-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Customer support</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+      <span class="nav-label">New workflow</span>
+    </a>
+
+    <div class="nav-section">Library</div>
+    <a href="11-skills-registry.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg>
+      <span class="nav-label">Skills</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg>
+      <span class="nav-label">Traces</span>
+    </a>
+    <a href="08-audit.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg>
+      <span class="nav-label">Audit</span>
+    </a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;">
+        <svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg>
+        <span class="nav-label" id="themeLabel">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div style="margin-bottom: 6px;">
+      <a href="01-health.html" class="wf-back">‹ Workflows</a>
+      <div class="wf-title-row">
+        <h1 class="wf-title">Demand prediction</h1>
+        <span class="pill green">● Active</span>
+        <span class="pill outline">v23</span>
+      </div>
+      <p class="wf-buyer">Owner: Maria Chen · Supply Chain VP · 4 active triggers</p>
+    </div>
+
+    <div class="tabs">
+      <a href="05-workflow-overview.html" class="tab">Overview</a>
+      <a href="06-workflow-operate.html" class="tab">Operate</a>
+      <a href="#" class="tab">Failures</a>
+      <a href="#" class="tab">Eval cases <span class="muted" style="margin-left: 4px; font-size: 11px;">128</span></a>
+      <a href="11-skills-registry.html" class="tab">Skills <span class="muted" style="margin-left: 4px; font-size: 11px;">9</span></a>
+      <a href="08-audit.html" class="tab">Audit</a>
+      <a href="12-workflow-triggers.html" class="tab active">Triggers</a>
+      <a href="13-workflow-integrations.html" class="tab">Integrations</a>
+      <a href="14-workflow-permissions.html" class="tab">Permissions</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="card">
+        <div class="card-title">Active triggers</div>
+        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">4</div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">2 cron · 1 event · 1 webhook</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Total fires · 7d</div>
+        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">38</div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">all completed successfully</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Avg run duration</div>
+        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">2m 18s</div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">includes all 142 stores</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Next scheduled</div>
+        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">14m</div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">Daily forecast (cron)</div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <span class="section-title">Triggers</span>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-secondary" style="font-size: 12px;">Run history</button>
+        <button class="btn btn-primary" style="font-size: 12px;">
+          <svg class="btn-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+          Add trigger
+        </button>
+      </div>
+    </div>
+
+    <div class="trigger-list">
+      <div class="trigger-row head">
+        <div></div>
+        <div>Trigger</div>
+        <div>Schedule / condition</div>
+        <div>Last fired</div>
+        <div>Next fire</div>
+        <div>Status</div>
+        <div></div>
+      </div>
+
+      <!-- Daily forecast cron -->
+      <div class="trigger-row">
+        <div class="trigger-icon cron">
+          <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 4 L8 8 L11 10"/></svg>
+        </div>
+        <div class="trigger-name-cell">
+          <span class="trigger-name">Daily forecast run</span>
+          <span class="trigger-type">Cron</span>
+        </div>
+        <div><span class="trigger-condition">0 6 * * 1-5</span><span style="font-size: 11.5px; color: var(--text-muted); margin-left: 8px;">weekdays 6:00 PT</span></div>
+        <div class="trigger-meta">
+          <span class="trigger-meta-label">14m ago</span>
+          <span class="trigger-meta-value" style="font-size: 11px; color: var(--text-muted);">2m 14s · ok</span>
+        </div>
+        <div class="trigger-meta">
+          <span class="trigger-meta-label">In 14m</span>
+          <span class="trigger-meta-value" style="font-size: 11px; color: var(--text-muted);">2026-05-02 06:00</span>
+        </div>
+        <div><span class="pill green">● Active</span></div>
+        <span style="color: var(--text-faint); justify-self: end;">›</span>
+      </div>
+
+      <!-- Markdown alert event -->
+      <div class="trigger-row">
+        <div class="trigger-icon event">
+          <svg viewBox="0 0 16 16"><path d="M9 1 L3 9 L7 9 L7 15 L13 7 L9 7 Z"/></svg>
+        </div>
+        <div class="trigger-name-cell">
+          <span class="trigger-name">Markdown alert escalation</span>
+          <span class="trigger-type">Event · cluster</span>
+        </div>
+        <div><span class="trigger-condition">on cluster.severity ≥ medium</span></div>
+        <div class="trigger-meta">
+          <span class="trigger-meta-label">2h ago</span>
+          <span class="trigger-meta-value" style="font-size: 11px; color: var(--text-muted);">cluster #ce-2284</span>
+        </div>
+        <div class="trigger-meta">
+          <span class="trigger-meta-label">on next event</span>
+          <span class="trigger-meta-value" style="font-size: 11px; color: var(--text-muted);">8 fires this week</span>
+        </div>
+        <div><span class="pill green">● Active</span></div>
+        <span style="color: var(--text-faint); justify-self: end;">›</span>
+      </div>
+
+      <!-- Weekly review cron -->
+      <div class="trigger-row">
+        <div class="trigger-icon cron">
+          <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 4 L8 8 L11 10"/></svg>
+        </div>
+        <div class="trigger-name-cell">
+          <span class="trigger-name">Weekly comprehensive review</span>
+          <span class="trigger-type">Cron</span>
+        </div>
+        <div><span class="trigger-condition">0 9 * * 1</span><span style="font-size: 11.5px; color: var(--text-muted); margin-left: 8px;">Mondays 9:00 PT</span></div>
+        <div class="trigger-meta">
+          <span class="trigger-meta-label">3d ago</span>
+          <span class="trigger-meta-value" style="font-size: 11px; color: var(--text-muted);">14m 02s · ok</span>
+        </div>
+        <div class="trigger-meta">
+          <span class="trigger-meta-label">In 4d 21h</span>
+          <span class="trigger-meta-value" style="font-size: 11px; color: var(--text-muted);">2026-05-05 09:00</span>
+        </div>
+        <div><span class="pill green">● Active</span></div>
+        <span style="color: var(--text-faint); justify-self: end;">›</span>
+      </div>
+
+      <!-- Manual webhook -->
+      <div class="trigger-row">
+        <div class="trigger-icon webhook">
+          <svg viewBox="0 0 16 16"><circle cx="4" cy="12" r="2"/><circle cx="12" cy="4" r="2"/><path d="M5 11 L11 5"/></svg>
+        </div>
+        <div class="trigger-name-cell">
+          <span class="trigger-name">Manual / API trigger</span>
+          <span class="trigger-type">Webhook</span>
+        </div>
+        <div><span class="trigger-condition">POST /workflows/demand-prediction/run</span></div>
+        <div class="trigger-meta">
+          <span class="trigger-meta-label">4d ago</span>
+          <span class="trigger-meta-value" style="font-size: 11px; color: var(--text-muted);">curl from M. Chen</span>
+        </div>
+        <div class="trigger-meta">
+          <span class="trigger-meta-label">on call</span>
+          <span class="trigger-meta-value" style="font-size: 11px; color: var(--text-muted);">avg 1.4 calls / week</span>
+        </div>
+        <div><span class="pill green">● Active</span></div>
+        <span style="color: var(--text-faint); justify-self: end;">›</span>
+      </div>
+    </div>
+
+    <div style="margin-top: 8px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; display: flex; gap: 12px; align-items: flex-start;">
+      <svg style="width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="8" cy="8" r="6.5"/><path d="M8 5 L8 9 M8 11 L8 11.5"/></svg>
+      <div style="font-size: 12.5px; color: var(--text-3); line-height: 1.55;">
+        Triggers fire the workflow's <strong style="color: var(--text);">production agent</strong>, not the improvement loop. The improvement loop runs continuously in the background and never adds latency to a triggered run. All runs emit traces to the eval pipeline regardless of source.
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>
