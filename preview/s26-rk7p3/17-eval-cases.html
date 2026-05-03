@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Demand prediction · Eval cases — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  .wf-back { display: inline-flex; align-items: center; gap: 4px; color: var(--text-muted); font-size: 12px; margin-bottom: 8px; }
+  .wf-back:hover { color: var(--text-2); }
+  .wf-title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .wf-title { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+  .wf-buyer { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
+  .tab { padding: 10px 14px; font-size: 13px; color: var(--text-3); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .filter-row { display: flex; gap: 8px; align-items: center; padding: 12px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-label { font-size: 11.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+  .filter-select { padding: 5px 28px 5px 12px; border-radius: 6px; font-size: 12.5px; color: var(--text-2); background: var(--bg); border: 1px solid var(--border); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3e%3cpath fill='none' stroke='%2364748b' stroke-width='1.5' d='M1 1l4 4 4-4'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 8px center; }
+  .search-input { padding: 6px 12px 6px 30px; border-radius: 6px; font-size: 12.5px; color: var(--text); background: var(--bg); border: 1px solid var(--border); width: 220px; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3e%3ccircle cx='6' cy='6' r='4' fill='none' stroke='%2364748b' stroke-width='1.5'/%3e%3cpath stroke='%2364748b' stroke-width='1.5' stroke-linecap='round' d='M9 9l3 3'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: 9px center; }
+  .filter-divider { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+
+  /* Eval cases table */
+  .ec-table { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-sm); }
+  .ec-row { display: grid; grid-template-columns: 36px minmax(0, 2fr) 110px 80px minmax(0, 1.2fr) 80px 28px; gap: 14px; padding: 12px 16px; border-bottom: 1px solid var(--border); align-items: center; }
+  .ec-row:last-child { border-bottom: 0; }
+  .ec-row:hover:not(.head) { background: var(--surface); cursor: pointer; }
+  .ec-row.head { background: var(--surface); padding: 10px 16px; }
+  .ec-row.head > div { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); }
+  .ec-num { font-family: ui-monospace, monospace; font-size: 11px; color: var(--text-muted); }
+  .ec-name-cell { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .ec-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .ec-source { font-size: 11.5px; color: var(--text-muted); font-style: italic; }
+  .ec-pass { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--green); font-variant-numeric: tabular-nums; font-weight: 500; }
+  .ec-pass svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>17 / 23</code> · workflow eval cases · regression suite ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+    <div class="workspace-switcher"><span class="workspace-avatar">A</span><span class="nav-label">Acme Distribution</span><span class="chev">▾</span></div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg><span class="nav-label">Health</span></a>
+    <a href="02-inbox.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg><span class="nav-label">Inbox</span><span class="nav-badge">12</span></a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Demand prediction</span><span class="nav-badge">3</span></a>
+    <a href="20-labour-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Labour management</span><span class="nav-badge">4</span></a>
+    <a href="22-contract-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Union contract review</span><span class="nav-badge">2</span></a>
+    <a href="21-support-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Customer support</span><span class="nav-badge">3</span></a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg><span class="nav-label">New workflow</span></a>
+
+    <div class="nav-section">Library</div>
+    <a href="11-skills-registry.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg><span class="nav-label">Skills</span></a>
+    <a href="15-traces.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg><span class="nav-label">Traces</span></a>
+    <a href="08-audit.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg><span class="nav-label">Audit</span></a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg><span class="nav-label">Settings</span></a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg><span class="nav-label" id="themeLabel">Dark mode</span></button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div style="margin-bottom: 6px;">
+      <a href="01-health.html" class="wf-back">‹ Workflows</a>
+      <div class="wf-title-row"><h1 class="wf-title">Demand prediction</h1><span class="pill green">● Active</span><span class="pill outline">v23</span></div>
+      <p class="wf-buyer">Owner: Maria Chen · Supply Chain VP · 128 eval cases · suite owned by your enterprise · exportable</p>
+    </div>
+
+    <div class="tabs">
+      <a href="05-workflow-overview.html" class="tab">Overview</a>
+      <a href="06-workflow-operate.html" class="tab">Operate</a>
+      <a href="16-failures.html" class="tab">Failures</a>
+      <a href="17-eval-cases.html" class="tab active">Eval cases <span class="muted" style="margin-left: 4px; font-size: 11px;">128</span></a>
+      <a href="23-workflow-skills.html" class="tab">Skills <span class="muted" style="margin-left: 4px; font-size: 11px;">9</span></a>
+      <a href="08-audit.html" class="tab">Audit</a>
+      <a href="12-workflow-triggers.html" class="tab">Triggers</a>
+      <a href="13-workflow-integrations.html" class="tab">Integrations</a>
+      <a href="14-workflow-permissions.html" class="tab">Permissions</a>
+    </div>
+
+    <div class="stats-row">
+      <div class="card"><div class="card-title">Total cases</div><div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">128</div><div style="font-size: 11.5px; color: var(--text-muted);">+38 in last 30d</div></div>
+      <div class="card"><div class="card-title">From clusters</div><div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">38</div><div style="font-size: 11.5px; color: var(--text-muted);">auto-promoted from production failures</div></div>
+      <div class="card"><div class="card-title">Last full-suite run</div><div style="font-size: 22px; font-weight: 500; color: var(--green); font-variant-numeric: tabular-nums;">128 / 128</div><div style="font-size: 11.5px; color: var(--text-muted);">2h ago · 4m 12s · all green</div></div>
+      <div class="card"><div class="card-title">Best score ever</div><div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">91.2<span style="font-size: 14px; color: var(--text-muted);">%</span></div><div style="font-size: 11.5px; color: var(--text-muted);">composite metric · gate floor</div></div>
+    </div>
+
+    <div class="filter-row">
+      <input class="search-input" type="search" name="search" placeholder="Search cases…" aria-label="Search">
+      <span class="filter-divider"></span>
+      <span class="filter-label">Type</span>
+      <select class="filter-select" name="type" aria-label="Filter type"><option>All types</option><option>Regression</option><option>Past miss</option><option>Edge case</option><option>From cluster</option></select>
+      <span class="filter-divider"></span>
+      <span class="filter-label">Severity</span>
+      <select class="filter-select" name="severity" aria-label="Filter severity"><option>All</option><option>High</option><option>Medium</option><option>Low</option></select>
+      <span class="filter-divider"></span>
+      <span class="filter-label">Source</span>
+      <select class="filter-select" name="source" aria-label="Filter source"><option>Any</option><option>Cluster-derived</option><option>Reviewer comment</option><option>Hand-picked</option></select>
+      <span style="margin-left: auto; font-size: 12px; color: var(--text-muted);">Showing 12 of 128 · <a href="#" style="color: var(--accent);">Run suite now</a></span>
+    </div>
+
+    <div class="ec-table">
+      <div class="ec-row head">
+        <div>#</div><div>Case</div><div>Type</div><div>Severity</div><div>Source</div><div>Last pass</div><div></div>
+      </div>
+
+      <div class="ec-row">
+        <div class="ec-num">128</div>
+        <div class="ec-name-cell">
+          <span class="ec-name">No auto-discount above 25% without reviewer (rejection precedent)</span>
+          <span class="ec-source">Promoted from rejected proposal #ce-2241 · M. Chen comment</span>
+        </div>
+        <div><span class="pill outline">Regression</span></div>
+        <div><span class="pill amber">Med</span></div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">reviewer comment · 3d</div>
+        <div class="ec-pass"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>1/1</div>
+        <span style="color: var(--text-faint); justify-self: end;">›</span>
+      </div>
+
+      <div class="ec-row">
+        <div class="ec-num">127</div>
+        <div class="ec-name-cell">
+          <span class="ec-name">PNW winter boot 2025-W47 · markdown earlier than W49</span>
+          <span class="ec-source">From cluster #ce-2284 (14 traces · auto-promoted)</span>
+        </div>
+        <div><span class="pill amber">From cluster</span></div>
+        <div><span class="pill red">High</span></div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">cluster auto · 11d</div>
+        <div class="ec-pass"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>1/1</div>
+        <span style="color: var(--text-faint); justify-self: end;">›</span>
+      </div>
+
+      <div class="ec-row">
+        <div class="ec-num">126</div>
+        <div class="ec-name-cell">
+          <span class="ec-name">Northeast winter coat 2026-W44 · weather-driven anomaly</span>
+          <span class="ec-source">From cluster #ce-2284 (cousin trace · auto-promoted)</span>
+        </div>
+        <div><span class="pill amber">From cluster</span></div>
+        <div><span class="pill amber">Med</span></div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">cluster auto · 11d</div>
+        <div class="ec-pass"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>1/1</div>
+        <span style="color: var(--text-faint); justify-self: end;">›</span>
+      </div>
+
+      <div class="ec-row">
+        <div class="ec-num">115-118</div>
+        <div class="ec-name-cell">
+          <span class="ec-name">Promo bundle uplift Q4 2024-2025 (4 historical replays)</span>
+          <span class="ec-source">From cluster #ce-2278 · past misses</span>
+        </div>
+        <div><span class="pill accent">Past miss</span></div>
+        <div><span class="pill amber">Med</span></div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">cluster auto · 6d</div>
+        <div class="ec-pass"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>4/4</div>
+        <span style="color: var(--text-faint); justify-self: end;">›</span>
+      </div>
+
+      <div class="ec-row">
+        <div class="ec-num">98</div>
+        <div class="ec-name-cell">
+          <span class="ec-name">Steady-demand baseline · no anomaly · regression check</span>
+          <span class="ec-source">Hand-picked · ensure agent does not fire false markdown alerts</span>
+        </div>
+        <div><span class="pill outline">Regression</span></div>
+        <div><span class="pill outline">Low</span></div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">manual · 6w</div>
+        <div class="ec-pass"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>1/1</div>
+        <span style="color: var(--text-faint); justify-self: end;">›</span>
+      </div>
+
+      <div class="ec-row">
+        <div class="ec-num">97</div>
+        <div class="ec-name-cell">
+          <span class="ec-name">Inventory-pegged forecast · low-stock SKU</span>
+          <span class="ec-source">Hand-picked · forecast shall not exceed inventory under any signal</span>
+        </div>
+        <div><span class="pill outline">Regression</span></div>
+        <div><span class="pill outline">Low</span></div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">manual · 6w</div>
+        <div class="ec-pass"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>1/1</div>
+        <span style="color: var(--text-faint); justify-self: end;">›</span>
+      </div>
+
+      <div class="ec-row">
+        <div class="ec-num">82-85</div>
+        <div class="ec-name-cell">
+          <span class="ec-name">Supplier price-build edge cases · 4 lead-time variants</span>
+          <span class="ec-source">From cluster #ce-2218 · resolved 9d ago</span>
+        </div>
+        <div><span class="pill amber">From cluster</span></div>
+        <div><span class="pill amber">Med</span></div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">cluster auto · 9d</div>
+        <div class="ec-pass"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>4/4</div>
+        <span style="color: var(--text-faint); justify-self: end;">›</span>
+      </div>
+
+      <div class="ec-row">
+        <div class="ec-num">76</div>
+        <div class="ec-name-cell">
+          <span class="ec-name">Cold snap surge · winter coats Northeast 2024-W44</span>
+          <span class="ec-source">Generated edge case · narrow-window weather-driven anomaly</span>
+        </div>
+        <div><span class="pill accent">Edge</span></div>
+        <div><span class="pill amber">Med</span></div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">generated · 3w</div>
+        <div class="ec-pass"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>1/1</div>
+        <span style="color: var(--text-faint); justify-self: end;">›</span>
+      </div>
+
+      <div class="ec-row">
+        <div class="ec-num">71</div>
+        <div class="ec-name-cell">
+          <span class="ec-name">Regional variance · Southeast hurricane evacuation</span>
+          <span class="ec-source">Generated edge case · localized demand displacement</span>
+        </div>
+        <div><span class="pill accent">Edge</span></div>
+        <div><span class="pill red">High</span></div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">generated · 3w</div>
+        <div class="ec-pass"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>1/1</div>
+        <span style="color: var(--text-faint); justify-self: end;">›</span>
+      </div>
+
+      <div class="ec-row">
+        <div class="ec-num">1-12</div>
+        <div class="ec-name-cell">
+          <span class="ec-name">Initial generated suite · 12 representative scenarios</span>
+          <span class="ec-source">From workflow generation · seeded baseline</span>
+        </div>
+        <div><span class="pill outline">Mixed</span></div>
+        <div><span class="pill outline">Mixed</span></div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">workflow create · 6w</div>
+        <div class="ec-pass"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg>12/12</div>
+        <span style="color: var(--text-faint); justify-self: end;">›</span>
+      </div>
+    </div>
+
+    <div style="margin-top: 16px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; display: flex; gap: 12px; align-items: flex-start;">
+      <svg style="width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="8" cy="8" r="6.5"/><path d="M8 5 L8 9 M8 11 L8 11.5"/></svg>
+      <div style="font-size: 12.5px; color: var(--text-3); line-height: 1.55;">
+        The eval suite is the <strong style="color: var(--text);">moat that compounds</strong>. Every production failure becomes a permanent regression test. The agent at day 365 is measurably better than day 1, with a paper trail. <strong style="color: var(--text);">Owned by your enterprise · exportable as JSON / CSV · never shared across customers.</strong>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>seasonal-anomaly-detector — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  .crumb-row { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
+  .crumb-row a { color: var(--text-3); }
+  .crumb-row a:hover { color: var(--text); }
+  .crumb-row .sep { color: var(--text-faint); }
+
+  .skill-header { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 22px 26px; margin-bottom: 18px; box-shadow: var(--shadow-sm); }
+  .skill-header-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
+  .skill-name-h { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 22px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+  .skill-pills { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  .cap-tag { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 10px; background: var(--surface-2); color: var(--text-3); }
+  .skill-actions { display: flex; gap: 6px; }
+
+  .meta-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .meta-cell { display: flex; flex-direction: column; gap: 2px; }
+  .meta-label { font-size: 10.5px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; }
+  .meta-value { font-size: 13px; color: var(--text-2); font-weight: 500; }
+
+  /* Tabs (page-internal) */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; }
+  .tab { padding: 10px 14px; font-size: 13px; color: var(--text-3); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+  /* Content layout */
+  .skill-grid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; align-items: start; }
+  @media (max-width: 1100px) { .skill-grid { grid-template-columns: 1fr; } }
+
+  .section-title { font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin: 24px 0 10px; }
+  .section-title:first-of-type { margin-top: 0; }
+
+  /* Skill spec body */
+  .spec-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-sm); }
+  .spec-head { padding: 12px 16px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .spec-body { padding: 22px 26px; font-size: 14px; line-height: 1.7; color: var(--text-2); }
+  .spec-body h3 { font-size: 15px; font-weight: 600; color: var(--text); margin: 18px 0 10px; }
+  .spec-body h3:first-child { margin-top: 0; }
+  .spec-body ol { margin: 0 0 14px 22px; padding: 0; }
+  .spec-body ol li { margin-bottom: 6px; }
+  .spec-body ol ol { margin-top: 6px; margin-left: 18px; }
+  .spec-body code { font-family: ui-monospace, monospace; font-size: 13px; background: var(--surface); padding: 1px 6px; border-radius: 3px; color: var(--text-3); }
+  .spec-body em { color: var(--text-muted); font-style: italic; }
+  .new-line { background: var(--green-soft); padding: 0 2px; border-radius: 2px; }
+
+  /* Retention contract */
+  .retention-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; box-shadow: var(--shadow-sm); }
+  .ret-row { display: grid; grid-template-columns: 160px minmax(0, 1fr) 80px; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); align-items: center; }
+  .ret-row:first-child { padding-top: 0; }
+  .ret-row:last-child { border-bottom: 0; padding-bottom: 0; }
+  .ret-key { font-family: ui-monospace, monospace; font-size: 12.5px; color: var(--accent); font-weight: 500; }
+  .ret-rule { font-size: 12.5px; color: var(--text-3); line-height: 1.5; }
+  .ret-test { font-size: 11.5px; color: var(--text-muted); text-align: right; }
+
+  /* Sidebar cards */
+  .sb-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; box-shadow: var(--shadow-sm); }
+  .sb-title { font-size: 11.5px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
+  .sb-list { display: flex; flex-direction: column; gap: 8px; }
+  .sb-item { display: flex; align-items: center; gap: 8px; font-size: 12.5px; }
+  .sb-item-name { color: var(--text-2); flex: 1; }
+  .sb-item-meta { color: var(--text-muted); font-size: 11.5px; }
+  .ver-list { display: flex; flex-direction: column; gap: 4px; }
+  .ver-row { display: grid; grid-template-columns: 30px minmax(0, 1fr) 60px; gap: 8px; padding: 5px 0; font-size: 12px; color: var(--text-3); align-items: center; }
+  .ver-tag { font-family: ui-monospace, monospace; font-weight: 500; color: var(--text); font-size: 11.5px; }
+  .ver-current { color: var(--accent); font-weight: 600; }
+  .ver-when { color: var(--text-muted); font-size: 11px; text-align: right; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>18 / 23</code> · skill detail · content + retention contract ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+    <div class="workspace-switcher"><span class="workspace-avatar">A</span><span class="nav-label">Acme Distribution</span><span class="chev">▾</span></div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg><span class="nav-label">Health</span></a>
+    <a href="02-inbox.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg><span class="nav-label">Inbox</span><span class="nav-badge">12</span></a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Demand prediction</span><span class="nav-badge">3</span></a>
+    <a href="20-labour-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Labour management</span><span class="nav-badge">4</span></a>
+    <a href="22-contract-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Union contract review</span><span class="nav-badge">2</span></a>
+    <a href="21-support-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Customer support</span><span class="nav-badge">3</span></a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg><span class="nav-label">New workflow</span></a>
+
+    <div class="nav-section">Library</div>
+    <a href="11-skills-registry.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg><span class="nav-label">Skills</span></a>
+    <a href="15-traces.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg><span class="nav-label">Traces</span></a>
+    <a href="08-audit.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg><span class="nav-label">Audit</span></a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg><span class="nav-label">Settings</span></a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg><span class="nav-label" id="themeLabel">Dark mode</span></button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <nav class="crumb-row">
+      <a href="11-skills-registry.html">Skills</a>
+      <span class="sep">/</span>
+      <span>seasonal-anomaly-detector</span>
+    </nav>
+
+    <!-- Skill header -->
+    <div class="skill-header">
+      <div class="skill-header-top">
+        <div>
+          <div class="skill-name-h">seasonal-anomaly-detector</div>
+          <div class="skill-pills">
+            <span class="pill outline">v4</span>
+            <span class="pill green">● Active in prod</span>
+            <span class="cap-tag">forecasting</span>
+            <span class="cap-tag">anomaly-detection</span>
+            <span class="cap-tag">weather</span>
+          </div>
+        </div>
+        <div class="skill-actions">
+          <button class="btn btn-secondary"><svg class="btn-icon" viewBox="0 0 16 16"><path d="M8 2 L8 11 M5 8 L8 11 L11 8 M3 14 L13 14"/></svg> Export</button>
+          <button class="btn btn-secondary">Revert to v3</button>
+          <button class="btn btn-primary">Edit skill</button>
+        </div>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-cell"><span class="meta-label">Workflow</span><span class="meta-value"><a href="05-workflow-overview.html" style="color: var(--accent);">Demand prediction</a></span></div>
+        <div class="meta-cell"><span class="meta-label">Owner</span><span class="meta-value">Maria Chen</span></div>
+        <div class="meta-cell"><span class="meta-label">Created</span><span class="meta-value">2025-09-14</span></div>
+        <div class="meta-cell"><span class="meta-label">Last update</span><span class="meta-value">2h ago · v3 → v4</span></div>
+        <div class="meta-cell"><span class="meta-label">Used by</span><span class="meta-value">1 workflow · forecast loop</span></div>
+        <div class="meta-cell"><span class="meta-label">Eval coverage</span><span class="meta-value">12 cases</span></div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <a href="#" class="tab active">Content</a>
+      <a href="#" class="tab">Versions <span class="muted" style="margin-left: 4px; font-size: 11px;">4</span></a>
+      <a href="#" class="tab">Used by <span class="muted" style="margin-left: 4px; font-size: 11px;">1</span></a>
+      <a href="17-eval-cases.html" class="tab">Eval cases <span class="muted" style="margin-left: 4px; font-size: 11px;">12</span></a>
+      <a href="08-audit.html" class="tab">Audit</a>
+    </div>
+
+    <div class="skill-grid">
+      <!-- Main: spec + retention -->
+      <div>
+        <h2 class="section-title">Skill content · v4</h2>
+        <div class="spec-card">
+          <div class="spec-head"><span>seasonal-anomaly-detector v4</span><span style="font-family: ui-monospace, monospace; font-weight: 400; text-transform: none; letter-spacing: 0;">SKILL.md · 28 lines · 1.4 KB</span></div>
+          <div class="spec-body">
+            <h3>Purpose</h3>
+            <p>Forecast weekly demand at SKU-region level and emit early markdown alerts when seasonal demand diverges from baseline.</p>
+
+            <h3>Procedure</h3>
+            <p>When forecasting weekly demand for SKU-region pairs:</p>
+            <ol>
+              <li>Compute prior-12-month baseline.
+                <ol>
+                  <li><span class="new-line">Compare prior-12 vs prior-24 month YoY shape — flag shape divergence.</span></li>
+                  <li><span class="new-line">Cross-reference NOAA regional weather forecast deltas.</span></li>
+                </ol>
+              </li>
+              <li>Apply seasonal index from regional norms (NRF 2024).</li>
+              <li>If forecast deviates from baseline by &gt;40%, flag for review.</li>
+              <li>Emit <code>markdown_alert</code> as soon as YoY shape diverges by &gt;2σ AND weather signal supports (precipitation/temp anomaly).</li>
+            </ol>
+
+            <h3>Inputs (tools the agent must call)</h3>
+            <ul style="margin: 0 0 14px 22px; padding: 0;">
+              <li><code>query_sap_sales(sku, region, years=4)</code> — historical sales</li>
+              <li><code>fetch_noaa_weather(region, weeks_ahead=12)</code> — weather forecast deltas</li>
+              <li><code>get_inventory_status(sku, store)</code> — current inventory</li>
+            </ul>
+
+            <h3>Outputs</h3>
+            <ul style="margin: 0 0 14px 22px; padding: 0;">
+              <li><code>fire_markdown_alert(sku, region, severity, recommended_discount_bp)</code></li>
+              <li>Forecast value with confidence interval and citations</li>
+            </ul>
+
+            <p style="color: var(--text-muted); font-style: italic; font-size: 13px; margin-top: 18px;">— end of skill · retention contract follows below —</p>
+          </div>
+        </div>
+
+        <h2 class="section-title">Retention contract</h2>
+        <div class="retention-card">
+          <div style="font-size: 12.5px; color: var(--text-3); margin-bottom: 14px; line-height: 1.55;">
+            What state this skill keeps across turns. Violations are caught by eval case <a href="17-eval-cases.html" style="color: var(--accent);">#126</a> — the agent must re-fetch <code style="font-family: ui-monospace, monospace; font-size: 12px; background: var(--surface); padding: 1px 5px; border-radius: 3px;">weather_signals</code> each turn or the test fails.
+          </div>
+          <div class="ret-row">
+            <span class="ret-key">regional_norms</span>
+            <span class="ret-rule">Keep across turns within session · invalidate on session end · NRF data is stable per quarter</span>
+            <span class="ret-test">eval #98</span>
+          </div>
+          <div class="ret-row">
+            <span class="ret-key">prior_baseline</span>
+            <span class="ret-rule">Keep until SKU context changes · re-compute when forecasting a new SKU-region</span>
+            <span class="ret-test">eval #97</span>
+          </div>
+          <div class="ret-row">
+            <span class="ret-key">weather_signals</span>
+            <span class="ret-rule"><strong style="color: var(--text);">Re-fetch each turn</strong> · do not retain stale · weather updates hourly</span>
+            <span class="ret-test">eval #126</span>
+          </div>
+        </div>
+
+        <h2 class="section-title">Recent eval results</h2>
+        <div class="spec-card" style="padding: 14px 18px;">
+          <div style="display: flex; gap: 24px; flex-wrap: wrap; font-size: 13px; color: var(--text-3);">
+            <span><strong style="color: var(--text);">Last full run:</strong> 12 / 12 passing · 2h ago · 18s</span>
+            <span style="color: var(--text-faint);">·</span>
+            <span><strong style="color: var(--text);">All-time best:</strong> 12 / 12 (v4)</span>
+            <span style="color: var(--text-faint);">·</span>
+            <span><strong style="color: var(--text);">Confidence:</strong> high · 0 retention violations</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside>
+        <div class="sb-card">
+          <div class="sb-title">Version history</div>
+          <div class="ver-list">
+            <div class="ver-row">
+              <span class="ver-tag ver-current">v4</span>
+              <span style="color: var(--text); font-weight: 500;">Seasonal anomaly fix</span>
+              <span class="ver-when">2h ago</span>
+            </div>
+            <div class="ver-row">
+              <span class="ver-tag">v3</span>
+              <span>Weather signal threshold raised</span>
+              <span class="ver-when">9d ago</span>
+            </div>
+            <div class="ver-row">
+              <span class="ver-tag">v2</span>
+              <span>Initial NOAA cross-ref</span>
+              <span class="ver-when">23d ago</span>
+            </div>
+            <div class="ver-row">
+              <span class="ver-tag">v1</span>
+              <span>Generated from workflow</span>
+              <span class="ver-when">6w ago</span>
+            </div>
+          </div>
+          <a href="#" style="font-size: 12px; color: var(--accent); margin-top: 10px; display: inline-block;">View full diff history →</a>
+        </div>
+
+        <div class="sb-card">
+          <div class="sb-title">Used by</div>
+          <div class="sb-list">
+            <div class="sb-item">
+              <svg style="width: 14px; height: 14px; color: var(--text-muted);" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+              <span class="sb-item-name"><a href="05-workflow-overview.html" style="color: var(--text-2);">Demand prediction</a></span>
+              <span class="sb-item-meta">forecast loop</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sb-card">
+          <div class="sb-title">Capability tags</div>
+          <div class="sb-list" style="flex-direction: row; flex-wrap: wrap; gap: 4px;">
+            <span class="cap-tag">forecasting</span>
+            <span class="cap-tag">anomaly-detection</span>
+            <span class="cap-tag">weather</span>
+          </div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; line-height: 1.45;">Queryable via <code style="font-family: ui-monospace, monospace; background: var(--surface); padding: 1px 4px; border-radius: 3px;">list_skills(capability="forecasting")</code></div>
+        </div>
+
+        <div class="sb-card">
+          <div class="sb-title">Retention contract</div>
+          <div style="font-size: 12.5px; color: var(--text-3); line-height: 1.5;">3 declared keys · 3 enforced by eval cases · <span style="color: var(--green); font-weight: 500;">✓ no violations</span></div>
+        </div>
+
+        <div class="sb-card">
+          <div class="sb-title">Lazy-loaded</div>
+          <div style="font-size: 12.5px; color: var(--text-3); line-height: 1.5;">Fetched via <code style="font-family: ui-monospace, monospace; font-size: 11.5px; background: var(--surface); padding: 1px 4px; border-radius: 3px;">read_skill("seasonal-anomaly-detector")</code> when needed · not pre-injected</div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>

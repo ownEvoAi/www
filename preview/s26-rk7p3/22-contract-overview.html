@@ -4,12 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
-<title>Demand prediction · Overview — ownEvo</title>
+<title>Union contract review · Overview — ownEvo</title>
 <link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
 <link rel="stylesheet" href="shell.css">
 <link rel="stylesheet" href="primitives.css">
 <style>
-  /* Workflow header */
   .wf-header { margin-bottom: 6px; }
   .wf-back { display: inline-flex; align-items: center; gap: 4px; color: var(--text-muted); font-size: 12px; margin-bottom: 8px; }
   .wf-back:hover { color: var(--text-2); }
@@ -17,13 +16,11 @@
   .wf-title { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
   .wf-buyer { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
-  /* Tabs */
   .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
   .tab { padding: 10px 14px; font-size: 13px; color: var(--text-3); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; transition: color 0.12s, border-color 0.12s; }
   .tab:hover { color: var(--text); }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
 
-  /* Lift chart hero */
   .lift-hero { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; box-shadow: var(--shadow-sm); }
   .lift-hero-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
   .lift-hero-title { font-size: 13px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
@@ -34,13 +31,11 @@
   .lift-hero-meta { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
   .lift-hero-actions { display: flex; gap: 6px; }
 
-  /* Two-col below */
   .two-col { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; margin-bottom: 20px; }
   @media (max-width: 1100px) { .two-col { grid-template-columns: 1fr; } }
   .col-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
   .col-title { font-size: 13px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
 
-  /* Cluster list */
   .clusters { display: flex; flex-direction: column; gap: 10px; }
   .cluster { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 8px; transition: border-color 0.12s; }
   .cluster:hover { border-color: var(--border-light); }
@@ -50,7 +45,6 @@
   .cluster-excerpt { font-size: 12px; color: var(--text-3); background: var(--surface); border-radius: 4px; padding: 8px 10px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; line-height: 1.5; }
   .cluster-cta { display: flex; gap: 8px; align-items: center; }
 
-  /* Improvement log */
   .imp-log { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-sm); }
   .imp-row { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border); align-items: start; }
   .imp-row:last-child { border-bottom: 0; }
@@ -59,13 +53,12 @@
   .imp-meta { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; }
   .imp-impact { font-size: 12px; color: var(--green); white-space: nowrap; font-variant-numeric: tabular-nums; }
 
-  /* Stats footer */
   .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
 </style>
 </head>
 <body>
 <div class="preview-banner">
-  <strong>PREVIEW</strong> · static UI mock · screen <code>05 / 10</code> · YC demo hero ·
+  <strong>PREVIEW</strong> · static UI mock · screen <code>22</code> · workflow overview ·
   <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
 </div>
 
@@ -98,7 +91,7 @@
     </a>
 
     <div class="nav-section">Workflows</div>
-    <a href="05-workflow-overview.html" class="nav-item active">
+    <a href="05-workflow-overview.html" class="nav-item">
       <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
       <span class="nav-label">Demand prediction</span>
       <span class="nav-badge">3</span>
@@ -108,7 +101,7 @@
       <span class="nav-label">Labour management</span>
       <span class="nav-badge">4</span>
     </a>
-    <a href="22-contract-overview.html" class="nav-item">
+    <a href="22-contract-overview.html" class="nav-item active">
       <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
       <span class="nav-label">Union contract review</span>
       <span class="nav-badge">2</span>
@@ -153,44 +146,43 @@
     <div class="wf-header">
       <a href="01-health.html" class="wf-back">‹ Workflows</a>
       <div class="wf-title-row">
-        <h1 class="wf-title">Demand prediction</h1>
+        <h1 class="wf-title">Union contract review</h1>
         <span class="pill green">● Active</span>
-        <span class="pill outline">v23</span>
+        <span class="pill outline">v9</span>
+        <span class="pill outline">human-in-loop</span>
       </div>
-      <p class="wf-buyer">Owner: Maria Chen · Supply Chain VP · Created 2025-09-14 · 30-day rolling window</p>
+      <p class="wf-buyer">Owner: Anya Volkov · Senior Counsel · Created 2025-12-08 · 90-day rolling window</p>
     </div>
 
     <div class="tabs">
       <a href="#" class="tab active">Overview</a>
-      <a href="06-workflow-operate.html" class="tab">Operate</a>
+      <a href="10-contract-operate.html" class="tab">Operate</a>
       <a href="16-failures.html" class="tab">Failures</a>
-      <a href="17-eval-cases.html" class="tab">Eval cases <span class="muted" style="margin-left: 4px; font-size: 11px;">128</span></a>
-      <a href="23-workflow-skills.html" class="tab">Skills <span class="muted" style="margin-left: 4px; font-size: 11px;">9</span></a>
+      <a href="17-eval-cases.html" class="tab">Eval cases <span class="muted" style="margin-left: 4px; font-size: 11px;">62</span></a>
+      <a href="23-workflow-skills.html" class="tab">Skills <span class="muted" style="margin-left: 4px; font-size: 11px;">5</span></a>
       <a href="08-audit.html" class="tab">Audit</a>
       <a href="12-workflow-triggers.html" class="tab">Triggers</a>
       <a href="13-workflow-integrations.html" class="tab">Integrations</a>
       <a href="14-workflow-permissions.html" class="tab">Permissions</a>
     </div>
 
-    <!-- ── Lift chart hero ── -->
     <section class="lift-hero">
       <div class="lift-hero-head">
         <div>
-          <div class="lift-hero-title">Forecast accuracy · last 30 days</div>
+          <div class="lift-hero-title">Clause issue-spotting recall · last 90 days</div>
           <div class="lift-hero-current">
-            <span class="val">91.2</span><span class="unit">%</span>
-            <span class="delta">↑ 5.4 pts vs baseline</span>
+            <span class="val">94.1</span><span class="unit">%</span>
+            <span class="delta">↑ 4.3 pts vs baseline</span>
           </div>
-          <div class="lift-hero-meta">Baseline 85.8% on 2026-04-02 · 4 improvements approved · 0 regressions</div>
+          <div class="lift-hero-meta">Baseline 89.8% on 2026-02-02 · 2 improvements approved · 0 regressions · attorney sign-off required on every output</div>
         </div>
         <div class="lift-hero-actions">
-          <button class="btn btn-secondary"><svg class="btn-icon" viewBox="0 0 16 16"><path d="M3 5 L8 10 L13 5"/></svg> 30 days</button>
+          <button class="btn btn-secondary"><svg class="btn-icon" viewBox="0 0 16 16"><path d="M3 5 L8 10 L13 5"/></svg> 90 days</button>
           <button class="btn btn-secondary">Export</button>
         </div>
       </div>
 
-      <svg viewBox="0 0 720 280" class="chart-svg" style="height: 280px;" aria-label="Forecast accuracy lift over 30 days">
-        <!-- grid -->
+      <svg viewBox="0 0 720 280" class="chart-svg" style="height: 280px;" aria-label="Clause recall lift over 90 days">
         <g class="chart-grid">
           <line x1="60" y1="240" x2="700" y2="240"/>
           <line x1="60" y1="187.5" x2="700" y2="187.5"/>
@@ -199,197 +191,150 @@
           <line x1="60" y1="30" x2="700" y2="30"/>
         </g>
 
-        <!-- Y-axis labels -->
         <g class="chart-axis">
-          <text x="50" y="244" text-anchor="end">84%</text>
-          <text x="50" y="191.5" text-anchor="end">86%</text>
-          <text x="50" y="139" text-anchor="end">88%</text>
-          <text x="50" y="86.5" text-anchor="end">90%</text>
-          <text x="50" y="34" text-anchor="end">92%</text>
+          <text x="50" y="244" text-anchor="end">88%</text>
+          <text x="50" y="191.5" text-anchor="end">90%</text>
+          <text x="50" y="139" text-anchor="end">92%</text>
+          <text x="50" y="86.5" text-anchor="end">94%</text>
+          <text x="50" y="34" text-anchor="end">96%</text>
         </g>
 
-        <!-- X-axis labels (weeks) -->
         <g class="chart-axis">
-          <text x="60" y="262" text-anchor="middle">W1</text>
-          <text x="209" y="262" text-anchor="middle">W2</text>
-          <text x="359" y="262" text-anchor="middle">W3</text>
-          <text x="508" y="262" text-anchor="middle">W4</text>
-          <text x="657" y="262" text-anchor="middle">W5</text>
+          <text x="60" y="262" text-anchor="middle">M1</text>
+          <text x="270" y="262" text-anchor="middle">M2</text>
+          <text x="490" y="262" text-anchor="middle">M3</text>
+          <text x="700" y="262" text-anchor="middle">now</text>
         </g>
 
-        <!-- baseline reference line -->
-        <line x1="60" y1="192.75" x2="700" y2="192.75" stroke="var(--text-faint)" stroke-dasharray="3 3" stroke-width="1" opacity="0.6"/>
-        <text x="65" y="189" fill="var(--text-faint)" font-size="10">baseline 85.8%</text>
+        <line x1="60" y1="190" x2="700" y2="190" stroke="var(--text-faint)" stroke-dasharray="3 3" stroke-width="1" opacity="0.6"/>
+        <text x="65" y="186" fill="var(--text-faint)" font-size="10">baseline 89.8%</text>
 
-        <!-- area fill -->
-        <path d="M60,193 L188,193 L188,148 L337,148 L337,117 L508,117 L508,80 L657,80 L657,51 L700,51 L700,240 L60,240 Z" class="chart-area"/>
+        <path d="M60,190 L260,190 L260,140 L490,140 L490,90 L700,90 L700,240 L60,240 Z" class="chart-area"/>
+        <path d="M60,190 L260,190 L260,140 L490,140 L490,90 L700,90" class="chart-line actual"/>
 
-        <!-- main line (step) -->
-        <path d="M60,193 L188,193 L188,148 L337,148 L337,117 L508,117 L508,80 L657,80 L657,51 L700,51" class="chart-line actual"/>
-
-        <!-- approval annotations (vertical lines + markers + labels) -->
         <g>
-          <line x1="188" y1="148" x2="188" y2="30" class="chart-annotation-line"/>
-          <circle cx="188" cy="148" r="5" class="lift-marker"/>
-          <text x="188" y="20" text-anchor="middle" class="lift-marker-label" font-weight="500" fill="var(--text-3)">Promo uplift handler</text>
-          <text x="188" y="44" text-anchor="middle" class="lift-marker-label">+1.7 pts</text>
+          <line x1="260" y1="140" x2="260" y2="30" class="chart-annotation-line"/>
+          <circle cx="260" cy="140" r="5" class="lift-marker"/>
+          <text x="260" y="20" text-anchor="middle" class="lift-marker-label" font-weight="500" fill="var(--text-3)">Indemnity-clause recall fix</text>
+          <text x="260" y="44" text-anchor="middle" class="lift-marker-label">+2.1 pts</text>
         </g>
         <g>
-          <line x1="337" y1="117" x2="337" y2="30" class="chart-annotation-line"/>
-          <circle cx="337" cy="117" r="5" class="lift-marker"/>
-          <text x="337" y="20" text-anchor="middle" class="lift-marker-label" font-weight="500" fill="var(--text-3)">Regional variance fix</text>
-          <text x="337" y="44" text-anchor="middle" class="lift-marker-label">+1.2 pts</text>
-        </g>
-        <g>
-          <line x1="508" y1="80" x2="508" y2="30" class="chart-annotation-line"/>
-          <circle cx="508" cy="80" r="5" class="lift-marker"/>
-          <text x="508" y="20" text-anchor="middle" class="lift-marker-label" font-weight="500" fill="var(--text-3)">Supplier price bake-in</text>
-          <text x="508" y="44" text-anchor="middle" class="lift-marker-label">+1.4 pts</text>
-        </g>
-        <g>
-          <line x1="657" y1="51" x2="657" y2="30" class="chart-annotation-line"/>
-          <circle cx="657" cy="51" r="5" class="lift-marker"/>
-          <text x="657" y="20" text-anchor="middle" class="lift-marker-label" font-weight="500" fill="var(--text-3)">Seasonal anomaly fix</text>
-          <text x="657" y="44" text-anchor="middle" class="lift-marker-label">+1.1 pts</text>
+          <line x1="490" y1="90" x2="490" y2="30" class="chart-annotation-line"/>
+          <circle cx="490" cy="90" r="5" class="lift-marker"/>
+          <text x="490" y="20" text-anchor="middle" class="lift-marker-label" font-weight="500" fill="var(--text-3)">Cross-reference detector</text>
+          <text x="490" y="44" text-anchor="middle" class="lift-marker-label">+2.2 pts</text>
         </g>
 
-        <!-- final value marker -->
-        <circle cx="700" cy="51" r="4" fill="var(--accent)"/>
+        <circle cx="700" cy="90" r="4" fill="var(--accent)"/>
       </svg>
 
       <div class="chart-legend">
-        <span class="chart-legend-item"><span class="chart-legend-dot" style="background: var(--accent);"></span>Forecast accuracy</span>
+        <span class="chart-legend-item"><span class="chart-legend-dot" style="background: var(--accent);"></span>Issue-spotting recall</span>
         <span class="chart-legend-item"><span class="chart-legend-dot" style="background: var(--text-faint);"></span>Baseline (no changes)</span>
         <span class="chart-legend-item"><span class="chart-legend-dot" style="background: var(--accent); border-radius: 50%; width: 6px; height: 6px;"></span>Approved improvement</span>
       </div>
     </section>
 
-    <!-- ── Active clusters + recent improvements ── -->
     <div class="two-col">
       <section>
         <div class="col-head">
-          <div class="col-title">Active failure clusters · 3</div>
-          <a href="#" style="font-size: 12px; color: var(--accent);">View all →</a>
+          <div class="col-title">Active failure clusters · 2</div>
+          <a href="16-failures.html" style="font-size: 12px; color: var(--accent);">View all →</a>
         </div>
         <div class="clusters">
           <a href="07-proposal-detail.html" class="cluster" style="text-decoration: none;">
             <div class="cluster-row">
               <div>
-                <div class="cluster-title">Seasonal anomaly missed in winter footwear demand</div>
+                <div class="cluster-title">Successor-employer clause flagged with low confidence</div>
                 <div class="cluster-meta-row">
-                  <span class="pill red">High</span>
-                  <span>14 traces</span>
+                  <span class="pill amber">Medium</span>
+                  <span>7 traces</span>
                   <span>·</span>
-                  <span>First seen 2026-04-21</span>
+                  <span>First seen 2026-04-14</span>
                   <span>·</span>
-                  <span>Region: Pacific NW</span>
+                  <span>Counsel: A. Volkov</span>
                 </div>
               </div>
               <span class="pill accent">Proposal ready</span>
             </div>
-            <div class="cluster-excerpt">forecast_demand(sku=BOOT-W42, region=PNW, week=2026-W45) → 312 units<br>actual: 1,847 units · markdown_alert fired W49 (4 weeks late)</div>
+            <div class="cluster-excerpt">draft contains "successor and assigns" carve-out at §14.3<br>agent: 0.62 confidence (below 0.75 threshold) · attorney accepted on 7/7 reviews</div>
             <div class="cluster-cta">
               <span class="btn btn-primary" style="font-size: 12px; padding: 5px 11px;">Review proposal →</span>
-              <span style="font-size: 12px; color: var(--text-muted);">Gate: 12 / 12 passing</span>
+              <span style="font-size: 12px; color: var(--text-muted);">Gate: 8 / 8 passing</span>
             </div>
           </a>
 
           <div class="cluster">
             <div class="cluster-row">
               <div>
-                <div class="cluster-title">Promotional uplift underweighted on bundled SKUs</div>
-                <div class="cluster-meta-row">
-                  <span class="pill amber">Medium</span>
-                  <span>9 traces</span>
-                  <span>·</span>
-                  <span>First seen 2026-04-25</span>
-                </div>
-              </div>
-              <span class="pill outline">Generating proposal…</span>
-            </div>
-            <div class="cluster-excerpt">forecast for 4-pack bundle ignored 30% promo lift on parent SKU<br>3 SKU bundles affected · revenue exposure $128k</div>
-          </div>
-
-          <div class="cluster">
-            <div class="cluster-row">
-              <div>
-                <div class="cluster-title">Supplier delay impact missed for 12-week lead-time SKUs</div>
+                <div class="cluster-title">Grievance procedure timing language inconsistency</div>
                 <div class="cluster-meta-row">
                   <span class="pill outline">Low</span>
-                  <span>6 traces</span>
+                  <span>4 traces</span>
                   <span>·</span>
-                  <span>First seen 2026-04-28</span>
+                  <span>First seen 2026-04-22</span>
                 </div>
               </div>
               <span class="pill outline">Awaiting more signal</span>
             </div>
+            <div class="cluster-excerpt">"15 working days" vs "three weeks" used in same draft<br>not a substantive issue, but flagged for stylistic consistency</div>
           </div>
         </div>
       </section>
 
       <section>
         <div class="col-head">
-          <div class="col-title">Recent improvements · 30 days</div>
+          <div class="col-title">Recent improvements · 90 days</div>
           <a href="08-audit.html" style="font-size: 12px; color: var(--accent);">Audit trail →</a>
         </div>
         <div class="imp-log">
           <div class="imp-row">
             <div class="imp-marker"></div>
             <div>
-              <div class="imp-title">Seasonal anomaly fix</div>
-              <div class="imp-meta">Maria Chen approved · 2h ago · gate 12/12</div>
+              <div class="imp-title">Cross-reference detector</div>
+              <div class="imp-meta">A. Volkov approved · 12d ago · gate 9/9</div>
             </div>
-            <div class="imp-impact">+1.1 pts</div>
+            <div class="imp-impact">+2.2 pts</div>
           </div>
           <div class="imp-row">
             <div class="imp-marker"></div>
             <div>
-              <div class="imp-title">Supplier price bake-in</div>
-              <div class="imp-meta">Maria Chen approved · 9d ago · gate 11/11</div>
+              <div class="imp-title">Indemnity-clause recall fix</div>
+              <div class="imp-meta">A. Volkov approved · 47d ago · gate 7/7</div>
             </div>
-            <div class="imp-impact">+1.4 pts</div>
+            <div class="imp-impact">+2.1 pts</div>
           </div>
-          <div class="imp-row">
-            <div class="imp-marker"></div>
-            <div>
-              <div class="imp-title">Regional variance fix</div>
-              <div class="imp-meta">Maria Chen approved · 17d ago · gate 9/9</div>
-            </div>
-            <div class="imp-impact">+1.2 pts</div>
-          </div>
-          <div class="imp-row">
-            <div class="imp-marker"></div>
-            <div>
-              <div class="imp-title">Promotional uplift handler</div>
-              <div class="imp-meta">Maria Chen approved · 24d ago · gate 8/8</div>
-            </div>
-            <div class="imp-impact">+1.7 pts</div>
+        </div>
+        <div class="card" style="margin-top: 12px;">
+          <div class="card-title">Compliance posture</div>
+          <div style="font-size: 12px; color: var(--text-2); margin-top: 6px; line-height: 1.5;">
+            Every output requires attorney sign-off before action. Skill changes go through legal review in addition to eval gate.
+            <a href="14-workflow-permissions.html" style="color: var(--accent);">Review policy →</a>
           </div>
         </div>
       </section>
     </div>
 
-    <!-- ── Stats footer ── -->
     <div class="stats-row">
       <div class="card">
-        <div class="card-title">Trace volume · 7d</div>
-        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">2,841</div>
-        <div style="font-size: 11.5px; color: var(--text-muted);">Avg 406 / day · 0 dropped</div>
+        <div class="card-title">Documents reviewed · 90d</div>
+        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">147</div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">Avg 1.6 / day · 100% attorney-signed</div>
       </div>
       <div class="card">
         <div class="card-title">Eval coverage</div>
-        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">128 cases</div>
-        <div style="font-size: 11.5px; color: var(--text-muted);">38 cluster-derived · 90 hand-picked</div>
+        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">62 cases</div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">11 cluster-derived · 51 hand-picked</div>
       </div>
       <div class="card">
-        <div class="card-title">Gate pass rate · 30d</div>
+        <div class="card-title">Gate pass rate · 90d</div>
         <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">100%</div>
-        <div style="font-size: 11.5px; color: var(--text-muted);">12 approvals · 0 rolled back</div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">2 approvals · 0 rolled back</div>
       </div>
       <div class="card">
         <div class="card-title">Skill versions</div>
-        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">23</div>
-        <div style="font-size: 11.5px; color: var(--text-muted);">9 active skills · last update 2h</div>
+        <div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">9</div>
+        <div style="font-size: 11.5px; color: var(--text-muted);">5 active skills · last update 12d</div>
       </div>
     </div>
   </main>

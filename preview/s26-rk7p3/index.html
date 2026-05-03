@@ -67,9 +67,13 @@
       <span class="preview-link-title">11 · Skills library</span>
       <span class="preview-link-meta">Workspace-wide skill registry · capability tags · retention contracts</span>
     </a></li>
+    <li><a href="15-traces.html" class="preview-link">
+      <span class="preview-link-title">15 · Traces</span>
+      <span class="preview-link-meta">Trace browser with typed event timeline · tool calls, citations, monitor signals</span>
+    </a></li>
   </ul>
 
-  <div class="group-label gated">Workflow creation — the IP</div>
+  <div class="group-label gated">Workflow creation · greenfield (Entry A)</div>
   <ul>
     <li><a href="03-new-workflow-step1.html" class="preview-link">
       <span class="preview-link-title">03 · New workflow · Describe</span>
@@ -78,6 +82,26 @@
     <li><a href="04-new-workflow-step2.html" class="preview-link">
       <span class="preview-link-title">04 · New workflow · Generated artifacts</span>
       <span class="preview-link-meta">Generated simulator + eval cases + success metric, side-by-side review</span>
+    </a></li>
+    <li><a href="19-run-baseline.html" class="preview-link">
+      <span class="preview-link-title">19 · New workflow · Baseline complete</span>
+      <span class="preview-link-meta">Step 3 interstitial — baseline metrics, per-case results, lift floor set</span>
+    </a></li>
+  </ul>
+
+  <div class="group-label gated">Workflow creation · existing trace (Entry B)</div>
+  <ul>
+    <li><a href="24-existing-connect.html" class="preview-link">
+      <span class="preview-link-title">24 · Connect existing agent</span>
+      <span class="preview-link-meta">OTel endpoint, upload, or SDK · live ingest preview while traces stream in</span>
+    </a></li>
+    <li><a href="25-existing-inferred.html" class="preview-link">
+      <span class="preview-link-title">25 · Inferred workflow</span>
+      <span class="preview-link-meta">What we think your agent does — review and edit before baseline</span>
+    </a></li>
+    <li><a href="26-existing-eval.html" class="preview-link">
+      <span class="preview-link-title">26 · Generated eval set</span>
+      <span class="preview-link-meta">Cases extracted from traces · golden / boundary / known-failure split</span>
     </a></li>
   </ul>
 
@@ -95,10 +119,38 @@
       <span class="preview-link-title">07 · Proposal detail</span>
       <span class="preview-link-meta">Side-by-side diff, gate badge, Approve/Reject + comment</span>
     </a></li>
+    <li><a href="16-failures.html" class="preview-link">
+      <span class="preview-link-title">16 · Failures tab</span>
+      <span class="preview-link-meta">Active clusters + recently resolved · auto-promotion to eval cases</span>
+    </a></li>
+    <li><a href="17-eval-cases.html" class="preview-link">
+      <span class="preview-link-title">17 · Eval cases tab</span>
+      <span class="preview-link-meta">Regression suite — 128 cases with provenance back to clusters</span>
+    </a></li>
+    <li><a href="18-skill-detail.html" class="preview-link">
+      <span class="preview-link-title">18 · Skill detail</span>
+      <span class="preview-link-meta">Skill spec + version history + retention contract · seasonal-anomaly-detector</span>
+    </a></li>
+    <li><a href="23-workflow-skills.html" class="preview-link">
+      <span class="preview-link-title">23 · Skills tab</span>
+      <span class="preview-link-meta">Workflow-scoped skills — different from the workspace registry</span>
+    </a></li>
   </ul>
 
-  <div class="group-label">Other workflows · primitive coverage</div>
+  <div class="group-label">Other workflows · primitive coverage + overviews</div>
   <ul>
+    <li><a href="20-labour-overview.html" class="preview-link">
+      <span class="preview-link-title">20 · Labour management · Overview</span>
+      <span class="preview-link-meta">Schedule fit lift · OT cap, shift rebalancer, peak coverage</span>
+    </a></li>
+    <li><a href="21-support-overview.html" class="preview-link">
+      <span class="preview-link-title">21 · Customer support · Overview</span>
+      <span class="preview-link-meta">FCR lift with one rolled-back improvement annotated</span>
+    </a></li>
+    <li><a href="22-contract-overview.html" class="preview-link">
+      <span class="preview-link-title">22 · Union contract review · Overview</span>
+      <span class="preview-link-meta">90-day window · attorney sign-off required on every output</span>
+    </a></li>
     <li><a href="09-support-operate.html" class="preview-link">
       <span class="preview-link-title">09 · Customer support · Operate</span>
       <span class="preview-link-meta">KanbanBoard + ConversationView + AlertList</span>
@@ -125,8 +177,17 @@
     </a></li>
   </ul>
 
+  <div class="group-label">Library</div>
+  <ul>
+    <li><a href="27-primitives.html" class="preview-link">
+      <span class="preview-link-title">27 · Render primitives library</span>
+      <span class="preview-link-meta">All 8 visual primitives in isolation — MetricCards, TimeSeriesChart, TableView, AlertList, KanbanBoard, ConversationView, SideBySideView, DocumentReader</span>
+    </a></li>
+  </ul>
+
   <p class="footnote">
-    <strong>Demo flow for YC (60s):</strong> 03 → 04 → 05 → 07 (approve) → 05 (lift climbs) → 07 → 05 → 08<br>
+    <strong>Demo flow for YC (60s):</strong> 03 → 04 → 19 → 05 → 07 (approve) → 05 (lift climbs) → 07 → 05 → 08<br>
+    <strong>Existing-trace flow:</strong> 24 → 25 → 26 → 19 → 05<br>
     <strong>Synthetic workspace:</strong> Acme Distribution — supply chain operations across 4 workflows.
   </p>
 </div>

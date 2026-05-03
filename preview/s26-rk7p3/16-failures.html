@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Demand prediction · Failures — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  .wf-back { display: inline-flex; align-items: center; gap: 4px; color: var(--text-muted); font-size: 12px; margin-bottom: 8px; }
+  .wf-back:hover { color: var(--text-2); }
+  .wf-title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .wf-title { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+  .wf-buyer { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 24px; overflow-x: auto; }
+  .tab { padding: 10px 14px; font-size: 13px; color: var(--text-3); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+
+  .filter-row { display: flex; gap: 8px; align-items: center; padding: 12px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-label { font-size: 11.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+  .filter-select { padding: 5px 28px 5px 12px; border-radius: 6px; font-size: 12.5px; color: var(--text-2); background: var(--bg); border: 1px solid var(--border); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3e%3cpath fill='none' stroke='%2364748b' stroke-width='1.5' d='M1 1l4 4 4-4'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 8px center; }
+  .filter-divider { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+
+  .clusters { display: flex; flex-direction: column; gap: 10px; }
+  .cluster { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 10px; transition: border-color 0.12s; }
+  .cluster:hover { border-color: var(--border-light); }
+  .cluster-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+  .cluster-title { font-size: 14.5px; font-weight: 500; color: var(--text); }
+  .cluster-id { font-family: ui-monospace, monospace; font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+  .cluster-meta-row { display: flex; gap: 8px; align-items: center; font-size: 11.5px; color: var(--text-muted); margin-top: 4px; flex-wrap: wrap; }
+  .cluster-excerpt { font-size: 12px; color: var(--text-3); background: var(--surface); border-radius: 4px; padding: 8px 10px; font-family: ui-monospace, monospace; line-height: 1.5; }
+  .cluster-cta { display: flex; gap: 8px; align-items: center; }
+  .group-head { font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 24px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .group-head:first-child { margin-top: 0; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>16 / 23</code> · workflow failures · cluster taxonomy ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+    <div class="workspace-switcher"><span class="workspace-avatar">A</span><span class="nav-label">Acme Distribution</span><span class="chev">▾</span></div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg><span class="nav-label">Health</span></a>
+    <a href="02-inbox.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg><span class="nav-label">Inbox</span><span class="nav-badge">12</span></a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Demand prediction</span><span class="nav-badge">3</span></a>
+    <a href="20-labour-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Labour management</span><span class="nav-badge">4</span></a>
+    <a href="22-contract-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Union contract review</span><span class="nav-badge">2</span></a>
+    <a href="21-support-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Customer support</span><span class="nav-badge">3</span></a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg><span class="nav-label">New workflow</span></a>
+
+    <div class="nav-section">Library</div>
+    <a href="11-skills-registry.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg><span class="nav-label">Skills</span></a>
+    <a href="15-traces.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg><span class="nav-label">Traces</span></a>
+    <a href="08-audit.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg><span class="nav-label">Audit</span></a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg><span class="nav-label">Settings</span></a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg><span class="nav-label" id="themeLabel">Dark mode</span></button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div style="margin-bottom: 6px;">
+      <a href="01-health.html" class="wf-back">‹ Workflows</a>
+      <div class="wf-title-row"><h1 class="wf-title">Demand prediction</h1><span class="pill green">● Active</span><span class="pill outline">v23</span></div>
+      <p class="wf-buyer">Owner: Maria Chen · Supply Chain VP · 3 active clusters · 18 resolved this quarter</p>
+    </div>
+
+    <div class="tabs">
+      <a href="05-workflow-overview.html" class="tab">Overview</a>
+      <a href="06-workflow-operate.html" class="tab">Operate</a>
+      <a href="16-failures.html" class="tab active">Failures</a>
+      <a href="17-eval-cases.html" class="tab">Eval cases <span class="muted" style="margin-left: 4px; font-size: 11px;">128</span></a>
+      <a href="23-workflow-skills.html" class="tab">Skills <span class="muted" style="margin-left: 4px; font-size: 11px;">9</span></a>
+      <a href="08-audit.html" class="tab">Audit</a>
+      <a href="12-workflow-triggers.html" class="tab">Triggers</a>
+      <a href="13-workflow-integrations.html" class="tab">Integrations</a>
+      <a href="14-workflow-permissions.html" class="tab">Permissions</a>
+    </div>
+
+    <div class="stats-row">
+      <div class="card"><div class="card-title">Active clusters</div><div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">3</div><div style="font-size: 11.5px; color: var(--text-muted);">1 high · 1 medium · 1 low</div></div>
+      <div class="card"><div class="card-title">Resolved · 30d</div><div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">7</div><div style="font-size: 11.5px; color: var(--text-muted);">all gate-passed</div></div>
+      <div class="card"><div class="card-title">Avg time-to-fix</div><div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">2d <span style="font-size: 14px; color: var(--text-muted);">14h</span></div><div style="font-size: 11.5px; color: var(--text-muted);">cluster surfaced → deployed</div></div>
+      <div class="card"><div class="card-title">Eval cases promoted</div><div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">38</div><div style="font-size: 11.5px; color: var(--text-muted);">from clusters · automatic</div></div>
+    </div>
+
+    <div class="filter-row">
+      <span class="filter-label">Severity</span>
+      <select class="filter-select" name="severity" aria-label="Filter severity"><option>All</option><option>High</option><option>Medium</option><option>Low</option></select>
+      <span class="filter-divider"></span>
+      <span class="filter-label">Status</span>
+      <select class="filter-select" name="status" aria-label="Filter status"><option>Active</option><option>All</option><option>Resolved</option></select>
+      <span class="filter-divider"></span>
+      <span class="filter-label">Source</span>
+      <select class="filter-select" name="source" aria-label="Filter source"><option>Any</option><option>Automatic</option><option>Reviewer flagged</option><option>Monitor signal</option></select>
+      <span style="margin-left: auto; font-size: 12px; color: var(--text-muted);">Showing 8 clusters</span>
+    </div>
+
+    <!-- Active group -->
+    <div class="group-head">Active · 3</div>
+    <div class="clusters">
+      <a href="07-proposal-detail.html" class="cluster" style="text-decoration: none;">
+        <div class="cluster-row">
+          <div>
+            <div class="cluster-title">Seasonal anomaly missed in winter footwear demand</div>
+            <div class="cluster-id">cluster #ce-2284</div>
+            <div class="cluster-meta-row">
+              <span class="pill red">High</span><span>14 traces</span><span>·</span>
+              <span>First seen 2026-04-21</span><span>·</span>
+              <span>Region: Pacific NW</span><span>·</span>
+              <span>$340k exposure</span>
+            </div>
+          </div>
+          <span class="pill accent">Proposal ready</span>
+        </div>
+        <div class="cluster-excerpt">forecast_demand(sku=BOOT-W42, region=PNW, week=2026-W45) → 312 units<br>actual: 1,847 units · markdown_alert fired W49 (4 weeks late)</div>
+        <div class="cluster-cta">
+          <span class="btn btn-primary" style="font-size: 12px; padding: 5px 11px;">Review proposal →</span>
+          <span style="font-size: 12px; color: var(--text-muted);">Gate: 12 / 12 passing</span>
+        </div>
+      </a>
+
+      <div class="cluster">
+        <div class="cluster-row">
+          <div>
+            <div class="cluster-title">Promotional uplift underweighted on bundled SKUs</div>
+            <div class="cluster-id">cluster #ce-2278</div>
+            <div class="cluster-meta-row">
+              <span class="pill amber">Medium</span><span>9 traces</span><span>·</span>
+              <span>First seen 2026-04-25</span><span>·</span><span>$128k exposure</span>
+            </div>
+          </div>
+          <span class="pill outline">Generating proposal…</span>
+        </div>
+        <div class="cluster-excerpt">forecast for 4-pack bundle ignored 30% promo lift on parent SKU<br>3 SKU bundles affected · revenue exposure $128k</div>
+      </div>
+
+      <div class="cluster">
+        <div class="cluster-row">
+          <div>
+            <div class="cluster-title">Supplier delay impact missed for 12-week lead-time SKUs</div>
+            <div class="cluster-id">cluster #ce-2261</div>
+            <div class="cluster-meta-row">
+              <span class="pill outline">Low</span><span>6 traces</span><span>·</span>
+              <span>First seen 2026-04-28</span><span>·</span><span>monitor signal: low_confidence</span>
+            </div>
+          </div>
+          <span class="pill outline">Awaiting more signal</span>
+        </div>
+        <div class="cluster-excerpt">forecast did not factor 14-day supplier delay on Northeast restocks · 2 traces show forecast over-estimated post-delay availability</div>
+      </div>
+    </div>
+
+    <!-- Recently resolved -->
+    <div class="group-head">Recently resolved · 4</div>
+    <div class="clusters">
+      <div class="cluster" style="opacity: 0.85;">
+        <div class="cluster-row">
+          <div>
+            <div class="cluster-title">Supplier price-build missed in Q1 forecasting</div>
+            <div class="cluster-id">cluster #ce-2218</div>
+            <div class="cluster-meta-row">
+              <span class="pill green">Resolved</span><span>11 traces</span><span>·</span>
+              <span>Resolved 9d ago by Maria Chen</span><span>·</span>
+              <span>Lift: +1.4 pts</span>
+            </div>
+          </div>
+          <span class="pill green">Deployed v3</span>
+        </div>
+      </div>
+
+      <div class="cluster" style="opacity: 0.85;">
+        <div class="cluster-row">
+          <div>
+            <div class="cluster-title">Regional variance underweighted in Southeast</div>
+            <div class="cluster-id">cluster #ce-2196</div>
+            <div class="cluster-meta-row">
+              <span class="pill green">Resolved</span><span>8 traces</span><span>·</span>
+              <span>Resolved 17d ago by Maria Chen</span><span>·</span>
+              <span>Lift: +1.2 pts</span>
+            </div>
+          </div>
+          <span class="pill green">Deployed v2</span>
+        </div>
+      </div>
+
+      <div class="cluster" style="opacity: 0.85;">
+        <div class="cluster-row">
+          <div>
+            <div class="cluster-title">Promotional uplift handler — initial version</div>
+            <div class="cluster-id">cluster #ce-2174</div>
+            <div class="cluster-meta-row">
+              <span class="pill green">Resolved</span><span>17 traces</span><span>·</span>
+              <span>Resolved 24d ago by Maria Chen</span><span>·</span>
+              <span>Lift: +1.7 pts</span>
+            </div>
+          </div>
+          <span class="pill green">Deployed v2</span>
+        </div>
+      </div>
+
+      <div class="cluster" style="opacity: 0.85;">
+        <div class="cluster-row">
+          <div>
+            <div class="cluster-title">Aggressive promo discount auto-apply (rejected)</div>
+            <div class="cluster-id">cluster #ce-2241</div>
+            <div class="cluster-meta-row">
+              <span class="pill amber">Reopened</span><span>4 traces</span><span>·</span>
+              <span>Rejected 3d ago by Maria Chen</span><span>·</span>
+              <span>Comment promoted to eval case #128</span>
+            </div>
+          </div>
+          <span class="pill amber">Reviewer rejected</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 16px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; display: flex; gap: 12px; align-items: flex-start;">
+      <svg style="width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="8" cy="8" r="6.5"/><path d="M8 5 L8 9 M8 11 L8 11.5"/></svg>
+      <div style="font-size: 12.5px; color: var(--text-3); line-height: 1.55;">
+        Failure clusters are <strong style="color: var(--text);">semantic groupings</strong> of trace failures with the same root cause. Each cluster automatically promotes a representative trace to a new <a href="17-eval-cases.html" style="color: var(--accent);">eval case</a> in the regression suite — so once a class of failure is fixed, it stays fixed.
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>

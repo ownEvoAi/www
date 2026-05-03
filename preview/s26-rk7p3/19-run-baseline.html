@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>New workflow · Baseline complete — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  .create-wrap { max-width: 880px; margin: 0 auto; padding: 16px 0 80px; }
+  .steps { display: flex; align-items: center; gap: 0; margin-bottom: 36px; }
+  .step { display: flex; align-items: center; gap: 10px; padding: 6px 0; color: var(--text-muted); font-size: 13px; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--text-muted); }
+  .step.active { color: var(--text); }
+  .step.active .step-num { border-color: var(--accent); background: var(--accent); color: white; }
+  .step.done { color: var(--text-3); }
+  .step.done .step-num { border-color: var(--green); background: var(--green); color: white; font-size: 11px; }
+  .step-connector { flex: 1; height: 1.5px; background: var(--border); margin: 0 14px; max-width: 80px; }
+  .step.done + .step-connector { background: var(--green); }
+
+  /* Hero success */
+  .hero { background: linear-gradient(135deg, var(--green-soft), var(--accent-dim)); border: 1px solid var(--border); border-radius: 12px; padding: 32px 36px; margin-bottom: 24px; text-align: center; }
+  .hero-check { width: 56px; height: 56px; border-radius: 50%; background: var(--green); color: white; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+  .hero-check svg { width: 28px; height: 28px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+  .hero-title { font-size: 26px; font-weight: 600; letter-spacing: -0.025em; color: var(--text); margin-bottom: 6px; }
+  .hero-sub { font-size: 14px; color: var(--text-3); max-width: 520px; margin: 0 auto; line-height: 1.55; }
+
+  /* Baseline metric strip */
+  .baseline-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 22px; }
+
+  /* Run log card */
+  .run-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow-sm); margin-bottom: 22px; }
+  .run-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .run-title { font-size: 13px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .run-meta { font-size: 12px; color: var(--text-muted); }
+
+  .ec-row { display: grid; grid-template-columns: 32px minmax(0, 2fr) 100px 90px 70px; gap: 14px; padding: 11px 20px; border-bottom: 1px solid var(--border); align-items: center; }
+  .ec-row:last-child { border-bottom: 0; }
+  .ec-num { font-family: ui-monospace, monospace; font-size: 11px; color: var(--text-muted); }
+  .ec-name { font-size: 13px; color: var(--text-2); font-weight: 500; }
+  .ec-pass-icon { width: 16px; height: 16px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ec-pass-icon.ok { background: var(--green); color: white; }
+  .ec-pass-icon.partial { background: var(--amber); color: white; }
+  .ec-pass-icon svg { width: 9px; height: 9px; stroke: currentColor; fill: none; stroke-width: 3; }
+  .ec-status { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+
+  /* Mini lift chart preview */
+  .lift-preview { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px 22px; margin-bottom: 22px; box-shadow: var(--shadow-sm); }
+  .lift-pre-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; }
+  .lift-pre-title { font-size: 13px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .lift-pre-current { display: flex; align-items: baseline; gap: 4px; }
+  .lift-pre-val { font-size: 32px; font-weight: 500; color: var(--text); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .lift-pre-unit { font-size: 16px; color: var(--text-muted); }
+  .lift-pre-delta { font-size: 12.5px; color: var(--text-muted); }
+  .lift-pre-meta { font-size: 12.5px; color: var(--text-3); margin-top: 8px; line-height: 1.55; }
+
+  /* Final action row */
+  .final-row { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid var(--border); }
+  .final-actions { display: flex; gap: 8px; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>19 / 23</code> · workflow create step 3 — baseline complete ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+    <div class="workspace-switcher"><span class="workspace-avatar">A</span><span class="nav-label">Acme Distribution</span><span class="chev">▾</span></div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg><span class="nav-label">Health</span></a>
+    <a href="02-inbox.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg><span class="nav-label">Inbox</span><span class="nav-badge">12</span></a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Demand prediction</span><span class="nav-badge">3</span></a>
+    <a href="20-labour-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Labour management</span><span class="nav-badge">4</span></a>
+    <a href="22-contract-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Union contract review</span><span class="nav-badge">2</span></a>
+    <a href="21-support-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Customer support</span><span class="nav-badge">3</span></a>
+    <a href="03-new-workflow-step1.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg><span class="nav-label">New workflow</span></a>
+
+    <div class="nav-section">Library</div>
+    <a href="11-skills-registry.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg><span class="nav-label">Skills</span></a>
+    <a href="15-traces.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg><span class="nav-label">Traces</span></a>
+    <a href="08-audit.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg><span class="nav-label">Audit</span></a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg><span class="nav-label">Settings</span></a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg><span class="nav-label" id="themeLabel">Dark mode</span></button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="create-wrap">
+      <div class="steps">
+        <div class="step done"><div class="step-num">✓</div><div>Describe</div></div>
+        <div class="step-connector"></div>
+        <div class="step done"><div class="step-num">✓</div><div>Review generated</div></div>
+        <div class="step-connector"></div>
+        <div class="step active"><div class="step-num">3</div><div>Run baseline</div></div>
+      </div>
+
+      <div class="hero">
+        <div class="hero-check"><svg viewBox="0 0 28 28"><path d="M7 14 L12 19 L21 9"/></svg></div>
+        <div class="hero-title">Baseline complete</div>
+        <div class="hero-sub">The agent ran against all 12 generated eval cases. You now have a starting metric and the improvement loop is ready to run on your production traces.</div>
+      </div>
+
+      <div class="baseline-metrics">
+        <div class="metric">
+          <div class="metric-label">Composite score</div>
+          <div class="metric-value">85.8<span class="metric-unit">%</span></div>
+          <div class="metric-delta flat">baseline · day 0</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Eval cases passed</div>
+          <div class="metric-value">11 <span class="metric-unit">/ 12</span></div>
+          <div class="metric-delta down">1 partial · #11 promo bundle</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Total run time</div>
+          <div class="metric-value">3m <span class="metric-unit">14s</span></div>
+          <div class="metric-delta flat">parallel · 4 workers</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Cost</div>
+          <div class="metric-value">$0.42</div>
+          <div class="metric-delta flat">24,820 tokens · Sonnet 4.6</div>
+        </div>
+      </div>
+
+      <div class="run-card">
+        <div class="run-head">
+          <span class="run-title">Per-case results</span>
+          <span class="run-meta">12 cases · 1 partial · 0 failures</span>
+        </div>
+        <div class="ec-row"><div class="ec-num">1</div><div class="ec-name">PNW winter boot 2025-W47 (replay)</div><div class="ec-status"><span class="ec-pass-icon ok"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg></span><span style="color: var(--green);">passed</span></div><div style="font-size: 11.5px; color: var(--text-muted);">14.2s</div><div style="font-size: 11.5px; color: var(--text-muted);">$0.04</div></div>
+        <div class="ec-row"><div class="ec-num">2</div><div class="ec-name">Promo bundle uplift Q4 2024 (replay)</div><div class="ec-status"><span class="ec-pass-icon ok"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg></span><span style="color: var(--green);">passed</span></div><div style="font-size: 11.5px; color: var(--text-muted);">11.8s</div><div style="font-size: 11.5px; color: var(--text-muted);">$0.03</div></div>
+        <div class="ec-row"><div class="ec-num">3</div><div class="ec-name">Promo bundle uplift Q4 2025 (replay)</div><div class="ec-status"><span class="ec-pass-icon partial"><svg viewBox="0 0 12 12"><path d="M6 3 L6 7 M6 9 L6 9.5"/></svg></span><span style="color: var(--amber);">partial</span></div><div style="font-size: 11.5px; color: var(--text-muted);">12.1s</div><div style="font-size: 11.5px; color: var(--text-muted);">$0.04</div></div>
+        <div class="ec-row"><div class="ec-num">4</div><div class="ec-name">Steady-demand baseline (no anomaly)</div><div class="ec-status"><span class="ec-pass-icon ok"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg></span><span style="color: var(--green);">passed</span></div><div style="font-size: 11.5px; color: var(--text-muted);">8.4s</div><div style="font-size: 11.5px; color: var(--text-muted);">$0.02</div></div>
+        <div class="ec-row"><div class="ec-num">5</div><div class="ec-name">Inventory-pegged forecast (low stock)</div><div class="ec-status"><span class="ec-pass-icon ok"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg></span><span style="color: var(--green);">passed</span></div><div style="font-size: 11.5px; color: var(--text-muted);">9.1s</div><div style="font-size: 11.5px; color: var(--text-muted);">$0.03</div></div>
+        <div class="ec-row"><div class="ec-num">6-12</div><div class="ec-name">Cold snap, supplier delay, hurricane evacuation, EOL, returns spike, holiday shift, new SKU</div><div class="ec-status"><span class="ec-pass-icon ok"><svg viewBox="0 0 12 12"><path d="M3 6 L5 8 L9 4"/></svg></span><span style="color: var(--green);">7 passed</span></div><div style="font-size: 11.5px; color: var(--text-muted);">avg 12.4s</div><div style="font-size: 11.5px; color: var(--text-muted);">$0.26</div></div>
+      </div>
+
+      <div class="lift-preview">
+        <div class="lift-pre-head">
+          <div>
+            <div class="lift-pre-title">Your starting point</div>
+            <div class="lift-pre-current"><span class="lift-pre-val">85.8</span><span class="lift-pre-unit">%</span></div>
+          </div>
+          <span class="pill outline">Baseline · day 0</span>
+        </div>
+        <svg viewBox="0 0 720 80" style="width: 100%; height: 80px;" aria-label="Baseline starting point">
+          <line x1="60" y1="50" x2="700" y2="50" stroke="var(--text-faint)" stroke-dasharray="3 3" stroke-width="1"/>
+          <text x="65" y="46" fill="var(--text-muted)" font-size="10">baseline 85.8% · improvements will climb above this line</text>
+          <circle cx="60" cy="50" r="5" fill="var(--accent)" stroke="var(--bg)" stroke-width="2"/>
+          <text x="60" y="72" text-anchor="middle" fill="var(--text-muted)" font-size="10">today</text>
+        </svg>
+        <div class="lift-pre-meta">
+          As the loop runs on your production traces, failure clusters surface and proposals appear in your <a href="02-inbox.html" style="color: var(--accent);">inbox</a>. Each approved improvement is gated against this 12-case suite plus any new cases promoted from clusters. The lift chart climbs from here.
+        </div>
+      </div>
+
+      <div class="final-row">
+        <div style="font-size: 12.5px; color: var(--text-muted); max-width: 420px; line-height: 1.5;">
+          The improvement loop will start running automatically on your next 100 traces. You'll see the first failure clusters within a few hours.
+        </div>
+        <div class="final-actions">
+          <a href="04-new-workflow-step2.html" class="btn btn-secondary">‹ Adjust generated artifacts</a>
+          <a href="05-workflow-overview.html" class="btn btn-primary" style="padding: 10px 20px;">Continue to dashboard →</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>

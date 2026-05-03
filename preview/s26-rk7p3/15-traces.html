@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Traces — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  /* Filter bar */
+  .filter-row { display: flex; gap: 8px; align-items: center; padding: 12px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-label { font-size: 11.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+  .filter-select { padding: 5px 28px 5px 12px; border-radius: 6px; font-size: 12.5px; color: var(--text-2); background: var(--bg); border: 1px solid var(--border); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3e%3cpath fill='none' stroke='%2364748b' stroke-width='1.5' d='M1 1l4 4 4-4'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 8px center; }
+  .search-input { padding: 6px 12px 6px 30px; border-radius: 6px; font-size: 12.5px; color: var(--text); background: var(--bg); border: 1px solid var(--border); width: 240px; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3e%3ccircle cx='6' cy='6' r='4' fill='none' stroke='%2364748b' stroke-width='1.5'/%3e%3cpath stroke='%2364748b' stroke-width='1.5' stroke-linecap='round' d='M9 9l3 3'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: 9px center; font-family: ui-monospace, monospace; }
+  .filter-divider { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+
+  /* Two-col trace browser */
+  .trace-browser { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 16px; align-items: start; }
+  @media (max-width: 1100px) { .trace-browser { grid-template-columns: 1fr; } }
+
+  /* Trace list */
+  .trace-list { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-sm); overflow: hidden; }
+  .trace-list-head { padding: 10px 14px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); }
+  .trace-row { padding: 12px 14px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.12s; }
+  .trace-row:last-child { border-bottom: 0; }
+  .trace-row:hover { background: var(--surface); }
+  .trace-row.selected { background: var(--accent-dim); border-left: 3px solid var(--accent); padding-left: 11px; }
+  .trace-id { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 11.5px; color: var(--text-muted); }
+  .trace-summary { font-size: 13px; font-weight: 500; color: var(--text); margin-top: 3px; }
+  .trace-meta { display: flex; gap: 8px; align-items: center; margin-top: 6px; font-size: 11px; color: var(--text-muted); }
+  .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; }
+  .status-dot.ok { background: var(--green); }
+  .status-dot.error { background: var(--red); }
+  .status-dot.warn { background: var(--amber); }
+
+  /* Trace detail */
+  .trace-detail { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-sm); overflow: hidden; }
+  .trace-detail-head { padding: 16px 20px; background: var(--surface); border-bottom: 1px solid var(--border); }
+  .trace-detail-head-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+  .trace-detail-title { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 13px; color: var(--text-2); font-weight: 500; }
+  .trace-detail-summary { font-size: 14px; font-weight: 500; color: var(--text); margin-top: 4px; }
+  .trace-detail-meta { display: flex; gap: 16px; margin-top: 10px; font-size: 12px; color: var(--text-muted); }
+  .trace-detail-meta strong { color: var(--text-2); font-weight: 500; }
+
+  /* Event timeline */
+  .timeline { padding: 16px 20px; }
+  .timeline-row { display: grid; grid-template-columns: 70px 100px minmax(0, 1fr); gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--border); align-items: start; }
+  .timeline-row:last-child { border-bottom: 0; }
+  .timeline-time { font-family: ui-monospace, monospace; font-size: 11px; color: var(--text-muted); padding-top: 4px; }
+  .timeline-type { padding-top: 2px; }
+  .event-chip { display: inline-flex; align-items: center; gap: 4px; font-family: ui-monospace, monospace; font-size: 10.5px; font-weight: 500; padding: 3px 7px; border-radius: 4px; white-space: nowrap; }
+  .event-chip.tool_call_start { background: var(--accent-muted); color: var(--accent); }
+  .event-chip.tool_call_result { background: var(--green-soft); color: var(--green); }
+  .event-chip.tool_call_result.error { background: var(--red-soft); color: var(--red); }
+  .event-chip.content_delta { background: var(--surface-2); color: var(--text-3); }
+  .event-chip.reasoning_delta { background: rgba(99, 102, 241, 0.10); color: #4f46e5; }
+  .event-chip.skill_loaded { background: rgba(217, 119, 6, 0.12); color: var(--amber); }
+  .event-chip.citation { background: rgba(13, 148, 136, 0.12); color: #0d9488; }
+  .event-chip.monitor_signal { background: var(--surface-2); color: var(--text-3); }
+  .event-chip.monitor_signal.warn { background: var(--amber-soft); color: var(--amber); }
+
+  .event-body { font-size: 13px; color: var(--text-2); line-height: 1.55; min-width: 0; }
+  .event-body code { font-family: ui-monospace, monospace; font-size: 12px; background: var(--surface); padding: 1px 5px; border-radius: 3px; color: var(--text-3); }
+  .event-body .key { color: var(--accent); font-family: ui-monospace, monospace; font-size: 12px; }
+  .event-body .num { color: var(--green); font-family: ui-monospace, monospace; font-size: 12px; }
+  .event-body .arg { font-family: ui-monospace, monospace; font-size: 12px; color: var(--text-3); }
+  .event-body .citations { margin-top: 4px; padding: 8px 10px; background: var(--surface); border-radius: 4px; font-size: 11.5px; color: var(--text-3); }
+  .event-body .citations strong { color: var(--text-2); }
+
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>15 / 23</code> · trace browser · typed AgentEvent timeline ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+
+    <div class="workspace-switcher">
+      <span class="workspace-avatar">A</span>
+      <span class="nav-label">Acme Distribution</span>
+      <span class="chev">▾</span>
+    </div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg><span class="nav-label">Health</span></a>
+    <a href="02-inbox.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg><span class="nav-label">Inbox</span><span class="nav-badge">12</span></a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Demand prediction</span><span class="nav-badge">3</span></a>
+    <a href="20-labour-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Labour management</span><span class="nav-badge">4</span></a>
+    <a href="22-contract-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Union contract review</span><span class="nav-badge">2</span></a>
+    <a href="21-support-overview.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg><span class="nav-label">Customer support</span><span class="nav-badge">3</span></a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg><span class="nav-label">New workflow</span></a>
+
+    <div class="nav-section">Library</div>
+    <a href="11-skills-registry.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg><span class="nav-label">Skills</span></a>
+    <a href="15-traces.html" class="nav-item active"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg><span class="nav-label">Traces</span></a>
+    <a href="08-audit.html" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg><span class="nav-label">Audit</span></a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item"><svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg><span class="nav-label">Settings</span></a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;"><svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg><span class="nav-label" id="themeLabel">Dark mode</span></button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">Traces</h1>
+        <p class="page-subtitle">Live event stream · 2,841 traces in last 7d · workspace-wide · all 4 workflows</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-secondary"><svg class="btn-icon" viewBox="0 0 16 16"><path d="M3 5 L8 10 L13 5"/></svg> Last 24h</button>
+        <button class="btn btn-secondary">Export</button>
+      </div>
+    </header>
+
+    <div class="stats-row">
+      <div class="card"><div class="card-title">Traces · 24h</div><div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">412</div><div style="font-size: 11.5px; color: var(--text-muted);">avg 17 / hour</div></div>
+      <div class="card"><div class="card-title">Tool calls · 24h</div><div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">3,094</div><div style="font-size: 11.5px; color: var(--text-muted);">7.5 avg per trace</div></div>
+      <div class="card"><div class="card-title">Errors · 24h</div><div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">8</div><div style="font-size: 11.5px; color: var(--text-muted);">1.9% rate · all recovered</div></div>
+      <div class="card"><div class="card-title">Avg duration</div><div style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">2.8<span style="font-size: 14px; color: var(--text-muted);">s</span></div><div style="font-size: 11.5px; color: var(--text-muted);">p95: 8.4s</div></div>
+    </div>
+
+    <div class="filter-row">
+      <input class="search-input" type="search" name="search" placeholder="trace_id, sku, tool name…" aria-label="Search traces">
+      <span class="filter-divider"></span>
+      <span class="filter-label">Workflow</span>
+      <select class="filter-select" name="workflow" aria-label="Filter workflow">
+        <option>All workflows</option><option>Demand prediction</option><option>Labour management</option><option>Union contract review</option><option>Customer support</option>
+      </select>
+      <span class="filter-divider"></span>
+      <span class="filter-label">Status</span>
+      <select class="filter-select" name="status" aria-label="Filter status">
+        <option>All</option><option>Success</option><option>Error</option><option>Warning</option>
+      </select>
+      <span class="filter-divider"></span>
+      <span class="filter-label">Time</span>
+      <select class="filter-select" name="time" aria-label="Time range">
+        <option>Last hour</option><option selected>Last 24h</option><option>Last 7d</option>
+      </select>
+    </div>
+
+    <div class="trace-browser">
+      <!-- Trace list -->
+      <div class="trace-list">
+        <div class="trace-list-head"><span>Recent traces</span><span>412</span></div>
+
+        <div class="trace-row">
+          <div class="trace-id">tr-9f4c12-2026-04-21</div>
+          <div class="trace-summary">forecast_demand · BOOT-W42</div>
+          <div class="trace-meta"><span class="status-dot ok"></span>2.4s · 8 tools · Demand pred · 17m ago</div>
+        </div>
+
+        <div class="trace-row selected">
+          <div class="trace-id">tr-9f4c13-2026-04-21</div>
+          <div class="trace-summary">forecast_demand · COAT-N18</div>
+          <div class="trace-meta"><span class="status-dot warn"></span>3.1s · 9 tools · Demand pred · 18m ago</div>
+        </div>
+
+        <div class="trace-row">
+          <div class="trace-id">tr-9f4c14-2026-04-21</div>
+          <div class="trace-summary">forecast_demand · GLV-Y04</div>
+          <div class="trace-meta"><span class="status-dot ok"></span>1.8s · 6 tools · Demand pred · 19m ago</div>
+        </div>
+
+        <div class="trace-row">
+          <div class="trace-id">tr-7c20f8-2026-04-21</div>
+          <div class="trace-summary">refund_handle · ticket #28471</div>
+          <div class="trace-meta"><span class="status-dot ok"></span>4.2s · 11 tools · Support · 22m ago</div>
+        </div>
+
+        <div class="trace-row">
+          <div class="trace-id">tr-2a8e44-2026-04-21</div>
+          <div class="trace-summary">balance_shifts · week 2026-W19</div>
+          <div class="trace-meta"><span class="status-dot ok"></span>6.1s · 14 tools · Labour · 28m ago</div>
+        </div>
+
+        <div class="trace-row">
+          <div class="trace-id">tr-c8f102-2026-04-21</div>
+          <div class="trace-summary">forecast_demand · SCRF-W08</div>
+          <div class="trace-meta"><span class="status-dot ok"></span>2.9s · 8 tools · Demand pred · 31m ago</div>
+        </div>
+
+        <div class="trace-row">
+          <div class="trace-id">tr-de4118-2026-04-21</div>
+          <div class="trace-summary">review_clause · §4.2 wage min.</div>
+          <div class="trace-meta"><span class="status-dot ok"></span>5.4s · 7 tools · Contract · 41m ago</div>
+        </div>
+
+        <div class="trace-row">
+          <div class="trace-id">tr-4b0a9c-2026-04-21</div>
+          <div class="trace-summary">forecast_demand · BOOT-S22</div>
+          <div class="trace-meta"><span class="status-dot error"></span>1.2s · 4 tools · Demand pred · 48m ago</div>
+        </div>
+      </div>
+
+      <!-- Trace detail -->
+      <div class="trace-detail">
+        <div class="trace-detail-head">
+          <div class="trace-detail-head-row">
+            <div>
+              <div class="trace-detail-title">tr-9f4c13-2026-04-21</div>
+              <div class="trace-detail-summary">forecast_demand(sku=COAT-N18, region=NE, week=2026-W45)</div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <span class="pill amber">● Warning</span>
+              <button class="btn btn-secondary" style="font-size: 12px; padding: 4px 10px;">Replay</button>
+            </div>
+          </div>
+          <div class="trace-detail-meta">
+            <span><strong>Workflow</strong> · Demand prediction v23</span>
+            <span><strong>Skill</strong> · seasonal-anomaly-detector v3</span>
+            <span><strong>Duration</strong> · 3.1s</span>
+            <span><strong>Tools</strong> · 9 calls · 1 retry</span>
+            <span><strong>Citations</strong> · 3</span>
+          </div>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-row">
+            <div class="timeline-time">+0.000s</div>
+            <div class="timeline-type"><span class="event-chip skill_loaded">skill_loaded</span></div>
+            <div class="event-body">Loaded <code>seasonal-anomaly-detector</code> v3 · retention contract: <code>regional_norms</code>, <code>prior_baseline</code></div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-time">+0.012s</div>
+            <div class="timeline-type"><span class="event-chip reasoning_delta">reasoning_delta</span></div>
+            <div class="event-body">Looking at SKU <code>COAT-N18</code> (Aurora insulated coat) for Northeast region. Need historical sales + weather context to ground forecast for week 2026-W45.</div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-time">+0.084s</div>
+            <div class="timeline-type"><span class="event-chip tool_call_start">tool_call_start</span></div>
+            <div class="event-body">→ <span class="key">query_sap_sales</span>(<span class="arg">sku=</span><span class="num">"COAT-N18"</span>, <span class="arg">region=</span><span class="num">"NE"</span>, <span class="arg">years=</span><span class="num">4</span>)</div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-time">+0.612s</div>
+            <div class="timeline-type"><span class="event-chip tool_call_result">tool_call_result</span></div>
+            <div class="event-body">← {<span class="key">rows</span>: <span class="num">208</span>, <span class="key">date_range</span>: <span class="num">"2022-W01..2026-W18"</span>, <span class="key">avg_w45_units</span>: <span class="num">412</span>}</div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-time">+0.624s</div>
+            <div class="timeline-type"><span class="event-chip tool_call_start">tool_call_start</span></div>
+            <div class="event-body">→ <span class="key">fetch_noaa_weather</span>(<span class="arg">region=</span><span class="num">"NE"</span>, <span class="arg">weeks_ahead=</span><span class="num">12</span>)</div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-time">+1.142s</div>
+            <div class="timeline-type"><span class="event-chip tool_call_result">tool_call_result</span></div>
+            <div class="event-body">← {<span class="key">forecast</span>: [+8°F W41, +4°F W42, ...], <span class="key">anomaly_index</span>: <span class="num">2.1</span>}</div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-time">+1.180s</div>
+            <div class="timeline-type"><span class="event-chip monitor_signal warn">monitor_signal</span></div>
+            <div class="event-body" style="color: var(--amber);">⚠ low_confidence — weather signal anomaly_index 2.1 is below detection threshold (2.5). Forecast confidence reduced.</div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-time">+1.214s</div>
+            <div class="timeline-type"><span class="event-chip reasoning_delta">reasoning_delta</span></div>
+            <div class="event-body">Comparing prior-12-month baseline to weather signal. Baseline says 412 units. Weather is mildly anomalous but below threshold; not enough signal to flag.</div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-time">+1.318s</div>
+            <div class="timeline-type"><span class="event-chip content_delta">content_delta</span></div>
+            <div class="event-body">Forecast for COAT-N18 in NE region, week 2026-W45: <strong>438 units</strong> (±12%, baseline-adjusted)<sup style="font-size: 9px; font-weight: 600; background: var(--accent-muted); color: var(--accent); padding: 1px 4px; border-radius: 3px; margin-left: 2px;">1</sup><sup style="font-size: 9px; font-weight: 600; background: var(--accent-muted); color: var(--accent); padding: 1px 4px; border-radius: 3px; margin-left: 2px;">2</sup>. Markdown probability: low.</div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-time">+1.319s</div>
+            <div class="timeline-type"><span class="event-chip citation">citation</span></div>
+            <div class="event-body">
+              <div class="citations">
+                <div><strong>[1]</strong> Sales history 2022-W01 to 2026-W18 · COAT-N18 · NE · query_sap_sales</div>
+                <div><strong>[2]</strong> Weather forecast NOAA · NE · weeks 41-52 · anomaly_index 2.1</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-time">+1.430s</div>
+            <div class="timeline-type"><span class="event-chip tool_call_start">tool_call_start</span></div>
+            <div class="event-body">→ <span class="key">fire_markdown_alert</span>(<span class="arg">sku=</span><span class="num">"COAT-N18"</span>, <span class="arg">severity=</span><span class="num">"none"</span>) <em style="color: var(--text-muted);">— no fire (threshold not met)</em></div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-time">+1.480s</div>
+            <div class="timeline-type"><span class="event-chip tool_call_result">tool_call_result</span></div>
+            <div class="event-body">← {<span class="key">fired</span>: <span class="num">false</span>, <span class="key">reason</span>: <span class="num">"severity_below_threshold"</span>}</div>
+          </div>
+
+          <div class="timeline-row">
+            <div class="timeline-time">+3.094s</div>
+            <div class="timeline-type"><span class="event-chip monitor_signal">trace_complete</span></div>
+            <div class="event-body" style="color: var(--text-muted);">Trace complete · 9 events · 4 tool calls · status: <span style="color: var(--amber);">warn</span> · added to eval candidate pool (low_confidence signal)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 16px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; display: flex; gap: 12px; align-items: flex-start;">
+      <svg style="width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="8" cy="8" r="6.5"/><path d="M8 5 L8 9 M8 11 L8 11.5"/></svg>
+      <div style="font-size: 12.5px; color: var(--text-3); line-height: 1.55;">
+        Every interaction is stored as a <strong style="color: var(--text);">typed event array</strong> — not free-form text. This is the contract that makes trajectory replay, failure clustering, and regression gating possible. <a href="/preview/s26-rk7p3/index.html" style="color: var(--accent);">See AgentEvent schema spec →</a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>

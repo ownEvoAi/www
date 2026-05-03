@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Render primitives — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  .page-header { margin-bottom: 24px; }
+  .page-back { display: inline-flex; align-items: center; gap: 4px; color: var(--text-muted); font-size: 12px; margin-bottom: 8px; }
+  .page-back:hover { color: var(--text-2); }
+  .page-title { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+  .page-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; max-width: 700px; }
+
+  .toc { display: flex; gap: 8px; flex-wrap: wrap; padding: 14px 0 22px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+  .toc a { font-size: 12px; color: var(--text-3); padding: 5px 11px; border: 1px solid var(--border); border-radius: 999px; transition: color 0.12s, border-color 0.12s; }
+  .toc a:hover { color: var(--accent); border-color: var(--accent); }
+
+  .primitive-section { margin-bottom: 36px; scroll-margin-top: 20px; }
+  .primitive-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  .primitive-name { font-size: 17px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+  .primitive-name code { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 14px; color: var(--text-2); background: var(--surface); padding: 2px 7px; border-radius: 4px; margin-left: 8px; }
+  .primitive-meta { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; max-width: 600px; line-height: 1.55; }
+  .primitive-tags { display: flex; gap: 6px; flex-shrink: 0; }
+  .primitive-tag { font-size: 11px; padding: 3px 8px; border-radius: 999px; background: var(--surface); color: var(--text-3); }
+  .primitive-tag.input { background: rgba(245, 158, 11, 0.1); color: var(--amber); }
+  .primitive-tag.output { background: rgba(34, 197, 94, 0.1); color: var(--green); }
+  .primitive-tag.workflow { background: rgba(59, 130, 246, 0.08); color: var(--accent); }
+
+  .primitive-demo { margin-bottom: 14px; }
+
+  .primitive-spec { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; box-shadow: var(--shadow-sm); }
+  .spec-grid { display: grid; grid-template-columns: 140px 1fr; gap: 10px 14px; font-size: 12.5px; }
+  .spec-label { color: var(--text-muted); font-weight: 500; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; padding-top: 1px; }
+  .spec-value { color: var(--text-2); line-height: 1.55; }
+  .spec-value code { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 11.5px; color: var(--text); background: var(--surface); padding: 1px 5px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>27</code> · primitive library viewer ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+
+    <div class="workspace-switcher">
+      <span class="workspace-avatar">A</span>
+      <span class="nav-label">Acme Distribution</span>
+      <span class="chev">▾</span>
+    </div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg>
+      <span class="nav-label">Health</span>
+    </a>
+    <a href="02-inbox.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg>
+      <span class="nav-label">Inbox</span>
+      <span class="nav-badge">12</span>
+    </a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Demand prediction</span>
+    </a>
+    <a href="20-labour-overview.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Labour management</span>
+    </a>
+    <a href="22-contract-overview.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Union contract review</span>
+    </a>
+    <a href="21-support-overview.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Customer support</span>
+    </a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+      <span class="nav-label">New workflow</span>
+    </a>
+
+    <div class="nav-section">Library</div>
+    <a href="11-skills-registry.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg>
+      <span class="nav-label">Skills</span>
+    </a>
+    <a href="15-traces.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg>
+      <span class="nav-label">Traces</span>
+    </a>
+    <a href="27-primitives.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5"/><rect x="9" y="2" width="5" height="5"/><rect x="2" y="9" width="5" height="5"/><rect x="9" y="9" width="5" height="5"/></svg>
+      <span class="nav-label">Primitives</span>
+    </a>
+    <a href="08-audit.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg>
+      <span class="nav-label">Audit</span>
+    </a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;">
+        <svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg>
+        <span class="nav-label" id="themeLabel">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-header">
+      <a href="index.html" class="page-back">‹ All screens</a>
+      <h1 class="page-title">Render primitives</h1>
+      <p class="page-sub">The 8 visual primitives every workflow can render. Pick one when you create a workflow — or let the inferred-workflow step pick for you. Each primitive is a typed contract: skill output → primitive input → screen.</p>
+    </div>
+
+    <nav class="toc">
+      <a href="#metric-cards">MetricCards</a>
+      <a href="#time-series">TimeSeriesChart</a>
+      <a href="#table-view">TableView</a>
+      <a href="#alert-list">AlertList</a>
+      <a href="#kanban">KanbanBoard</a>
+      <a href="#conversation">ConversationView</a>
+      <a href="#side-by-side">SideBySideView</a>
+      <a href="#document">DocumentReader</a>
+    </nav>
+
+    <!-- 1 · MetricCards -->
+    <section class="primitive-section" id="metric-cards">
+      <div class="primitive-head">
+        <div>
+          <div class="primitive-name">MetricCards <code>v1</code></div>
+          <div class="primitive-meta">A row of headline numbers with deltas and optional sparkline. Use when the workflow's output is a small set of KPIs the operator scans every morning.</div>
+        </div>
+        <div class="primitive-tags">
+          <span class="primitive-tag workflow">demand-prediction</span>
+          <span class="primitive-tag workflow">labour</span>
+        </div>
+      </div>
+      <div class="primitive-demo">
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">Forecast accuracy</div>
+            <div class="metric-value">91.2<span class="metric-unit">%</span></div>
+            <div class="metric-delta up">↑ 5.4 pts vs baseline</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">SKU coverage</div>
+            <div class="metric-value">2,184</div>
+            <div class="metric-delta flat">no change · 30d</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Stockout exposure</div>
+            <div class="metric-value">$84k</div>
+            <div class="metric-delta down">↓ 21% week-over-week</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Markdown risk</div>
+            <div class="metric-value">$12k</div>
+            <div class="metric-delta down">↓ 8% week-over-week</div>
+          </div>
+        </div>
+      </div>
+      <div class="primitive-spec">
+        <div class="spec-grid">
+          <div class="spec-label">Input shape</div>
+          <div class="spec-value"><code>{ label: string, value: number|string, unit?: string, delta?: { value: number, direction: "up"|"down"|"flat", scope: string } }[]</code></div>
+          <div class="spec-label">Best for</div>
+          <div class="spec-value">Glanceable dashboards · 2–6 KPIs · operator opens, scans, moves on</div>
+          <div class="spec-label">Avoid when</div>
+          <div class="spec-value">More than 8 metrics (use TableView) or single value with deep drill (use chart)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · TimeSeriesChart -->
+    <section class="primitive-section" id="time-series">
+      <div class="primitive-head">
+        <div>
+          <div class="primitive-name">TimeSeriesChart <code>v1</code></div>
+          <div class="primitive-meta">Line chart with optional baseline reference, area fill, and improvement annotations. The canonical "is the workflow getting better" view.</div>
+        </div>
+        <div class="primitive-tags">
+          <span class="primitive-tag workflow">all workflows</span>
+        </div>
+      </div>
+      <div class="primitive-demo">
+        <div class="chart">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Forecast accuracy · last 30 days</div>
+              <div class="chart-subtitle">↑ 5.4 pts vs baseline · 4 improvements</div>
+            </div>
+          </div>
+          <svg viewBox="0 0 720 220" class="chart-svg" style="height: 220px;" aria-label="Time series demo">
+            <g class="chart-grid">
+              <line x1="40" y1="190" x2="700" y2="190"/>
+              <line x1="40" y1="145" x2="700" y2="145"/>
+              <line x1="40" y1="100" x2="700" y2="100"/>
+              <line x1="40" y1="55" x2="700" y2="55"/>
+            </g>
+            <g class="chart-axis">
+              <text x="32" y="194" text-anchor="end">84%</text>
+              <text x="32" y="149" text-anchor="end">87%</text>
+              <text x="32" y="104" text-anchor="end">90%</text>
+              <text x="32" y="59" text-anchor="end">93%</text>
+            </g>
+            <line x1="40" y1="155" x2="700" y2="155" stroke="var(--text-faint)" stroke-dasharray="3 3" stroke-width="1" opacity="0.6"/>
+            <text x="46" y="151" fill="var(--text-faint)" font-size="10">baseline 85.8%</text>
+            <path d="M40,160 L180,160 L180,125 L320,125 L320,90 L460,90 L460,65 L600,65 L600,42 L700,42 L700,200 L40,200 Z" class="chart-area"/>
+            <path d="M40,160 L180,160 L180,125 L320,125 L320,90 L460,90 L460,65 L600,65 L600,42 L700,42" class="chart-line actual"/>
+            <circle cx="180" cy="125" r="4" class="chart-marker"/>
+            <circle cx="320" cy="90" r="4" class="chart-marker"/>
+            <circle cx="460" cy="65" r="4" class="chart-marker"/>
+            <circle cx="600" cy="42" r="4" class="chart-marker"/>
+            <circle cx="700" cy="42" r="4" fill="var(--accent)"/>
+          </svg>
+          <div class="chart-legend">
+            <span class="chart-legend-item"><span class="chart-legend-dot" style="background: var(--accent);"></span>Forecast accuracy</span>
+            <span class="chart-legend-item"><span class="chart-legend-dot" style="background: var(--text-faint);"></span>Baseline</span>
+          </div>
+        </div>
+      </div>
+      <div class="primitive-spec">
+        <div class="spec-grid">
+          <div class="spec-label">Input shape</div>
+          <div class="spec-value"><code>{ series: { name, points: [{ t, value }] }[], baseline?: number, annotations?: { t, label, delta }[] }</code></div>
+          <div class="spec-label">Best for</div>
+          <div class="spec-value">Lift over time · before/after improvement story · YC demo hero</div>
+          <div class="spec-label">Avoid when</div>
+          <div class="spec-value">Comparing categorical values (use TableView) or single point-in-time state (use MetricCards)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 · TableView -->
+    <section class="primitive-section" id="table-view">
+      <div class="primitive-head">
+        <div>
+          <div class="primitive-name">TableView <code>v1</code></div>
+          <div class="primitive-meta">A sortable table for row-shaped output. Used heavily in supply chain and labour where the operator works through a list of items.</div>
+        </div>
+        <div class="primitive-tags">
+          <span class="primitive-tag workflow">demand-prediction</span>
+          <span class="primitive-tag workflow">labour</span>
+        </div>
+      </div>
+      <div class="primitive-demo">
+        <div class="table-wrap">
+          <div class="table-toolbar">
+            <span>SKUs at risk · region: Pacific NW</span>
+            <span>4 of 1,847 · sorted by exposure</span>
+          </div>
+          <table class="table">
+            <thead>
+              <tr><th>SKU</th><th>Description</th><th class="num">Forecast</th><th class="num">On-hand</th><th class="num">Exposure</th><th>Risk</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="strong">BOOT-W42</td><td>Winter trail boot, men's</td><td class="num">1,847</td><td class="num">312</td><td class="num">$48k</td><td><span class="pill red">High</span></td></tr>
+              <tr><td class="strong">BOOT-W41</td><td>Winter trail boot, women's</td><td class="num">1,422</td><td class="num">280</td><td class="num">$22k</td><td><span class="pill amber">Med</span></td></tr>
+              <tr><td class="strong">JKT-D08</td><td>Down jacket, unisex</td><td class="num">911</td><td class="num">198</td><td class="num">$11k</td><td><span class="pill amber">Med</span></td></tr>
+              <tr><td class="strong">GLV-T03</td><td>Touchscreen glove</td><td class="num">540</td><td class="num">120</td><td class="num">$3k</td><td><span class="pill outline">Low</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="primitive-spec">
+        <div class="spec-grid">
+          <div class="spec-label">Input shape</div>
+          <div class="spec-value"><code>{ columns: { key, label, type, format? }[], rows: object[], toolbar?: { title, summary } }</code></div>
+          <div class="spec-label">Best for</div>
+          <div class="spec-value">Operator triage · "show me the things that need attention, ranked"</div>
+          <div class="spec-label">Avoid when</div>
+          <div class="spec-value">Fewer than 3 rows (use cards) · narrative output (use ConversationView)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 · AlertList -->
+    <section class="primitive-section" id="alert-list">
+      <div class="primitive-head">
+        <div>
+          <div class="primitive-name">AlertList <code>v1</code></div>
+          <div class="primitive-meta">A vertically-stacked list of severity-marked items. Used by the inbox and any "things that fired since last check" view.</div>
+        </div>
+        <div class="primitive-tags">
+          <span class="primitive-tag workflow">all workflows</span>
+        </div>
+      </div>
+      <div class="primitive-demo">
+        <div class="alerts">
+          <div class="alert high">
+            <svg class="alert-icon" viewBox="0 0 16 16"><path d="M8 2 L14 13 L2 13 Z M8 6 L8 10 M8 12 L8 12.5"/></svg>
+            <div class="alert-body">
+              <div class="alert-title">Stockout forecast: BOOT-W42 will hit 0 in 6 days</div>
+              <div class="alert-meta">Region Pacific NW · revenue exposure $48k · fired 14 min ago</div>
+            </div>
+          </div>
+          <div class="alert medium">
+            <svg class="alert-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 5 L8 9 M8 11 L8 11.5"/></svg>
+            <div class="alert-body">
+              <div class="alert-title">Promotional uplift underweighted on bundled SKUs</div>
+              <div class="alert-meta">9 traces clustered · proposal generating · fired 1h ago</div>
+            </div>
+          </div>
+          <div class="alert low">
+            <svg class="alert-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 5 L8 9 M8 11 L8 11.5"/></svg>
+            <div class="alert-body">
+              <div class="alert-title">Supplier lead time drifted +2 days for 12-week SKUs</div>
+              <div class="alert-meta">Awaiting more signal · 6 traces · fired 4h ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="primitive-spec">
+        <div class="spec-grid">
+          <div class="spec-label">Input shape</div>
+          <div class="spec-value"><code>{ severity: "high"|"medium"|"low", title, meta, action_url? }[]</code></div>
+          <div class="spec-label">Best for</div>
+          <div class="spec-value">Inbox · monitor signals · "since last open" · anything time-ordered with severity</div>
+          <div class="spec-label">Avoid when</div>
+          <div class="spec-value">Items have no inherent priority (use TableView) or workflow output is a single drafted reply</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 · KanbanBoard -->
+    <section class="primitive-section" id="kanban">
+      <div class="primitive-head">
+        <div>
+          <div class="primitive-name">KanbanBoard <code>v1</code></div>
+          <div class="primitive-meta">Cards across stage columns. Used for ticket-like flows where operators move items through states.</div>
+        </div>
+        <div class="primitive-tags">
+          <span class="primitive-tag workflow">support</span>
+          <span class="primitive-tag workflow">labour</span>
+        </div>
+      </div>
+      <div class="primitive-demo">
+        <div class="kanban">
+          <div class="kanban-col">
+            <div class="kanban-col-header"><div class="kanban-col-title">New</div><span class="kanban-col-count">3</span></div>
+            <div class="kanban-card"><div class="kanban-card-title">Refund eligibility · #4821</div><div class="kanban-card-body">Annual subscription, 47 days in</div><div class="kanban-card-meta"><span>chat · 2m</span><div class="kanban-card-tags"><span class="pill outline">policy</span></div></div></div>
+            <div class="kanban-card"><div class="kanban-card-title">Order status · #4820</div><div class="kanban-card-body">Where is my package, no tracking</div><div class="kanban-card-meta"><span>email · 4m</span></div></div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-header"><div class="kanban-col-title">Drafted</div><span class="kanban-col-count">2</span></div>
+            <div class="kanban-card"><div class="kanban-card-title">Account merge · #4815</div><div class="kanban-card-body">Two accounts, same email</div><div class="kanban-card-meta"><span>chat · 12m</span><div class="kanban-card-tags"><span class="pill amber">review</span></div></div></div>
+            <div class="kanban-card"><div class="kanban-card-title">Plan change · #4812</div><div class="kanban-card-body">Downgrade from team to solo</div><div class="kanban-card-meta"><span>email · 18m</span></div></div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-header"><div class="kanban-col-title">Sent</div><span class="kanban-col-count">14</span></div>
+            <div class="kanban-card"><div class="kanban-card-title">Order confirmation · #4809</div><div class="kanban-card-body">Replied 6 minutes ago</div><div class="kanban-card-meta"><span>chat · 25m</span><div class="kanban-card-tags"><span class="pill green">resolved</span></div></div></div>
+            <div class="kanban-card"><div class="kanban-card-title">Tracking link · #4807</div><div class="kanban-card-body">Replied 12 minutes ago</div><div class="kanban-card-meta"><span>email · 31m</span></div></div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-header"><div class="kanban-col-title">Escalated</div><span class="kanban-col-count">1</span></div>
+            <div class="kanban-card"><div class="kanban-card-title">Refund dispute · #4798</div><div class="kanban-card-body">Customer not satisfied with policy</div><div class="kanban-card-meta"><span>chat · 1h</span><div class="kanban-card-tags"><span class="pill red">tier-2</span></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="primitive-spec">
+        <div class="spec-grid">
+          <div class="spec-label">Input shape</div>
+          <div class="spec-value"><code>{ columns: { key, label, count }[], cards: { id, column_key, title, body, meta, tags? }[] }</code></div>
+          <div class="spec-label">Best for</div>
+          <div class="spec-value">Ticket triage · ops queues with clear stages · agent + human shared workspace</div>
+          <div class="spec-label">Avoid when</div>
+          <div class="spec-value">No stage transitions (use TableView or AlertList)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 · ConversationView -->
+    <section class="primitive-section" id="conversation">
+      <div class="primitive-head">
+        <div>
+          <div class="primitive-name">ConversationView <code>v1</code></div>
+          <div class="primitive-meta">Threaded chat-style render with citation chips. Used wherever the workflow's output is a reply to a person.</div>
+        </div>
+        <div class="primitive-tags">
+          <span class="primitive-tag workflow">support</span>
+          <span class="primitive-tag workflow">order-intake</span>
+        </div>
+      </div>
+      <div class="primitive-demo">
+        <div class="convo">
+          <div class="convo-msg user">
+            <div class="convo-avatar user">CS</div>
+            <div class="convo-bubble-wrap">
+              <div class="convo-bubble">Hi — I'd like to cancel my annual plan and get a refund for the unused months.</div>
+              <div class="convo-meta">Customer · 12:04</div>
+            </div>
+          </div>
+          <div class="convo-msg agent">
+            <div class="convo-avatar agent">AI</div>
+            <div class="convo-bubble-wrap">
+              <div class="convo-bubble">I can help cancel your plan. On refunds — our annual plan is non-refundable after the first 30 days<span class="convo-citation">1</span>, but I can stop it from auto-renewing. Want me to do that?</div>
+              <div class="convo-meta">Agent · 12:04 · 1 citation</div>
+            </div>
+          </div>
+          <div class="convo-msg user">
+            <div class="convo-avatar user">CS</div>
+            <div class="convo-bubble-wrap">
+              <div class="convo-bubble">OK please stop auto-renew. When does it actually end?</div>
+              <div class="convo-meta">Customer · 12:05</div>
+            </div>
+          </div>
+          <div class="convo-msg agent">
+            <div class="convo-avatar agent">AI</div>
+            <div class="convo-bubble-wrap">
+              <div class="convo-bubble">Done — auto-renew is off. Your current term ends <strong>2026-08-14</strong><span class="convo-citation">2</span>. You'll keep full access until then.</div>
+              <div class="convo-meta">Agent · 12:05 · 2 citations</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="primitive-spec">
+        <div class="spec-grid">
+          <div class="spec-label">Input shape</div>
+          <div class="spec-value"><code>{ messages: { role: "agent"|"user"|"system", text, ts, citations?: [{ id, source }] }[] }</code></div>
+          <div class="spec-label">Best for</div>
+          <div class="spec-value">Customer support · sales chat · any agent-to-human dialogue with grounding</div>
+          <div class="spec-label">Avoid when</div>
+          <div class="spec-value">Output is structured (use TableView) or operator never sees individual conversations (use MetricCards)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 · SideBySideView -->
+    <section class="primitive-section" id="side-by-side">
+      <div class="primitive-head">
+        <div>
+          <div class="primitive-name">SideBySideView <code>v1</code></div>
+          <div class="primitive-meta">Two panels rendered next to each other for comparison. Used for proposal review, before/after diffs, and prose-vs-source.</div>
+        </div>
+        <div class="primitive-tags">
+          <span class="primitive-tag workflow">improvement-review</span>
+          <span class="primitive-tag workflow">contract</span>
+        </div>
+      </div>
+      <div class="primitive-demo">
+        <div class="side-by-side">
+          <div class="side">
+            <div class="side-header"><span>Current skill · v3</span><span>421 chars</span></div>
+            <div class="side-body code">when forecasting: load 36mo
+history. detect anomalies as
+&gt;2 stdev from prior-year.
+emit forecast.run with
+{accuracy, exposure}.</div>
+          </div>
+          <div class="side">
+            <div class="side-header" style="background: rgba(34, 197, 94, 0.08);"><span style="color: var(--green);">Proposed · v4</span><span>518 chars</span></div>
+            <div class="side-body code">when forecasting: load 36mo
+history. detect anomalies as
+&gt;2 stdev from prior-year.
+<span style="background: rgba(34, 197, 94, 0.18); color: var(--green);">also flag seasonal-cluster
+drift &gt;15% vs prior-year same-
+week (catches winter footwear
+case).</span>
+emit forecast.run with
+{accuracy, exposure}.</div>
+          </div>
+        </div>
+      </div>
+      <div class="primitive-spec">
+        <div class="spec-grid">
+          <div class="spec-label">Input shape</div>
+          <div class="spec-value"><code>{ left: { title, body, format? }, right: { title, body, format?, highlight?: "added"|"removed" } }</code></div>
+          <div class="spec-label">Best for</div>
+          <div class="spec-value">Proposal diffs · before/after improvement view · contract drafting</div>
+          <div class="spec-label">Avoid when</div>
+          <div class="spec-value">No comparison anchor exists (use a single panel)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 · DocumentReader -->
+    <section class="primitive-section" id="document">
+      <div class="primitive-head">
+        <div>
+          <div class="primitive-name">DocumentReader <code>v1</code></div>
+          <div class="primitive-meta">Long-form document with inline annotations and a comment gutter. The legal / contract review hero.</div>
+        </div>
+        <div class="primitive-tags">
+          <span class="primitive-tag workflow">contract</span>
+        </div>
+      </div>
+      <div class="primitive-demo">
+        <div style="display: grid; grid-template-columns: 1fr 240px; gap: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden;">
+          <div style="padding: 18px 22px; font-size: 13px; line-height: 1.7; color: var(--text-2); border-right: 1px solid var(--border);">
+            <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;">§14.3 · Successor and Assigns</div>
+            <p>Either party may assign its rights or delegate its duties under this Agreement, in whole or in part, to <span style="background: rgba(245, 158, 11, 0.15); color: var(--text); border-bottom: 2px solid var(--amber); cursor: pointer;">any successor entity arising from a merger, acquisition, or sale of substantially all of its assets</span>, without the consent of the other party, provided that such successor expressly assumes all obligations hereunder.</p>
+            <p>For all other assignments, the prior <span style="background: rgba(59, 130, 246, 0.12); color: var(--text); border-bottom: 2px solid var(--accent); cursor: pointer;">written consent of the non-assigning party shall be required</span>, which consent shall not be unreasonably withheld, conditioned, or delayed.</p>
+            <p>Any purported assignment in violation of this Section shall be null and void.</p>
+          </div>
+          <div style="padding: 14px 14px; background: var(--surface); display: flex; flex-direction: column; gap: 10px;">
+            <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em;">Annotations · 2</div>
+            <div style="background: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--amber); border-radius: 4px; padding: 8px 10px; font-size: 11.5px; color: var(--text-2); line-height: 1.5;">
+              <div style="font-weight: 500; color: var(--amber); margin-bottom: 2px;">Successor carve-out</div>
+              Confidence 0.62 — broader than precedent. Suggest narrowing to "controlling interest acquisition."
+            </div>
+            <div style="background: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 4px; padding: 8px 10px; font-size: 11.5px; color: var(--text-2); line-height: 1.5;">
+              <div style="font-weight: 500; color: var(--accent); margin-bottom: 2px;">Consent standard</div>
+              Standard "not unreasonably withheld" language present. ✓
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="primitive-spec">
+        <div class="spec-grid">
+          <div class="spec-label">Input shape</div>
+          <div class="spec-value"><code>{ blocks: { kind: "heading"|"para"|"clause", text, spans?: [{ start, end, type, note }] }[], annotations: { id, span_id, severity, body }[] }</code></div>
+          <div class="spec-label">Best for</div>
+          <div class="spec-value">Contract review · policy drafting · any reviewer-with-document workflow</div>
+          <div class="spec-label">Avoid when</div>
+          <div class="spec-value">Document is short (under 200 words) — use SideBySideView · or no annotations needed (use plain prose)</div>
+        </div>
+      </div>
+    </section>
+
+    <div style="background: var(--bg); border: 1px dashed var(--border-light); border-radius: 8px; padding: 18px 22px; margin-top: 18px;">
+      <div style="font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px;">Need a primitive that isn't here?</div>
+      <div style="font-size: 12.5px; color: var(--text-muted); line-height: 1.6;">
+        We're deliberately holding the set small — every primitive multiplies the surface area we have to keep stable across themes, eval, and accessibility. If you have a workflow that doesn't fit one of the 8, tell us at <a href="#" style="color: var(--accent);">primitives@ownevo.ai</a> with a sketch.
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>
