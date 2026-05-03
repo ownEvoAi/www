@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Workflow health — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  /* Page-specific layout */
+  .health-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start; }
+  @media (max-width: 1180px) { .health-grid { grid-template-columns: 1fr; } }
+
+  /* Workflow rows table */
+  .wf-table { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow-sm); }
+  .wf-row { display: grid; grid-template-columns: minmax(0, 1.5fr) 110px 130px 110px 100px 36px; align-items: center; gap: 16px; padding: 16px 18px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.12s; }
+  .wf-row:last-child { border-bottom: 0; }
+  .wf-row:hover { background: var(--surface); }
+  .wf-row.head { background: var(--surface); padding: 10px 18px; cursor: default; }
+  .wf-row.head:hover { background: var(--surface); }
+  .wf-row.head > div { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); }
+  .wf-name { font-size: 14px; font-weight: 500; color: var(--text); display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .wf-name-buyer { font-size: 11.5px; font-weight: 400; color: var(--text-muted); }
+  .wf-metric { display: flex; flex-direction: column; gap: 2px; font-variant-numeric: tabular-nums; }
+  .wf-metric-value { font-size: 14px; font-weight: 500; color: var(--text); }
+  .wf-metric-delta { font-size: 11.5px; }
+  .wf-pending { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-3); }
+  .wf-pending .count { background: var(--accent-muted); color: var(--accent); font-weight: 600; padding: 1px 7px; border-radius: 8px; font-size: 11.5px; }
+  .wf-last { font-size: 12px; color: var(--text-muted); }
+  .wf-chev { color: var(--text-faint); justify-self: end; }
+
+  /* Sparkline cell adjustments */
+  .wf-row .spark { width: 100px; height: 28px; }
+
+  /* Activity feed */
+  .activity { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 4px 0; box-shadow: var(--shadow-sm); }
+  .activity-head { padding: 12px 16px 8px; font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); }
+  .activity-item { display: flex; gap: 10px; padding: 11px 16px; border-bottom: 1px solid var(--border); }
+  .activity-item:last-child { border-bottom: 0; }
+  .activity-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
+  .activity-dot.approval { background: var(--green); }
+  .activity-dot.cluster { background: var(--amber); }
+  .activity-dot.regression { background: var(--red); }
+  .activity-dot.escalation { background: var(--accent); }
+  .activity-body { font-size: 12.5px; color: var(--text-2); line-height: 1.45; min-width: 0; }
+  .activity-body strong { font-weight: 500; color: var(--text); }
+  .activity-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  /* Glance metrics override — slightly tighter for the dense top strip */
+  .glance .metric { padding: 12px 14px; }
+  .glance .metric-value { font-size: 22px; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>01 / 10</code> ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <!-- ─── Sidebar nav ─── -->
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+
+    <div class="workspace-switcher">
+      <span class="workspace-avatar">A</span>
+      <span class="nav-label">Acme Distribution</span>
+      <span class="chev">▾</span>
+    </div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg>
+      <span class="nav-label">Health</span>
+    </a>
+    <a href="02-inbox.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg>
+      <span class="nav-label">Inbox</span>
+      <span class="nav-badge">12</span>
+    </a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Demand prediction</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Labour management</span>
+      <span class="nav-badge">4</span>
+    </a>
+    <a href="10-contract-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Union contract review</span>
+      <span class="nav-badge">2</span>
+    </a>
+    <a href="09-support-operate.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Customer support</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+      <span class="nav-label">New workflow</span>
+    </a>
+
+    <div class="nav-section">Library</div>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg>
+      <span class="nav-label">Skills</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg>
+      <span class="nav-label">Traces</span>
+    </a>
+    <a href="08-audit.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg>
+      <span class="nav-label">Audit</span>
+    </a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;">
+        <svg class="nav-icon" id="themeIcon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg>
+        <span class="nav-label" id="themeLabel">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ─── Main content ─── -->
+  <main class="main">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">Workflow health</h1>
+        <p class="page-subtitle">Acme Distribution · 4 active workflows · refreshed 2 min ago</p>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-secondary">
+          <svg class="btn-icon" viewBox="0 0 16 16"><path d="M3 5 L8 10 L13 5"/></svg>
+          Last 7 days
+        </button>
+        <a href="03-new-workflow-step1.html" class="btn btn-primary">
+          <svg class="btn-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+          New workflow
+        </a>
+      </div>
+    </header>
+
+    <!-- Glance metrics strip -->
+    <div class="metrics glance" style="margin-bottom: 24px;">
+      <div class="metric">
+        <div class="metric-label">Active workflows</div>
+        <div class="metric-value">4</div>
+        <div class="metric-delta flat">unchanged</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Pending reviews</div>
+        <div class="metric-value">12</div>
+        <div class="metric-delta down">▲ 3 vs last week</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Approved this week</div>
+        <div class="metric-value">28</div>
+        <div class="metric-delta up">▲ 11 vs last week</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Portfolio lift</div>
+        <div class="metric-value">+24.3<span class="metric-unit">%</span></div>
+        <div class="metric-delta up">▲ 6.1 pts vs baseline</div>
+      </div>
+    </div>
+
+    <div class="health-grid">
+      <!-- Workflow rows -->
+      <section>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px;">
+          <h2 style="font-size: 13px; font-weight: 500; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em;">Workflows</h2>
+          <a href="#" style="font-size: 12px; color: var(--accent);">Manage →</a>
+        </div>
+
+        <div class="wf-table">
+          <div class="wf-row head">
+            <div>Workflow</div>
+            <div>30d trend</div>
+            <div>Current metric</div>
+            <div>Pending</div>
+            <div>Last improved</div>
+            <div></div>
+          </div>
+
+          <!-- Demand prediction -->
+          <a href="05-workflow-overview.html" class="wf-row" style="text-decoration: none;">
+            <div class="wf-name">
+              Demand prediction
+              <span class="wf-name-buyer">Supply Chain VP · Maria Chen</span>
+            </div>
+            <svg class="spark" viewBox="0 0 100 28" preserveAspectRatio="none">
+              <path class="spark-area" d="M0,22 L10,20 L20,18 L30,19 L40,15 L50,16 L60,11 L70,9 L80,6 L90,5 L100,3 L100,28 L0,28 Z"/>
+              <path d="M0,22 L10,20 L20,18 L30,19 L40,15 L50,16 L60,11 L70,9 L80,6 L90,5 L100,3"/>
+            </svg>
+            <div class="wf-metric">
+              <span class="wf-metric-value">91.2% acc.</span>
+              <span class="wf-metric-delta" style="color: var(--green);">▲ 5.4 pts</span>
+            </div>
+            <div class="wf-pending"><span class="count">3</span> proposals</div>
+            <div class="wf-last">2h ago</div>
+            <span class="wf-chev">›</span>
+          </a>
+
+          <!-- Labour management -->
+          <a href="#" class="wf-row" style="text-decoration: none;">
+            <div class="wf-name">
+              Labour management
+              <span class="wf-name-buyer">Workforce Ops · Devon Park</span>
+            </div>
+            <svg class="spark" viewBox="0 0 100 28" preserveAspectRatio="none">
+              <path class="spark-area" d="M0,18 L10,17 L20,19 L30,15 L40,16 L50,14 L60,15 L70,13 L80,12 L90,12 L100,10 L100,28 L0,28 Z"/>
+              <path d="M0,18 L10,17 L20,19 L30,15 L40,16 L50,14 L60,15 L70,13 L80,12 L90,12 L100,10"/>
+            </svg>
+            <div class="wf-metric">
+              <span class="wf-metric-value">87.0% fit</span>
+              <span class="wf-metric-delta" style="color: var(--green);">▲ 2.1 pts</span>
+            </div>
+            <div class="wf-pending"><span class="count">4</span> proposals</div>
+            <div class="wf-last">1d ago</div>
+            <span class="wf-chev">›</span>
+          </a>
+
+          <!-- Union contract review -->
+          <a href="10-contract-operate.html" class="wf-row" style="text-decoration: none;">
+            <div class="wf-name">
+              Union contract review
+              <span class="wf-name-buyer">Labour Relations · Priya Anand</span>
+            </div>
+            <svg class="spark" viewBox="0 0 100 28" preserveAspectRatio="none">
+              <path class="spark-area" d="M0,9 L10,9 L20,10 L30,8 L40,9 L50,9 L60,10 L70,9 L80,9 L90,9 L100,8 L100,28 L0,28 Z"/>
+              <path d="M0,9 L10,9 L20,10 L30,8 L40,9 L50,9 L60,10 L70,9 L80,9 L90,9 L100,8"/>
+            </svg>
+            <div class="wf-metric">
+              <span class="wf-metric-value">96.0% cov.</span>
+              <span class="wf-metric-delta" style="color: var(--text-muted);">— flat</span>
+            </div>
+            <div class="wf-pending"><span class="count">2</span> proposals</div>
+            <div class="wf-last">4d ago</div>
+            <span class="wf-chev">›</span>
+          </a>
+
+          <!-- Customer support -->
+          <a href="09-support-operate.html" class="wf-row" style="text-decoration: none;">
+            <div class="wf-name">
+              Customer support
+              <span class="wf-name-buyer">Support Ops · Jordan Wells</span>
+            </div>
+            <svg class="spark" viewBox="0 0 100 28" preserveAspectRatio="none">
+              <path class="spark-area" d="M0,16 L10,17 L20,14 L30,15 L40,12 L50,11 L60,12 L70,9 L80,8 L90,7 L100,5 L100,28 L0,28 Z"/>
+              <path d="M0,16 L10,17 L20,14 L30,15 L40,12 L50,11 L60,12 L70,9 L80,8 L90,7 L100,5"/>
+            </svg>
+            <div class="wf-metric">
+              <span class="wf-metric-value">4.6 / 5 CSAT</span>
+              <span class="wf-metric-delta" style="color: var(--green);">▲ 0.3</span>
+            </div>
+            <div class="wf-pending"><span class="count">3</span> proposals</div>
+            <div class="wf-last">6h ago</div>
+            <span class="wf-chev">›</span>
+          </a>
+        </div>
+
+        <!-- Coverage breakdown -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px;">
+          <div class="card">
+            <div class="card-title">Eval coverage</div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+              <span style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">412</span>
+              <span class="pill green">↑ 38 this week</span>
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted);">Total eval cases across 4 workflows · 64 cluster-derived this month</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Regression gate</div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+              <span style="font-size: 22px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums;">100<span style="font-size: 14px; color: var(--text-muted);">%</span></span>
+              <span class="pill green">no regressions in 30d</span>
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted);">28 approved changes gated · 0 rolled back</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Activity feed -->
+      <aside>
+        <div class="activity">
+          <div class="activity-head">Recent activity</div>
+
+          <div class="activity-item">
+            <div class="activity-dot approval"></div>
+            <div class="activity-body">
+              <strong>Maria Chen</strong> approved a fix for <strong>seasonal anomaly miss</strong> on Demand prediction
+              <div class="activity-meta">2h ago · gate: 12/12 passed</div>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-dot cluster"></div>
+            <div class="activity-body">
+              New cluster surfaced on Labour management: <strong>weekend overtime cap exceeded</strong>
+              <div class="activity-meta">5h ago · 8 traces · severity: high</div>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-dot approval"></div>
+            <div class="activity-body">
+              <strong>Devon Park</strong> approved <strong>entitlement check</strong> on Customer support
+              <div class="activity-meta">6h ago · gate: 24/24 passed</div>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-dot escalation"></div>
+            <div class="activity-body">
+              Customer support agent escalated <strong>refund > $5k</strong> for human review
+              <div class="activity-meta">9h ago · ticket #28471</div>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-dot approval"></div>
+            <div class="activity-body">
+              <strong>Priya Anand</strong> approved <strong>jurisdictional carve-out</strong> on Union contract
+              <div class="activity-meta">1d ago · gate: 18/18 passed</div>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-dot cluster"></div>
+            <div class="activity-body">
+              New cluster on Demand prediction: <strong>regional variance underweight</strong>
+              <div class="activity-meta">1d ago · 14 traces · severity: medium</div>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-dot regression"></div>
+            <div class="activity-body">
+              Proposal blocked on Labour management: would have regressed <strong>compliance suite</strong>
+              <div class="activity-meta">2d ago · gate: 9/12 passed</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Theme toggle — light/dark
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>

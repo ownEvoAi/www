@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>ownEvo — Workspace preview</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<style>
+  .index-wrap { max-width: 760px; margin: 0 auto; padding: 56px 32px 80px; }
+  .index-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .index-head .sep { color: var(--text-faint); font-weight: 200; font-size: 22px; }
+  .index-head .crumb { color: var(--text-3); font-size: 17px; }
+  .index-blurb { font-size: 14px; color: var(--text-muted); margin: 0 0 28px; max-width: 600px; line-height: 1.6; }
+  .index-cta-row { display: flex; gap: 10px; margin-bottom: 36px; }
+  .group-label { font-size: 10.5px; font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase; color: var(--text-faint); margin: 24px 0 8px; }
+  .preview-link { display: flex; flex-direction: column; padding: 12px 14px; margin: 4px 0; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); transition: background 0.12s, border-color 0.12s; }
+  .preview-link:hover { background: var(--surface); border-color: var(--border-light); }
+  .preview-link-title { font-size: 13.5px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .preview-link-meta { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+  .group-label.gated::after { content: ' · gated'; color: var(--amber); }
+  .footnote { font-size: 12px; color: var(--text-muted); margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); line-height: 1.6; }
+  ul { list-style: none; padding: 0; margin: 0; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mocks for the ownEvo workspace · not a live product · do not share this URL publicly
+</div>
+
+<div class="index-wrap">
+  <div class="index-head">
+    <svg class="brand-mark" viewBox="0 0 24 24" fill="none" style="width: 40px; height: 40px;" aria-hidden="true">
+      <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+      <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+      <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+    </svg>
+    <span class="brand-wordmark"><span class="logo-own" style="font-size: 26px;">own</span><span class="logo-evo" style="font-size: 26px;">Evo</span></span>
+    <span class="sep">/</span>
+    <span class="crumb">workspace preview</span>
+  </div>
+  <p class="index-blurb">
+    UI mocks for the ownEvo workspace app — what the buyer (Supply Chain VP, Workforce Ops, Labour Relations, Support Lead) actually sees. Static HTML, no live backend. The IP-bearing screens (workflow generation) are linked from this page only and live behind this URL slug.
+  </p>
+
+  <div class="index-cta-row">
+    <a href="01-health.html" class="btn btn-primary">Enter workspace →</a>
+    <a href="03-new-workflow-step1.html" class="btn btn-secondary">Run YC demo flow →</a>
+  </div>
+
+  <div class="group-label">Operator views</div>
+  <ul>
+    <li><a href="01-health.html" class="preview-link">
+      <span class="preview-link-title">01 · Health dashboard</span>
+      <span class="preview-link-meta">Default landing — all workflows at a glance</span>
+    </a></li>
+    <li><a href="02-inbox.html" class="preview-link">
+      <span class="preview-link-title">02 · Inbox</span>
+      <span class="preview-link-meta">Triage queue: proposals, escalations, regression alerts</span>
+    </a></li>
+    <li><a href="08-audit.html" class="preview-link">
+      <span class="preview-link-title">08 · Audit trail</span>
+      <span class="preview-link-meta">Hash-chained approval history — the sovereignty proof</span>
+    </a></li>
+  </ul>
+
+  <div class="group-label gated">Workflow creation — the IP</div>
+  <ul>
+    <li><a href="03-new-workflow-step1.html" class="preview-link">
+      <span class="preview-link-title">03 · New workflow · Describe</span>
+      <span class="preview-link-meta">Plain English textarea — the wedge entry point</span>
+    </a></li>
+    <li><a href="04-new-workflow-step2.html" class="preview-link">
+      <span class="preview-link-title">04 · New workflow · Generated artifacts</span>
+      <span class="preview-link-meta">Generated simulator + eval cases + success metric, side-by-side review</span>
+    </a></li>
+  </ul>
+
+  <div class="group-label">Workflow detail · demand prediction (YC demo hero)</div>
+  <ul>
+    <li><a href="05-workflow-overview.html" class="preview-link">
+      <span class="preview-link-title">05 · Overview</span>
+      <span class="preview-link-meta">Lift chart climbing, recent failure clusters, recent approvals</span>
+    </a></li>
+    <li><a href="06-workflow-operate.html" class="preview-link">
+      <span class="preview-link-title">06 · Operate</span>
+      <span class="preview-link-meta">MetricCards + TimeSeriesChart + TableView — the actual working surface</span>
+    </a></li>
+    <li><a href="07-proposal-detail.html" class="preview-link">
+      <span class="preview-link-title">07 · Proposal detail</span>
+      <span class="preview-link-meta">Side-by-side diff, gate badge, Approve/Reject + comment</span>
+    </a></li>
+  </ul>
+
+  <div class="group-label">Other workflows · primitive coverage</div>
+  <ul>
+    <li><a href="09-support-operate.html" class="preview-link">
+      <span class="preview-link-title">09 · Customer support · Operate</span>
+      <span class="preview-link-meta">KanbanBoard + ConversationView + AlertList</span>
+    </a></li>
+    <li><a href="10-contract-operate.html" class="preview-link">
+      <span class="preview-link-title">10 · Union contract review · Operate</span>
+      <span class="preview-link-meta">DocumentReader + SideBySideView + AlertList</span>
+    </a></li>
+  </ul>
+
+  <p class="footnote">
+    <strong>Demo flow for YC (60s):</strong> 03 → 04 → 05 → 07 (approve) → 05 (lift climbs) → 07 → 05 → 08<br>
+    <strong>Synthetic workspace:</strong> Acme Distribution — supply chain operations across 4 workflows.
+  </p>
+</div>
+</body>
+</html>
