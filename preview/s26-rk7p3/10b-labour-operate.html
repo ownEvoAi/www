@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Labour management · Operate — ownEvo</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SE1GLT6JSD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SE1GLT6JSD', {
+    content_group: 'preview'
+  });
+</script>
+
+<style>
+  /* Workflow header (reused from 05/06) */
+  .wf-back { display: inline-flex; align-items: center; gap: 4px; color: var(--text-muted); font-size: 12px; margin-bottom: 8px; }
+  .wf-back:hover { color: var(--text-2); }
+  .wf-title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .wf-title { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+  .wf-buyer { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { padding: 10px 14px; font-size: 13px; color: var(--text-3); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+
+  /* "View as operator" link */
+  .view-as-link { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--accent); padding: 4px 8px; border-radius: 4px; }
+  .view-as-link:hover { background: var(--accent-dim); }
+
+  /* Toolbar (week / site selectors) — adapted from 31-operator-labour.html */
+  .op-toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+  .op-pill-group { display: inline-flex; padding: 3px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; }
+  .op-pill { font-size: 12px; padding: 5px 12px; border-radius: 6px; color: var(--text-3); cursor: pointer; }
+  .op-pill:hover { color: var(--text); }
+  .op-pill.active { background: var(--accent); color: white; }
+  .op-tab { font-size: 12.5px; padding: 5px 11px; border-radius: 999px; border: 1px solid transparent; color: var(--text-3); cursor: pointer; }
+  .op-tab:hover { color: var(--text); background: var(--bg); }
+  .op-tab.active { color: var(--accent); border-color: var(--accent); background: rgba(59, 130, 246, 0.06); }
+  .op-toolbar-spacer { flex: 1; }
+  .op-toolbar-meta { font-size: 11.5px; color: var(--text-muted); }
+  .op-toolbar-meta strong { color: var(--green); font-weight: 500; }
+
+  /* Stats strip */
+  .op-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .op-stat { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+  .op-stat-label { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .op-stat-val { font-size: 22px; font-weight: 500; color: var(--text); margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .op-stat-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  /* Owner-context approve bar — slightly reframed from operator */
+  .approve-bar { display: flex; gap: 10px; align-items: center; padding: 14px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-sm); margin-bottom: 16px; }
+  .approve-bar-text { font-size: 13px; color: var(--text-2); margin-right: auto; }
+  .approve-bar-text strong { color: var(--text); font-weight: 500; }
+
+  /* Schedule grid: days × shifts */
+  .op-schedule { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-sm); overflow: hidden; margin-bottom: 16px; }
+  .sched-head { display: grid; grid-template-columns: 110px repeat(7, 1fr); gap: 1px; background: var(--border); }
+  .sched-head > div { background: var(--surface); padding: 10px 12px; font-size: 11px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .sched-head .day-num { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; font-weight: 400; }
+
+  .sched-row { display: grid; grid-template-columns: 110px repeat(7, 1fr); gap: 1px; background: var(--border); }
+  .sched-row > div { background: var(--bg); padding: 8px 10px; min-height: 70px; display: flex; flex-direction: column; gap: 4px; }
+  .sched-shift-label { font-size: 11.5px; color: var(--text-2); font-weight: 500; align-self: center; justify-self: flex-start; padding-top: 24px; }
+  .sched-shift-label small { display: block; color: var(--text-muted); font-weight: 400; font-size: 10.5px; margin-top: 1px; }
+  .sched-cell { background: var(--bg); }
+  .sched-cell.has-issue { background: rgba(245, 158, 11, 0.05); }
+  .sched-cell.has-error { background: rgba(239, 68, 68, 0.06); }
+  .sched-staff-count { font-size: 13px; color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .sched-target { font-size: 10.5px; color: var(--text-muted); }
+  .sched-tag { font-size: 9.5px; padding: 1px 5px; border-radius: 3px; align-self: flex-start; margin-top: auto; }
+  .sched-tag.ok { background: rgba(34, 197, 94, 0.12); color: var(--green); }
+  .sched-tag.warn { background: rgba(245, 158, 11, 0.15); color: var(--amber); }
+  .sched-tag.error { background: rgba(239, 68, 68, 0.12); color: var(--red); }
+
+  /* Two-col main: conflicts + side rail */
+  .op-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  @media (max-width: 1180px) { .op-grid { grid-template-columns: 1fr; } }
+
+  .op-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-sm); }
+  .op-card-head { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .op-card-title { font-size: 12.5px; font-weight: 500; color: var(--text); }
+  .op-card-meta { font-size: 11px; color: var(--text-muted); }
+  .op-card-count { font-size: 11px; color: var(--text-muted); }
+
+  .conflict { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .conflict:last-child { border-bottom: 0; }
+  .conflict-head { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+  .conflict-tag { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 3px; }
+  .conflict-tag.error { background: rgba(239, 68, 68, 0.12); color: var(--red); }
+  .conflict-tag.warn { background: rgba(245, 158, 11, 0.12); color: var(--amber); }
+  .conflict-tag.info { background: rgba(59, 130, 246, 0.12); color: var(--accent); }
+  .conflict-title { font-size: 12.5px; color: var(--text); font-weight: 500; }
+  .conflict-body { font-size: 12px; color: var(--text-2); line-height: 1.55; margin-top: 4px; }
+  .conflict-body em { color: var(--text); font-style: normal; font-weight: 500; }
+  .conflict-actions { display: flex; gap: 6px; margin-top: 10px; }
+  .op-mini-btn { font-size: 11.5px; padding: 5px 10px; border-radius: 5px; border: 1px solid var(--border); background: var(--bg); color: var(--text-2); cursor: pointer; font-family: inherit; }
+  .op-mini-btn:hover { border-color: var(--border-light); }
+  .op-mini-btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
+  .op-mini-btn.escalate { color: var(--red); border-color: rgba(239, 68, 68, 0.3); }
+  .op-mini-btn.report { color: var(--text-muted); border: 0; padding: 5px 8px; margin-left: auto; }
+  .op-mini-btn.report:hover { color: var(--red); background: var(--surface); }
+
+  /* Owner peek banner — reminds the owner this is the operator's daily view */
+  .owner-peek-banner { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.18); border-radius: 6px; font-size: 12.5px; color: var(--text-2); margin-bottom: 14px; }
+  .owner-peek-banner strong { color: var(--text); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>10b / 32</code> · workflow operate (owner shell · labour management) ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="app-shell">
+  <aside class="nav">
+    <div class="nav-brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+        <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+        <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+      </svg>
+      <span class="brand-wordmark"><span class="logo-own">own</span><span class="logo-evo">Evo</span></span>
+    </div>
+
+    <div class="workspace-switcher">
+      <span class="workspace-avatar">A</span>
+      <span class="nav-label">Acme Distribution</span>
+      <span class="chev">▾</span>
+    </div>
+
+    <div class="nav-section">Activity</div>
+    <a href="01-health.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 8 L5 8 L7 3 L9 13 L11 8 L14 8"/></svg>
+      <span class="nav-label">Health</span>
+    </a>
+    <a href="02-inbox.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 4 L2 12 A1.5 1.5 0 0 0 3.5 13.5 L12.5 13.5 A1.5 1.5 0 0 0 14 12 L14 4 M2 4 L8 9 L14 4 M2 4 L14 4"/></svg>
+      <span class="nav-label">Inbox</span>
+      <span class="nav-badge">12</span>
+    </a>
+
+    <div class="nav-section">Workflows</div>
+    <a href="05-workflow-overview.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Demand prediction</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="20-labour-overview.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Labour management</span>
+      <span class="nav-badge">4</span>
+    </a>
+    <a href="22-contract-overview.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Union contract review</span>
+      <span class="nav-badge">2</span>
+    </a>
+    <a href="21-support-overview.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 3 L13 3 L13 13 L3 13 Z M3 7 L13 7 M7 7 L7 13"/></svg>
+      <span class="nav-label">Customer support</span>
+      <span class="nav-badge">3</span>
+    </a>
+    <a href="03-new-workflow-step1.html" class="nav-item" style="color: var(--text-muted);">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M8 3 L8 13 M3 8 L13 8"/></svg>
+      <span class="nav-label">New workflow</span>
+    </a>
+
+    <div class="nav-section">Library</div>
+    <a href="11-skills-registry.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M2 3 L14 3 L14 13 L2 13 Z M2 6 L14 6"/></svg>
+      <span class="nav-label">Skills</span>
+    </a>
+    <a href="15-traces.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 11 L6 6 L9 9 L13 4"/></svg>
+      <span class="nav-label">Traces</span>
+    </a>
+    <a href="27-primitives.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5"/><rect x="9" y="2" width="5" height="5"/><rect x="2" y="9" width="5" height="5"/><rect x="9" y="9" width="5" height="5"/></svg>
+      <span class="nav-label">Views</span>
+    </a>
+    <a href="08-audit.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 16 16"><path d="M3 4 L13 4 M3 8 L13 8 M3 12 L9 12"/></svg>
+      <span class="nav-label">Audit</span>
+    </a>
+
+    <div class="nav-footer">
+      <a href="#" class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5 L8 3.5 M8 12.5 L8 14.5 M14.5 8 L12.5 8 M3.5 8 L1.5 8 M12.6 3.4 L11.2 4.8 M4.8 11.2 L3.4 12.6 M12.6 12.6 L11.2 11.2 M4.8 4.8 L3.4 3.4"/></svg>
+        <span class="nav-label">Settings</span>
+      </a>
+      <button class="nav-item theme-toggle-nav" id="themeToggle" type="button" style="background: transparent; border: 0; width: 100%; text-align: left;">
+        <svg class="nav-icon" viewBox="0 0 16 16"><path d="M13 9 A5.5 5.5 0 0 1 7 3 A5.5 5.5 0 1 0 13 9 Z"/></svg>
+        <span class="nav-label" id="themeLabel">Dark mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div style="margin-bottom: 6px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
+      <div>
+        <a href="01-health.html" class="wf-back">‹ Workflows</a>
+        <div class="wf-title-row">
+          <h1 class="wf-title">Labour management</h1>
+          <span class="pill green">● Active</span>
+          <span class="pill outline">v17</span>
+        </div>
+        <p class="wf-buyer">Owner: David Okonkwo · Workforce Ops Director · Site: DC-Tacoma · Schedule pending operator approval</p>
+      </div>
+      <a href="31-operator-labour.html" class="view-as-link">view as operator →</a>
+    </div>
+
+    <div class="tabs">
+      <a href="20-labour-overview.html" class="tab">Overview</a>
+      <a href="#" class="tab active">Operate</a>
+      <a href="16-failures.html?workflow=labour-management" class="tab">Failures</a>
+      <a href="17-eval-cases.html?workflow=labour-management" class="tab">Eval cases <span class="muted" style="margin-left: 4px; font-size: 11px;">86</span></a>
+      <a href="11-skills-registry.html?workflow=labour-management" class="tab">Skills <span class="muted" style="margin-left: 4px; font-size: 11px;">7</span></a>
+      <a href="08-audit.html?workflow=labour-management" class="tab">Audit</a>
+      <a href="12-workflow-triggers.html" class="tab">Triggers</a>
+      <a href="13-workflow-integrations.html" class="tab">Integrations</a>
+      <a href="14-workflow-permissions.html" class="tab">Permissions</a>
+    </div>
+
+    <div class="owner-peek-banner">
+      <svg style="width: 14px; height: 14px; color: var(--accent); flex-shrink: 0;" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="8" cy="8" r="6.5"/><path d="M8 5 L8 9 M8 11 L8 11.5"/></svg>
+      <span><strong>You are viewing the operator's daily work surface.</strong> Maya Reed (shift supervisor) reviews and approves this schedule daily — the same view, different shell. Owner-level workflow controls live in <a href="14-workflow-permissions.html" style="color: var(--accent);">Permissions</a> and <a href="08-audit.html?workflow=labour-management" style="color: var(--accent);">Audit</a>.</span>
+    </div>
+
+    <!-- Toolbar (week / site selector) -->
+    <div class="op-toolbar">
+      <div class="op-pill-group">
+        <span class="op-pill">Last week</span>
+        <span class="op-pill active">This week · W19</span>
+        <span class="op-pill">Next week · W20</span>
+      </div>
+      <span style="width: 1px; height: 18px; background: var(--border); margin: 0 4px;"></span>
+      <span class="op-tab active">DC-Tacoma · 142 staff</span>
+      <span class="op-tab">DC-Portland</span>
+      <span class="op-tab">DC-Seattle</span>
+      <span class="op-toolbar-spacer"></span>
+      <span class="op-toolbar-meta">Agent proposed schedule · <strong>3 conflicts</strong> · 0 OT cap violations · operator approval due Friday 5pm</span>
+    </div>
+
+    <div class="op-stats">
+      <div class="op-stat">
+        <div class="op-stat-label">Coverage · this week</div>
+        <div class="op-stat-val">98<span style="font-size: 14px; color: var(--text-muted);">%</span></div>
+        <div class="op-stat-meta" style="color: var(--green);">↑ vs target 95%</div>
+      </div>
+      <div class="op-stat">
+        <div class="op-stat-label">OT hours scheduled</div>
+        <div class="op-stat-val">62<span style="font-size: 14px; color: var(--text-muted);"> hrs</span></div>
+        <div class="op-stat-meta">cap: 80h · 78% used</div>
+      </div>
+      <div class="op-stat">
+        <div class="op-stat-label">Open shifts</div>
+        <div class="op-stat-val">3</div>
+        <div class="op-stat-meta">2 require forklift cert</div>
+      </div>
+      <div class="op-stat">
+        <div class="op-stat-label">Skill match · agent rec</div>
+        <div class="op-stat-val">94<span style="font-size: 14px; color: var(--text-muted);">%</span></div>
+        <div class="op-stat-meta">8 manual swaps required</div>
+      </div>
+    </div>
+
+    <div class="approve-bar">
+      <div class="approve-bar-text">
+        Agent proposed full week schedule for <strong>142 staff across 21 shifts</strong>. Operator (Maya Reed) reviews + approves; owner can override via Audit if needed.
+      </div>
+      <button class="op-mini-btn">Compare to last week</button>
+      <button class="op-mini-btn">Notify operator</button>
+    </div>
+
+    <!-- Schedule grid -->
+    <div class="op-schedule">
+      <div class="sched-head">
+        <div>Shift</div>
+        <div>Mon<div class="day-num">May 4</div></div>
+        <div>Tue<div class="day-num">May 5</div></div>
+        <div>Wed<div class="day-num">May 6</div></div>
+        <div>Thu<div class="day-num">May 7</div></div>
+        <div>Fri<div class="day-num">May 8</div></div>
+        <div>Sat<div class="day-num">May 9</div></div>
+        <div>Sun<div class="day-num">May 10</div></div>
+      </div>
+
+      <!-- Morning shift -->
+      <div class="sched-row">
+        <div class="sched-shift-label">Morning<small>06:00–14:00</small></div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">22</div>
+          <div class="sched-target">target 22</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+        <div class="sched-cell has-issue">
+          <div class="sched-staff-count">19</div>
+          <div class="sched-target">target 22</div>
+          <span class="sched-tag warn">−3 short</span>
+        </div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">22</div>
+          <div class="sched-target">target 22</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+        <div class="sched-cell has-issue">
+          <div class="sched-staff-count">20</div>
+          <div class="sched-target">target 22</div>
+          <span class="sched-tag warn">−2 short</span>
+        </div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">22</div>
+          <div class="sched-target">target 22</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">14</div>
+          <div class="sched-target">target 14</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">10</div>
+          <div class="sched-target">target 10</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+      </div>
+
+      <!-- Afternoon shift -->
+      <div class="sched-row">
+        <div class="sched-shift-label">Afternoon<small>14:00–22:00</small></div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">26</div>
+          <div class="sched-target">target 26</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">26</div>
+          <div class="sched-target">target 26</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">26</div>
+          <div class="sched-target">target 26</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+        <div class="sched-cell has-error">
+          <div class="sched-staff-count">26</div>
+          <div class="sched-target">target 26</div>
+          <span class="sched-tag error">cert gap</span>
+        </div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">26</div>
+          <div class="sched-target">target 26</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">18</div>
+          <div class="sched-target">target 18</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">12</div>
+          <div class="sched-target">target 12</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+      </div>
+
+      <!-- Night shift -->
+      <div class="sched-row">
+        <div class="sched-shift-label">Night<small>22:00–06:00</small></div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">10</div>
+          <div class="sched-target">target 10</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">10</div>
+          <div class="sched-target">target 10</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">10</div>
+          <div class="sched-target">target 10</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">10</div>
+          <div class="sched-target">target 10</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">10</div>
+          <div class="sched-target">target 10</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">8</div>
+          <div class="sched-target">target 8</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+        <div class="sched-cell">
+          <div class="sched-staff-count">6</div>
+          <div class="sched-target">target 6</div>
+          <span class="sched-tag ok">✓ ok</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="op-grid">
+      <!-- LEFT: conflicts the agent flagged (operator will resolve) -->
+      <section class="op-card">
+        <div class="op-card-head">
+          <div>
+            <div class="op-card-title">Conflicts to resolve · 3</div>
+            <div class="op-card-meta">Agent flagged these · operator will accept, edit, or escalate</div>
+          </div>
+        </div>
+
+        <div class="conflict">
+          <div class="conflict-head">
+            <span class="conflict-tag error">cert gap · Thu afternoon</span>
+          </div>
+          <div class="conflict-title">Forklift-certified gap on Thu afternoon</div>
+          <div class="conflict-body">
+            Only <em>3 of 4 forklift-certified slots</em> filled (target: 4). Agent suggests pulling <em>R. Patel</em> from morning Wed (currently assigned) — Patel has the cert and Wed morning is overstaffed by 1.
+          </div>
+          <div class="conflict-actions">
+            <button class="op-mini-btn">Override (owner)</button>
+            <button class="op-mini-btn escalate">Flag for me</button>
+            <button class="op-mini-btn report" title="Report bad agent suggestion">⚠</button>
+          </div>
+        </div>
+
+        <div class="conflict">
+          <div class="conflict-head">
+            <span class="conflict-tag warn">undercoverage · Tue morning</span>
+          </div>
+          <div class="conflict-title">Tuesday morning short by 3 staff</div>
+          <div class="conflict-body">
+            Two callouts came in overnight (M. Diaz, S. Krause). Agent suggests pulling <em>2 from the on-call pool</em> + <em>upgrade 1 part-time slot to full shift</em>. Stays under OT cap.
+          </div>
+          <div class="conflict-actions">
+            <button class="op-mini-btn">Override (owner)</button>
+            <button class="op-mini-btn escalate">Flag for me</button>
+            <button class="op-mini-btn report">⚠</button>
+          </div>
+        </div>
+
+        <div class="conflict">
+          <div class="conflict-head">
+            <span class="conflict-tag warn">undercoverage · Thu morning</span>
+          </div>
+          <div class="conflict-title">Thursday morning short by 2 staff</div>
+          <div class="conflict-body">
+            Vacation planned (J. Wright). Agent suggests asking <em>K. Nguyen</em> (currently afternoon Thu) to swap to morning + <em>backfill afternoon from on-call</em>. Both staff have signaled flexibility.
+          </div>
+          <div class="conflict-actions">
+            <button class="op-mini-btn">Override (owner)</button>
+            <button class="op-mini-btn escalate">Flag for me</button>
+            <button class="op-mini-btn report">⚠</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: side rail — recent agent edits, OT preview, history -->
+      <aside class="op-card">
+        <div class="op-card-head">
+          <div class="op-card-title">Agent did this for you</div>
+          <span class="op-card-count">8 changes</span>
+        </div>
+
+        <div class="conflict">
+          <div class="conflict-head">
+            <span class="conflict-tag info">peak coverage rule</span>
+          </div>
+          <div class="conflict-title">Boosted Tue/Thu 11–14 by +2 staff</div>
+          <div class="conflict-body">Detected 22% throughput drop pattern on Tue/Thu peak hours · skill <em>peak-coverage-checker v1</em></div>
+        </div>
+
+        <div class="conflict">
+          <div class="conflict-head">
+            <span class="conflict-tag info">OT cap checker</span>
+          </div>
+          <div class="conflict-title">Capped 4 staff at 38h before OT</div>
+          <div class="conflict-body">M. Patel, S. Lin, J. Ortiz, A. Khoury — all near weekly cap. Reassigned overflow to on-call.</div>
+        </div>
+
+        <div class="conflict">
+          <div class="conflict-head">
+            <span class="conflict-tag info">skill match</span>
+          </div>
+          <div class="conflict-title">Filled 18 cert-required slots</div>
+          <div class="conflict-body">Forklift, hazmat, lead — all matched on first pass. 1 cert gap remains (see conflicts).</div>
+        </div>
+
+        <div class="conflict">
+          <div class="conflict-head">
+            <span class="conflict-tag info">preference learning</span>
+          </div>
+          <div class="conflict-title">Applied 12 staff preferences</div>
+          <div class="conflict-body">Avoided night shifts for staff who flagged · honored requested days off · respected union seniority.</div>
+        </div>
+
+        <div style="padding: 12px 16px; font-size: 11.5px; color: var(--text-muted); text-align: center; border-top: 1px solid var(--border);">
+          <a href="08-audit.html?workflow=labour-management" style="color: var(--accent);">View full change log →</a>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const label = document.getElementById('themeLabel');
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') { root.setAttribute('data-theme', 'dark'); label.textContent = 'Light mode'; }
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('ownevo-theme', isDark ? 'light' : 'dark');
+      label.textContent = isDark ? 'Dark mode' : 'Light mode';
+    });
+  })();
+</script>
+</body>
+</html>
