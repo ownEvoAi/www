@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Demand prediction — Acme Distribution</title>
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="primitives.css">
+<style>
+  body { background: var(--surface); }
+
+  /* Operator top bar — same as 28 / 29 */
+  .op-bar { display: flex; align-items: center; gap: 18px; padding: 10px 22px; background: var(--bg); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+  .op-bar-brand { display: flex; align-items: center; gap: 8px; }
+  .op-bar-brand .brand-mark { width: 22px; height: 22px; }
+  .op-bar-brand-label { font-size: 13px; font-weight: 500; color: var(--text); }
+  .op-bar-sep { color: var(--text-faint); font-weight: 200; }
+  .op-bar-workflow { display: flex; align-items: center; gap: 8px; padding: 5px 10px; border-radius: 6px; cursor: pointer; }
+  .op-bar-workflow:hover { background: var(--surface); }
+  .op-bar-workflow-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .op-bar-workflow-meta { font-size: 11.5px; color: var(--text-muted); }
+  .op-bar-spacer { flex: 1; }
+  .op-bar-action { font-size: 12px; color: var(--text-3); padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+  .op-bar-action:hover { color: var(--text); background: var(--surface); }
+  .op-bar-user { display: flex; align-items: center; gap: 8px; padding: 4px 10px 4px 4px; border-radius: 999px; cursor: pointer; }
+  .op-bar-user:hover { background: var(--surface); }
+  .op-bar-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
+  .op-bar-username { font-size: 12.5px; color: var(--text-2); }
+
+  /* Main */
+  .op-main { padding: 18px 22px 60px; }
+
+  .op-toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+  .op-pill-group { display: inline-flex; padding: 3px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; }
+  .op-pill { font-size: 12px; padding: 5px 12px; border-radius: 6px; color: var(--text-3); cursor: pointer; }
+  .op-pill:hover { color: var(--text); }
+  .op-pill.active { background: var(--accent); color: white; }
+  .op-tab { font-size: 12.5px; padding: 5px 11px; border-radius: 999px; border: 1px solid transparent; color: var(--text-3); cursor: pointer; }
+  .op-tab:hover { color: var(--text); background: var(--bg); }
+  .op-tab.active { color: var(--accent); border-color: var(--accent); background: rgba(59, 130, 246, 0.06); }
+  .op-toolbar-spacer { flex: 1; }
+  .op-toolbar-meta { font-size: 11.5px; color: var(--text-muted); }
+  .op-toolbar-meta strong { color: var(--green); font-weight: 500; }
+
+  /* MetricCards strip */
+  .op-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .op-stat { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+  .op-stat-label { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .op-stat-val { font-size: 22px; font-weight: 500; color: var(--text); margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .op-stat-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  /* Two-col main */
+  .op-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  @media (max-width: 1180px) { .op-grid { grid-template-columns: 1fr; } }
+
+  /* SKU recommendation table */
+  .op-table { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-sm); overflow: hidden; }
+  .op-table-head { display: grid; grid-template-columns: 1.6fr 110px 110px 1.6fr 130px; gap: 12px; padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border); font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .op-row { display: grid; grid-template-columns: 1.6fr 110px 110px 1.6fr 130px; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); align-items: center; transition: background 0.12s; }
+  .op-row:last-child { border-bottom: 0; }
+  .op-row:hover { background: var(--surface); }
+  .op-sku { display: flex; flex-direction: column; gap: 2px; }
+  .op-sku-id { font-size: 13px; font-weight: 500; color: var(--text); font-family: ui-monospace, 'SF Mono', Menlo, monospace; }
+  .op-sku-name { font-size: 11.5px; color: var(--text-muted); }
+  .op-num { font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .op-num strong { color: var(--text); font-weight: 500; }
+  .op-num.warn { color: var(--amber); font-weight: 500; }
+  .op-num.danger { color: var(--red); font-weight: 500; }
+  .op-rec { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .op-rec-action { font-size: 12.5px; color: var(--text); }
+  .op-rec-action strong { color: var(--accent); font-weight: 500; }
+  .op-rec-cite { font-size: 11px; color: var(--text-muted); }
+  .op-rec-cite code { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 10.5px; background: var(--surface); padding: 1px 5px; border-radius: 3px; }
+  .op-actions { display: flex; gap: 4px; align-items: center; justify-content: flex-end; }
+  .op-mini-btn { font-size: 11.5px; padding: 5px 10px; border-radius: 5px; border: 1px solid var(--border); background: var(--bg); color: var(--text-2); cursor: pointer; font-family: inherit; }
+  .op-mini-btn:hover { border-color: var(--border-light); }
+  .op-mini-btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
+  .op-mini-btn.report { color: var(--text-muted); border: 0; padding: 5px 6px; }
+  .op-mini-btn.report:hover { color: var(--red); background: var(--surface); }
+
+  /* Right rail: alerts + region snapshot */
+  .op-side { display: flex; flex-direction: column; gap: 14px; }
+  .op-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-sm); }
+  .op-card-head { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .op-card-title { font-size: 12.5px; font-weight: 500; color: var(--text); }
+  .op-card-count { font-size: 11px; color: var(--text-muted); }
+  .op-card-body { padding: 6px 0; }
+
+  .alert { display: flex; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+  .alert:last-child { border-bottom: 0; }
+  .alert-bar { width: 3px; align-self: stretch; border-radius: 2px; flex-shrink: 0; }
+  .alert-bar.high { background: var(--red); }
+  .alert-bar.med { background: var(--amber); }
+  .alert-bar.low { background: var(--accent); }
+  .alert-body { flex: 1; }
+  .alert-title { font-size: 12.5px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .alert-meta { font-size: 11px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="preview-banner">
+  <strong>PREVIEW</strong> · static UI mock · screen <code>30</code> · <strong>operator shell</strong> · category manager reviewing forecast recommendations ·
+  <a href="index.html" style="color: inherit; text-decoration: underline;">all screens</a>
+</div>
+
+<div class="op-bar">
+  <div class="op-bar-brand">
+    <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" fill="#3b82f6"/>
+      <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+      <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+    </svg>
+    <span class="op-bar-brand-label">Acme</span>
+  </div>
+  <span class="op-bar-sep">/</span>
+  <div class="op-bar-workflow">
+    <div>
+      <div class="op-bar-workflow-name">Demand prediction</div>
+      <div class="op-bar-workflow-meta">v23 · live · region: Pacific NW</div>
+    </div>
+    <span style="color: var(--text-muted); font-size: 10px;">▾</span>
+  </div>
+  <span class="op-bar-spacer"></span>
+  <a href="05-workflow-overview.html" class="op-bar-action" style="color: var(--accent);">view as owner →</a>
+  <div class="op-bar-user">
+    <div class="op-bar-avatar">MK</div>
+    <span class="op-bar-username">Mei Kowalski</span>
+    <span style="color: var(--text-muted); font-size: 10px;">▾</span>
+  </div>
+</div>
+
+<main class="op-main">
+  <div class="op-toolbar">
+    <div class="op-pill-group">
+      <span class="op-pill active">This week</span>
+      <span class="op-pill">Next week</span>
+      <span class="op-pill">4-week horizon</span>
+    </div>
+    <span style="width: 1px; height: 18px; background: var(--border); margin: 0 4px;"></span>
+    <span class="op-tab active">All categories · 38</span>
+    <span class="op-tab">Footwear · 12</span>
+    <span class="op-tab">Outerwear · 9</span>
+    <span class="op-tab">Accessories · 17</span>
+    <span class="op-toolbar-spacer"></span>
+    <span class="op-toolbar-meta">Today: <strong>14 accepted</strong> · 2 edited · 1 escalated · agent rec accept rate <strong>89%</strong></span>
+  </div>
+
+  <!-- Region snapshot strip -->
+  <div class="op-stats">
+    <div class="op-stat">
+      <div class="op-stat-label">Stockout exposure · region</div>
+      <div class="op-stat-val">$48k</div>
+      <div class="op-stat-meta" style="color: var(--red);">↑ 12% vs last week</div>
+    </div>
+    <div class="op-stat">
+      <div class="op-stat-label">Markdown risk · region</div>
+      <div class="op-stat-val">$11k</div>
+      <div class="op-stat-meta" style="color: var(--green);">↓ 8% vs last week</div>
+    </div>
+    <div class="op-stat">
+      <div class="op-stat-label">Open recommendations</div>
+      <div class="op-stat-val">38</div>
+      <div class="op-stat-meta">9 high priority · review by EOD</div>
+    </div>
+    <div class="op-stat">
+      <div class="op-stat-label">Reorder lead time avg</div>
+      <div class="op-stat-val">11<span style="font-size: 14px; color: var(--text-muted);"> days</span></div>
+      <div class="op-stat-meta">3 SKUs above 14-day cutoff</div>
+    </div>
+  </div>
+
+  <div class="op-grid">
+    <!-- LEFT: SKU recommendations table -->
+    <section class="op-table">
+      <div class="op-table-head">
+        <div>SKU</div>
+        <div>Forecast</div>
+        <div>On-hand</div>
+        <div>Agent recommendation</div>
+        <div></div>
+      </div>
+
+      <div class="op-row">
+        <div class="op-sku">
+          <span class="op-sku-id">BOOT-W42</span>
+          <span class="op-sku-name">Winter trail boot, men's</span>
+        </div>
+        <div class="op-num"><strong>1,847</strong> units</div>
+        <div class="op-num danger">312</div>
+        <div class="op-rec">
+          <div class="op-rec-action">Reorder <strong>1,500 units</strong> from supplier PNW-22 by <strong>2026-05-08</strong></div>
+          <div class="op-rec-cite">Conf 0.94 · cited <code>seasonal-anomaly-detector v4</code> · 14 similar traces</div>
+        </div>
+        <div class="op-actions">
+          <button class="op-mini-btn primary">Accept</button>
+          <button class="op-mini-btn">Edit</button>
+          <button class="op-mini-btn report" title="Report bad recommendation">⚠</button>
+        </div>
+      </div>
+
+      <div class="op-row">
+        <div class="op-sku">
+          <span class="op-sku-id">BOOT-W41</span>
+          <span class="op-sku-name">Winter trail boot, women's</span>
+        </div>
+        <div class="op-num"><strong>1,422</strong> units</div>
+        <div class="op-num warn">280</div>
+        <div class="op-rec">
+          <div class="op-rec-action">Reorder <strong>1,200 units</strong> from supplier PNW-22 by <strong>2026-05-08</strong></div>
+          <div class="op-rec-cite">Conf 0.91 · paired with BOOT-W42 (same supplier batch)</div>
+        </div>
+        <div class="op-actions">
+          <button class="op-mini-btn primary">Accept</button>
+          <button class="op-mini-btn">Edit</button>
+          <button class="op-mini-btn report">⚠</button>
+        </div>
+      </div>
+
+      <div class="op-row">
+        <div class="op-sku">
+          <span class="op-sku-id">JKT-D08</span>
+          <span class="op-sku-name">Down jacket, unisex</span>
+        </div>
+        <div class="op-num"><strong>911</strong> units</div>
+        <div class="op-num warn">198</div>
+        <div class="op-rec">
+          <div class="op-rec-action">Reorder <strong>720 units</strong> by <strong>2026-05-12</strong></div>
+          <div class="op-rec-cite">Conf 0.88 · weather signal: −8°F dip W47</div>
+        </div>
+        <div class="op-actions">
+          <button class="op-mini-btn primary">Accept</button>
+          <button class="op-mini-btn">Edit</button>
+          <button class="op-mini-btn report">⚠</button>
+        </div>
+      </div>
+
+      <div class="op-row">
+        <div class="op-sku">
+          <span class="op-sku-id">SCRF-W08</span>
+          <span class="op-sku-name">Wool scarf, unisex</span>
+        </div>
+        <div class="op-num"><strong>540</strong> units</div>
+        <div class="op-num">320</div>
+        <div class="op-rec">
+          <div class="op-rec-action">Reorder <strong>240 units</strong> by <strong>2026-05-15</strong></div>
+          <div class="op-rec-cite">Conf 0.82 · standard reorder cycle</div>
+        </div>
+        <div class="op-actions">
+          <button class="op-mini-btn primary">Accept</button>
+          <button class="op-mini-btn">Edit</button>
+          <button class="op-mini-btn report">⚠</button>
+        </div>
+      </div>
+
+      <div class="op-row">
+        <div class="op-sku">
+          <span class="op-sku-id">GLV-T03</span>
+          <span class="op-sku-name">Touchscreen glove</span>
+        </div>
+        <div class="op-num"><strong>312</strong> units</div>
+        <div class="op-num">180</div>
+        <div class="op-rec">
+          <div class="op-rec-action">No action — coverage adequate through W48</div>
+          <div class="op-rec-cite">Conf 0.95 · auto-cleared by agent</div>
+        </div>
+        <div class="op-actions">
+          <button class="op-mini-btn">Acknowledge</button>
+          <button class="op-mini-btn report">⚠</button>
+        </div>
+      </div>
+
+      <div class="op-row">
+        <div class="op-sku">
+          <span class="op-sku-id">PARKA-P14</span>
+          <span class="op-sku-name">Insulated parka, men's</span>
+        </div>
+        <div class="op-num"><strong>682</strong> units</div>
+        <div class="op-num">94</div>
+        <div class="op-rec">
+          <div class="op-rec-action">Reorder <strong>620 units</strong> + flag for markdown review on prior generation P13</div>
+          <div class="op-rec-cite">Conf 0.71 · two-step recommendation · review carefully</div>
+        </div>
+        <div class="op-actions">
+          <button class="op-mini-btn primary">Accept</button>
+          <button class="op-mini-btn">Edit</button>
+          <button class="op-mini-btn report">⚠</button>
+        </div>
+      </div>
+
+      <div style="padding: 12px 16px; font-size: 12px; color: var(--text-muted); text-align: center; background: var(--surface);">
+        <a href="#" style="color: var(--accent);">Show 32 more recommendations →</a>
+      </div>
+    </section>
+
+    <!-- RIGHT: alerts + accepted log -->
+    <aside class="op-side">
+      <div class="op-card">
+        <div class="op-card-head">
+          <div class="op-card-title">Stockout & markdown alerts</div>
+          <span class="op-card-count">5 active</span>
+        </div>
+        <div class="op-card-body">
+          <div class="alert">
+            <div class="alert-bar high"></div>
+            <div class="alert-body">
+              <div class="alert-title">BOOT-W42 will hit 0 in 6 days</div>
+              <div class="alert-meta">$48k revenue exposure · agent recommended reorder</div>
+            </div>
+          </div>
+          <div class="alert">
+            <div class="alert-bar high"></div>
+            <div class="alert-body">
+              <div class="alert-title">PARKA-P14 critical low (94 units)</div>
+              <div class="alert-meta">Lead time 14d &gt; coverage horizon</div>
+            </div>
+          </div>
+          <div class="alert">
+            <div class="alert-bar med"></div>
+            <div class="alert-body">
+              <div class="alert-title">JKT-D08 weather-driven spike</div>
+              <div class="alert-meta">NOAA −8°F W47 · forecast bumped 22%</div>
+            </div>
+          </div>
+          <div class="alert">
+            <div class="alert-bar med"></div>
+            <div class="alert-body">
+              <div class="alert-title">PARKA-P13 markdown candidate</div>
+              <div class="alert-meta">Replaced by P14 next season · 412 units left</div>
+            </div>
+          </div>
+          <div class="alert">
+            <div class="alert-bar low"></div>
+            <div class="alert-body">
+              <div class="alert-title">SCRF-S04 promo bundle exposure</div>
+              <div class="alert-meta">Bundled with COAT-N18 · 30% lift expected</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="op-card">
+        <div class="op-card-head">
+          <div class="op-card-title">Accepted today</div>
+          <span class="op-card-count">14</span>
+        </div>
+        <div class="op-card-body">
+          <div class="alert" style="border-bottom: 1px solid var(--border);">
+            <div class="alert-body">
+              <div class="alert-title">COAT-N18 · reorder 880 units</div>
+              <div class="alert-meta">11:42 · sent to ERP</div>
+            </div>
+          </div>
+          <div class="alert" style="border-bottom: 1px solid var(--border);">
+            <div class="alert-body">
+              <div class="alert-title">FLEECE-F22 · reorder 540 units</div>
+              <div class="alert-meta">11:18 · sent to ERP</div>
+            </div>
+          </div>
+          <div class="alert" style="border-bottom: 1px solid var(--border);">
+            <div class="alert-body">
+              <div class="alert-title">HAT-K07 · markdown 30%</div>
+              <div class="alert-meta">10:54 · sent to merchandising</div>
+            </div>
+          </div>
+          <div class="alert">
+            <div class="alert-body">
+              <div class="alert-title">BAG-B05 · acknowledge no-action</div>
+              <div class="alert-meta">10:31 · cleared</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const stored = localStorage.getItem('ownevo-theme');
+    if (stored === 'dark') root.setAttribute('data-theme', 'dark');
+  })();
+</script>
+</body>
+</html>
