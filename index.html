@@ -654,48 +654,72 @@
 
   /* ═══ LOOP SECTION ═══ */
   .loop-section { background: var(--surface); }
-  .loop-steps {
-    margin-top: 4.5rem;
-    display: flex;
-    flex-direction: column;
-  }
-  .loop-step {
+
+  .how-grid {
     display: grid;
-    grid-template-columns: 4rem 1fr;
-    gap: 2rem;
-    align-items: flex-start;
-    padding: 2rem 0;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: 4rem;
+    align-items: start;
+  }
+  .how-diagram {
+    position: relative;
+  }
+  .how-diagram svg {
+    width: 100%;
+    height: auto;
+    max-width: 640px;
+    display: block;
+  }
+  .how-content .section-eyebrow { margin-bottom: 1.25rem; }
+  .how-steps-list {
+    list-style: none;
+    margin-top: 2.25rem;
+    padding: 0;
+  }
+  .how-steps-list li {
+    display: grid;
+    grid-template-columns: 2.4rem 1fr;
+    gap: 0.9rem;
+    padding: 0.85rem 0;
     border-top: 1px solid var(--rule);
-    transition: opacity 0.4s;
-  }
-  .loop-step:last-child { border-bottom: 1px solid var(--rule); }
-  .loop-step:not(.active) { opacity: 0.45; }
-  .loop-step.active { opacity: 1; }
-  .loop-step.active .step-num { color: var(--accent-deep); }
-  .step-num {
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    font-weight: 500;
-    color: var(--ink-3);
-    letter-spacing: 0.1em;
-    padding-top: 0.45rem;
-    transition: color 0.4s;
-  }
-  .step-content h4 {
     font-family: var(--sans);
-    font-size: clamp(1.2rem, 1.7vw, 1.45rem);
-    font-weight: 600;
-    letter-spacing: -0.022em;
-    margin-bottom: 0.55rem;
-    line-height: 1.25;
-    color: var(--ink);
-  }
-  .step-content p {
-    font-size: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.55;
     color: var(--ink-2);
-    line-height: 1.6;
-    max-width: 620px;
   }
+  .how-steps-list li:last-child {
+    border-bottom: 1px solid var(--rule);
+  }
+  .how-steps-list li strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .how-steps-list .step-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    font-weight: 500;
+    color: var(--accent-deep);
+    padding-top: 0.22rem;
+  }
+
+  /* Cycle dot pulse — staggered around the loop, suggests motion */
+  @keyframes ldDotPulse {
+    0%, 100% { opacity: 0.45; }
+    50%      { opacity: 1; }
+  }
+  .how-diagram .ld-cycle-dot {
+    animation: ldDotPulse 3.5s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .how-diagram .d1 { animation-delay: 0s; }
+  .how-diagram .d2 { animation-delay: 0.5s; }
+  .how-diagram .d3 { animation-delay: 1s; }
+  .how-diagram .d4 { animation-delay: 1.5s; }
+  .how-diagram .d5 { animation-delay: 2s; }
+  .how-diagram .d6 { animation-delay: 2.5s; }
+  .how-diagram .d7 { animation-delay: 3s; }
 
   /* ═══ PULLQUOTE ═══ */
   .proof-quote {
@@ -886,6 +910,8 @@
     .sov-grid,
     .persona-grid { grid-template-columns: 1fr; }
     .cvo-col.ops { border-right: none; border-bottom: 1px solid var(--rule); }
+    .how-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .how-diagram svg { max-width: 540px; margin: 0 auto; }
   }
   @media (max-width: 768px) {
     nav { padding: 1rem 1.5rem; }
@@ -899,7 +925,6 @@
     .claims-toc-inner { padding: 3rem 1.5rem 4rem; }
     .claims-grid { gap: 0.85rem; }
     .plate-inner { padding: 3rem 1.5rem 3.5rem; }
-    .loop-step { grid-template-columns: 2.5rem 1fr; gap: 1rem; }
     footer {
       flex-direction: column;
       gap: 0.8rem;
@@ -1078,54 +1103,136 @@
 <!-- The loop -->
 <section class="block loop-section" id="how-it-works">
   <div class="section-inner">
-    <div class="section-eyebrow">The loop</div>
-    <h2 class="section-h">A static agent degrades. <em>The loop is the only defense.</em></h2>
-    <p class="section-intro">
-      Deploying an agent is the starting line, not the goal. What matters is what it knows on day 365 — and whether that improvement belongs to you or to someone else.
-    </p>
+    <div class="how-grid">
+      <div class="how-diagram">
+        <svg viewBox="0 0 640 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="loop-title">
+          <title id="loop-title">The improvement loop. Bootstrap stem (Define, then Generate sim and evals and metric) feeds into the cycle (Run, Capture, Cluster by root cause, Eval grows, Propose, Approve and steer, Ship, returning to Run). Eval set, plus skill layer and history, sits at the center.</title>
+          <defs>
+            <marker id="ld-arr-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L9,5 L0,10 z" fill="#9CA3AF"/></marker>
+            <marker id="ld-arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L9,5 L0,10 z" fill="#3b82f6"/></marker>
+          </defs>
 
-    <div class="loop-steps" id="loop-steps">
-      <div class="loop-step active">
-        <div class="step-num">01</div>
-        <div class="step-content">
-          <h4>Deploy on your core workflow</h4>
-          <p>The agent runs on your real process — real decisions, real outcomes, real data. Not a demo environment, not synthetic events.</p>
-        </div>
+          <!-- ── Bootstrap stem ── -->
+          <g class="ld-stem">
+            <rect x="40" y="22" width="190" height="68" rx="4" fill="#FFFFFF" stroke="#D1D5DB" stroke-dasharray="3,3"/>
+            <circle cx="56" cy="44" r="3.2" fill="#9CA3AF"/>
+            <text x="68" y="48" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Define</text>
+            <text x="68" y="68" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Requirements + workflow</text>
+
+            <rect x="410" y="22" width="190" height="68" rx="4" fill="#FFFFFF" stroke="#D1D5DB" stroke-dasharray="3,3"/>
+            <circle cx="426" cy="44" r="3.2" fill="#9CA3AF"/>
+            <text x="438" y="48" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Generate</text>
+            <text x="438" y="68" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Sim + evals + metric</text>
+
+            <path d="M 230 56 L 405 56" stroke="#9CA3AF" stroke-width="1.2" stroke-dasharray="3,3" fill="none" marker-end="url(#ld-arr-grey)"/>
+            <path d="M 480 92 Q 405 220 365 348" stroke="#9CA3AF" stroke-width="1.2" stroke-dasharray="3,3" fill="none" marker-end="url(#ld-arr-grey)"/>
+          </g>
+
+          <!-- ── Center: Eval set ── -->
+          <g class="ld-center">
+            <circle cx="320" cy="365" r="78" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+            <text x="320" y="354" text-anchor="middle" font-family="'Outfit', sans-serif" font-size="16" font-weight="700" fill="#0B0E14">Eval set</text>
+            <text x="320" y="376" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.06em">+ skill layer + history</text>
+          </g>
+
+          <!-- ── Cycle nodes (clockwise from top: Run, Capture, Eval grows, Propose, Approve+steer, Ship) ── -->
+
+          <!-- Run (top) -->
+          <g>
+            <rect x="250" y="180" width="140" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
+            <circle cx="265" cy="200" r="3.2" fill="#3b82f6" class="ld-cycle-dot d1"/>
+            <text x="277" y="204" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Run</text>
+            <text x="277" y="224" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Production</text>
+          </g>
+
+          <!-- Capture (top-right) -->
+          <g>
+            <rect x="430" y="240" width="160" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
+            <circle cx="445" cy="260" r="3.2" fill="#3b82f6" class="ld-cycle-dot d2"/>
+            <text x="457" y="264" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Capture</text>
+            <text x="457" y="284" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Failure trace</text>
+          </g>
+
+          <!-- Cluster (intermediate, smaller) -->
+          <g>
+            <rect x="445" y="330" width="130" height="50" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
+            <circle cx="460" cy="346" r="3.2" fill="#3b82f6" class="ld-cycle-dot d3"/>
+            <text x="472" y="350" font-family="'Outfit', sans-serif" font-size="13" font-weight="600" fill="#0B0E14">Cluster</text>
+            <text x="472" y="368" font-family="'JetBrains Mono', monospace" font-size="9" fill="#6B7280" letter-spacing="0.04em">By root cause</text>
+          </g>
+
+          <!-- Eval grows (bottom-right) -->
+          <g>
+            <rect x="430" y="408" width="160" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
+            <circle cx="445" cy="428" r="3.2" fill="#3b82f6" class="ld-cycle-dot d4"/>
+            <text x="457" y="432" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Eval grows</text>
+            <text x="457" y="452" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">+ new test case</text>
+          </g>
+
+          <!-- Propose (bottom) -->
+          <g>
+            <rect x="250" y="488" width="140" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
+            <circle cx="265" cy="508" r="3.2" fill="#3b82f6" class="ld-cycle-dot d5"/>
+            <text x="277" y="512" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Propose</text>
+            <text x="277" y="532" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Regression-tested</text>
+          </g>
+
+          <!-- Approve + steer (bottom-left) -->
+          <g>
+            <rect x="50" y="408" width="180" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
+            <circle cx="65" cy="428" r="3.2" fill="#3b82f6" class="ld-cycle-dot d6"/>
+            <text x="77" y="432" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Approve + steer</text>
+            <text x="77" y="452" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">Plain language</text>
+          </g>
+
+          <!-- Ship (top-left) -->
+          <g>
+            <rect x="70" y="240" width="140" height="62" rx="4" fill="#FFFFFF" stroke="#D1D5DB"/>
+            <circle cx="85" cy="260" r="3.2" fill="#3b82f6" class="ld-cycle-dot d7"/>
+            <text x="97" y="264" font-family="'Outfit', sans-serif" font-size="14" font-weight="600" fill="#0B0E14">Ship</text>
+            <text x="97" y="284" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#6B7280" letter-spacing="0.04em">→ back to Run</text>
+          </g>
+
+          <!-- ── Cycle arrows (clockwise) ── -->
+          <!-- Run → Capture (smooth down-right diagonal) -->
+          <path d="M 392 222 Q 418 226 432 248" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <!-- Capture → Cluster -->
+          <path d="M 510 304 L 510 327" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <!-- Cluster → Eval grows -->
+          <path d="M 510 382 L 510 405" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <!-- Eval grows → Propose (down-left, lands on Propose top-right) -->
+          <path d="M 432 472 Q 412 482 393 490" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <!-- Propose → Approve + steer (up-left, lands on Approve bottom-right) -->
+          <path d="M 250 502 Q 240 482 230 470" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <!-- Approve + steer → Ship -->
+          <path d="M 140 406 L 140 304" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+          <!-- Ship → Run (up-right, lands on Run left-bottom) -->
+          <path d="M 210 252 Q 230 232 248 232" stroke="#3b82f6" stroke-width="1.4" fill="none" marker-end="url(#ld-arr-blue)"/>
+
+          <!-- ── Inner sub-loop: Approve + steer → Propose (steer / refine) ── -->
+          <path d="M 175 472 Q 200 568 268 543" stroke="#9CA3AF" stroke-width="1.2" stroke-dasharray="3,3" fill="none" marker-end="url(#ld-arr-grey)"/>
+          <text x="200" y="588" font-family="'JetBrains Mono', monospace" font-size="9" fill="#6B7280" letter-spacing="0.05em">steer · re-gate · re-review</text>
+        </svg>
       </div>
-      <div class="loop-step">
-        <div class="step-num">02</div>
-        <div class="step-content">
-          <h4>Failures captured automatically</h4>
-          <p>Every time the agent gets it wrong, the trace is captured, analyzed, and clustered into a root-cause pattern. No manual labeling, no incident tickets, no retrospectives.</p>
-        </div>
-      </div>
-      <div class="loop-step">
-        <div class="step-num">03</div>
-        <div class="step-content">
-          <h4>A live eval set grows with you</h4>
-          <p>Failure clusters become reusable eval cases. Not a static benchmark — a living test suite that reflects how your specific process actually fails. It compounds with every cycle.</p>
-        </div>
-      </div>
-      <div class="loop-step">
-        <div class="step-num">04</div>
-        <div class="step-content">
-          <h4>Improvements proposed and regression-tested</h4>
-          <p>Each proposed improvement passes two gates: does it fix the new failure, and does it leave every previously resolved case intact? No step forward that loses a step already gained.</p>
-        </div>
-      </div>
-      <div class="loop-step">
-        <div class="step-num">05</div>
-        <div class="step-content">
-          <h4>Domain expert approves in plain language</h4>
-          <p>Not a developer. The person who knows the work reads a plain-language description and approves or rejects. If you can describe what went wrong in a meeting, you can fix it.</p>
-        </div>
-      </div>
-      <div class="loop-step">
-        <div class="step-num">06</div>
-        <div class="step-content">
-          <h4>The agent today is measurably better than six months ago</h4>
-          <p>Full history: every improvement, the eval set it was validated against, the regression cases it had to satisfy. Not a black box — a compound. Auditable, exportable, yours.</p>
-        </div>
+
+      <div class="how-content">
+        <div class="section-eyebrow">The loop</div>
+        <h2 class="section-h">A static agent degrades. <em>The loop is the only defense.</em></h2>
+        <p class="section-intro">
+          Deploying an agent is the starting line, not the goal. What matters is what it knows on day 365 — and whether that improvement belongs to you or to someone else.
+        </p>
+
+        <ol class="how-steps-list">
+          <li><span class="step-id">00</span><span><strong>Define</strong> — workflow + the requirements your agent has to meet, written by the domain expert in plain English.</span></li>
+          <li><span class="step-id">0¹</span><span><strong>Generate</strong> — your description produces the simulator, the eval case set, and the success metric. The substrate the loop runs on, before any production traffic.</span></li>
+          <li><span class="step-id">01</span><span><strong>Run</strong> — the agent operates on real decisions, real outcomes, real data. Not a demo, not synthetic events.</span></li>
+          <li><span class="step-id">02</span><span><strong>Capture</strong> — every failure traced. Tool errors, hallucinations, retention violations — all structured, all queryable.</span></li>
+          <li><span class="step-id">03</span><span><strong>Cluster</strong> — failures grouped by root cause. The same kind of error happens many ways; the cluster is what to fix, not the individual trace.</span></li>
+          <li><span class="step-id">04</span><span><strong>Eval grows</strong> — each cluster becomes a reusable eval case. The seed set compounds with every cycle.</span></li>
+          <li><span class="step-id">05</span><span><strong>Propose</strong> — a candidate fix passes two gates: it must resolve the new failure and leave every prior fix intact. The eval set is the gate.</span></li>
+          <li><span class="step-id">06</span><span><strong>Approve + steer</strong> — the domain expert reads a plain-language description. Approve ships it. Steer re-runs the proposal through the gate under refined constraints. Reject creates a new eval case automatically. If the requirement itself is wrong, the expert updates Define and the loop regenerates.</span></li>
+          <li><span class="step-id">07</span><span><strong>Ship</strong> — the agent redeploys, measurably better than the cycle before. Auditable, exportable, yours.</span></li>
+        </ol>
       </div>
     </div>
   </div>
@@ -1227,22 +1334,6 @@
   }, { passive: true });
 })();
 
-// Loop step active rotation
-(function() {
-  const steps = document.querySelectorAll('.loop-step');
-  if (!steps.length) return;
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce) {
-    steps.forEach(s => s.classList.add('active'));
-    return;
-  }
-  let current = 0;
-  setInterval(function() {
-    steps[current].classList.remove('active');
-    current = (current + 1) % steps.length;
-    steps[current].classList.add('active');
-  }, 2400);
-})();
 </script>
 </body>
 </html>
