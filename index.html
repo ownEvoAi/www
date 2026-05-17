@@ -1251,7 +1251,7 @@
         </p>
 
         <ol class="how-steps-list">
-          <li><span class="step-id">00</span><span><strong>Define</strong> — the domain expert writes the workflow and the requirements in plain English. From that description the platform generates the simulator, the eval case set, and the success metric — the substrate the loop runs on, before any production traffic.</span></li>
+          <li><span class="step-id">00</span><span><strong>Define</strong> — the domain expert writes the workflow and the requirements in plain English. From that description the platform generates the simulator, the eval case set, and the success metric — the substrate the loop runs on, before any production traffic. <em>Description to running agent in under two minutes.</em> No engineering ticket. Try one case in the sandbox before you commit anything.</span></li>
           <li><span class="step-id">01</span><span><strong>Run</strong> — the agent operates on real decisions, real outcomes, real data. Not a demo, not synthetic events.</span></li>
           <li><span class="step-id">02</span><span><strong>Capture</strong> — every failure traced. Tool errors, hallucinations, retention violations — all structured, all queryable.</span></li>
           <li><span class="step-id">03</span><span><strong>Cluster</strong> — failures grouped by root cause. The same kind of error happens many ways; the cluster is what to fix, not the individual trace.</span></li>
@@ -1259,6 +1259,11 @@
           <li><span class="step-id">05</span><span><strong>Propose</strong> — a candidate fix passes two gates: it must resolve the new failure and leave every prior fix intact. The eval set is the gate.</span></li>
           <li><span class="step-id">06</span><span><strong>Approve + steer</strong> — the domain expert directs the agent in plain language at any time. Approve to ship; redirect to refine; reject to create an eval case. Workflow edits go through the same gate, with tradeoffs visible before commit.</span></li>
         </ol>
+
+        <div class="proof-quote" style="margin-top:3rem;">
+          <p style="font-size:1rem; font-weight:500; line-height:1.55; margin-bottom:0.45rem;"><strong>Already have an agent in Microsoft Copilot, Agentforce, or your own stack?</strong></p>
+          <p style="font-size:1rem; font-weight:400; line-height:1.55;">Bring it. Paste the instructions, point us at your trace export, and the loop sets up around what you already have. <em>No rip-and-replace.</em> The agent keeps running where it runs today; the improvement layer is what's new.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -1304,6 +1309,7 @@
   <div class="chapter-num">§ 05 · Who</div>
   <h2 class="chapter-title">For the people who <em>own the core</em>.</h2>
   <p class="chapter-tagline">Not for ops automation buyers. For the workflows that decades of institutional knowledge have shaped — and that one wrong vendor choice could leak.</p>
+  <p class="chapter-tagline" style="margin-top:1.2rem;">The domain expert owns the agent. <em>No engineering ticket to change it.</em> No quarterly release cycle to wait on. Plain-language approval. Plain-language steering. The audit chain underneath, every step.</p>
 </section>
 
 <!-- Who · personas -->
@@ -1339,6 +1345,7 @@
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
   </div>
+  <p style="margin-top:1.4rem; font-family:var(--sans); font-size:0.95rem; color:var(--ink-3); line-height:1.55; max-width:42rem; margin-left:auto; margin-right:auto;">Design partners get free white-glove implementation. We sit with your team, set the loop up around your workflow, and stay until the first quarter of compounded improvement is real.</p>
   <p class="final-note">Supply chain · Finance · Healthcare · Legal · Any core workflow</p>
 </section>
 
