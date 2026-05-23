@@ -1094,6 +1094,10 @@
     .persona-grid { grid-template-columns: 1fr; }
     .cvo-col.ops { border-right: none; border-bottom: 1px solid var(--rule); }
     .how-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    /* When the grid stacks, the sticky diagram from desktop pins itself
+       at top:5rem and the text scrolls underneath, overlapping. Unset
+       sticky so the diagram flows inline at the top of the section. */
+    .how-diagram { position: static; top: auto; }
     .how-diagram svg { max-width: 540px; margin: 0 auto; }
   }
   @media (max-width: 768px) {
