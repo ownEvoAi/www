@@ -73,8 +73,18 @@ image.
 
 Properties:
 - Family: `Outfit`, weight 600, letter-spacing -0.03em.
-- `own` in `--grey-300`, `Evo` in `--accent` italic.
+- `own` in `--grey-300` at UI sizes (nav, footer, body, ≤ ~48px).
+- `Evo` in `--accent` italic.
 - Scales infinitely; accessible; SEO-friendly.
+
+**Display sizes (~96px and up — video title cards, OG images, posters,
+hero treatments).** At small UI sizes, `#475569` reads as a confident
+near-black against white because antialiasing concentrates the color
+in tight strokes. At display sizes the same hex reads as washed-out
+grey — the strokes are wider, so the perceived ink density drops. For
+display-scale wordmarks, switch `own` to `--ink` (`#0B0E14`) so the
+wordmark matches the optical weight viewers expect from the small-size
+nav. `Evo` stays `--accent` italic at every size.
 
 ### 3.2 Mark — shield icon (`logo-shield.svg`)
 
@@ -144,7 +154,7 @@ wordmark in the same `Outfit 600` typography.
 | `--white` | `#0f172a` | Headlines, primary copy (semantic name preserved; value flips per theme) |
 | `--grey-100` | `#1e293b` | Secondary copy |
 | `--grey-200` | `#334155` | Lists, supporting copy |
-| `--grey-300` | `#475569` | Body text default; the `own` of the wordmark |
+| `--grey-300` | `#475569` | Body text default; the `own` of the wordmark at UI sizes (display sizes use `--ink` instead — see §3.1) |
 | `--grey-500` | `#64748b` | Captions, fine print |
 | `--grey-700` | `#94a3b8` | Faintest readable copy, footer text |
 | `--grey-900` | `#cbd5e1` | Reserved (currently unused on light theme) |
