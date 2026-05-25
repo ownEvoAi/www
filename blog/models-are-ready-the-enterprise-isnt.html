@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The models are ready. The enterprise isn't. — ownEvo</title>
+<meta name="description" content="The blocker on core-workflow agents isn't model capability. It's a deal no enterprise can sign: send us your most proprietary signal and let us call it our moat.">
+<meta name="theme-color" content="#ffffff">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ownEvo">
+<meta property="og:title" content="The models are ready. The enterprise isn't.">
+<meta property="og:description" content="The blocker on core-workflow agents isn't model capability. It's a deal no enterprise can sign.">
+<meta property="og:url" content="https://ownevo.ai/blog/models-are-ready-the-enterprise-isnt.html">
+<meta property="og:image" content="https://ownevo.ai/apple-touch-icon.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="The models are ready. The enterprise isn't.">
+<meta name="twitter:description" content="The blocker on core-workflow agents isn't model capability. It's a deal no enterprise can sign.">
+<meta name="twitter:image" content="https://ownevo.ai/apple-touch-icon.png">
+
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SE1GLT6JSD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SE1GLT6JSD');
+</script>
+
+<style>
+  :root {
+    --bg:           #FFFFFF;
+    --surface:      #F7F8FA;
+    --surface-2:    #EEF1F5;
+    --ink:          #0B0E14;
+    --ink-2:        #3A4150;
+    --ink-3:        #6B7280;
+    --ink-4:        #9CA3AF;
+    --rule:         #E5E7EB;
+    --rule-strong:  #D1D5DB;
+    --accent:       #3b82f6;
+    --accent-deep:  #2563eb;
+    --accent-tint:  #eff6ff;
+    --accent-line:  rgba(59,130,246,0.5);
+    --accent-soft:  rgba(59,130,246,0.10);
+    --green:        #059669;
+    --red:          #DC2626;
+    --sans: 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+
+  /* ═══ NAV ═══ */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: rgba(255,255,255,0);
+    border-bottom: 1px solid transparent;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  nav.scrolled {
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-color: var(--rule);
+  }
+  .nav-logo {
+    font-family: var(--sans);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+  .nav-logo-mark { width: 30px; height: 30px; margin-right: 0.65rem; flex-shrink: 0; }
+  .nav-logo .logo-own { color: #475569; }
+  .nav-logo .logo-evo { color: var(--accent); font-style: italic; }
+  .nav-right { display: flex; align-items: center; gap: 1.1rem; }
+  .nav-link {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--ink-2);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.2s;
+    min-height: 44px;
+  }
+  .nav-link:hover { color: var(--ink); }
+  .nav-cta {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    border: 1px solid var(--ink);
+    padding: 0.55rem 1.2rem;
+    border-radius: 2px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .nav-cta:hover { background: var(--ink); color: var(--bg); }
+
+  /* ═══ ARTICLE ═══ */
+  .article { max-width: 720px; margin: 0 auto; padding: 9rem 1.5rem 2rem; }
+  .article-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.6rem;
+  }
+  .article-eyebrow .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--rule-strong); }
+  .article-eyebrow .meta { color: var(--ink-3); }
+
+  .article h1 {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: clamp(2.3rem, 5.5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .article h1 em { font-style: italic; color: var(--accent-deep); }
+
+  .article-dek {
+    font-family: var(--sans);
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--ink-2);
+    margin-top: 1.5rem;
+    max-width: 40rem;
+  }
+  .article-dek em { font-style: italic; color: var(--accent-deep); }
+
+  .article-rule { border: none; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
+
+  .prose { font-size: 1.12rem; line-height: 1.72; color: var(--ink-2); }
+  .prose p { margin: 0 0 1.5rem; }
+  .prose p strong { color: var(--ink); font-weight: 600; }
+  .prose em { font-style: italic; color: var(--accent-deep); }
+  .prose a { color: var(--accent-deep); text-decoration: none; border-bottom: 1px solid var(--accent-line); transition: border-color 0.15s; }
+  .prose a:hover { border-color: var(--accent-deep); }
+  .prose h2 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 1.55rem;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    line-height: 1.2;
+    margin: 3rem 0 1.1rem;
+  }
+  .prose h2 em { font-style: italic; color: var(--accent-deep); }
+  .prose ul { margin: 0 0 1.5rem; padding-left: 0; list-style: none; }
+  .prose li { margin-bottom: 1rem; padding-left: 1.3rem; position: relative; }
+  .prose li::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 7px; height: 7px; background: var(--accent); border-radius: 1px; }
+  .prose li strong { color: var(--ink); font-weight: 600; }
+  .prose li em { font-style: italic; color: var(--accent-deep); }
+
+  .pullquote {
+    border-left: 2px solid var(--accent);
+    padding: 0.3rem 0 0.3rem 1.6rem;
+    margin: 2.5rem 0;
+    font-family: var(--sans);
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.32;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .pullquote em { font-style: italic; color: var(--accent-deep); }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 2.5rem 0;
+  }
+  .stat { background: var(--bg); padding: 1.5rem 1.3rem; }
+  .stat-num { font-family: var(--sans); font-weight: 700; font-size: 2rem; letter-spacing: -0.03em; color: var(--accent-deep); line-height: 1; }
+  .stat-label { font-family: var(--sans); font-size: 0.82rem; color: var(--ink-3); line-height: 1.4; margin-top: 0.6rem; }
+
+  .source-note {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.6;
+    color: var(--ink-3);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1.1rem 1.3rem;
+    margin: 2.5rem 0;
+  }
+  .source-note a { color: var(--ink-2); border-bottom: 1px solid var(--rule-strong); text-decoration: none; }
+  .source-note a:hover { color: var(--ink); }
+
+  .end-cta { border-top: 1px solid var(--rule); margin-top: 3.5rem; padding-top: 2.5rem; }
+  .end-cta h3 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 1.4rem;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+  .end-cta h3 em { font-style: italic; color: var(--accent-deep); }
+  .end-cta p { font-size: 1.05rem; line-height: 1.6; color: var(--ink-2); margin: 0.9rem 0 1.6rem; }
+  .btn-primary {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--accent);
+    border: none;
+    padding: 0.95rem 1.8rem;
+    border-radius: 2px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    cursor: pointer;
+  }
+  .btn-primary:hover { background: var(--accent-deep); transform: translateY(-1px); box-shadow: 0 8px 24px -10px rgba(59,130,246,0.55); }
+  .btn-primary svg { transition: transform 0.2s; }
+  .btn-primary:hover svg { transform: translateX(3px); }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    text-decoration: none;
+    margin-bottom: 2.5rem;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: var(--ink); }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 1.75rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--ink-3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 4rem;
+  }
+  footer a { color: var(--ink-3); text-decoration: none; transition: color 0.15s; }
+  footer a:hover { color: var(--ink); }
+  .footer-links { display: flex; gap: 2rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-right { gap: 0.75rem; }
+    .nav-link span { display: none; }
+    .article { padding-top: 7rem; }
+    .stats { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 0.8rem; align-items: flex-start; padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <svg class="nav-logo-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" style="fill: var(--accent)"/>
+      <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+      <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+    </svg>
+    <span class="logo-own">own</span><span class="logo-evo">Evo</span>
+  </a>
+  <div class="nav-right">
+    <a href="/blog/" class="nav-link"><span>Writing</span></a>
+    <a href="https://forms.gle/EgVikAcwzQwXszyUA" target="_blank" class="nav-cta">Talk to us</a>
+  </div>
+</nav>
+
+<!-- ═══ ARTICLE ═══ -->
+<article class="article">
+  <a href="/blog/" class="back-link">
+    <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4 3 8l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Writing
+  </a>
+
+  <div class="article-eyebrow">
+    <span>Thesis</span>
+    <span class="dot"></span>
+    <span class="meta">May 2026</span>
+  </div>
+
+  <h1>The models are ready.<br>The enterprise <em>isn't.</em></h1>
+
+  <p class="article-dek">Ask a supply-chain VP, a chief risk officer, or a chief medical officer why their organization still hasn't put an agent on its core workflow, and you will not hear "the model isn't smart enough." You will hear something about <em>terms.</em></p>
+
+  <hr class="article-rule">
+
+  <div class="prose">
+    <p>There is a comfortable story that explains why enterprises have been slow to put agents on the workflows that actually matter: the technology isn't ready yet. It is a comfortable story because it requires nobody to do anything except wait. It is also wrong.</p>
+
+    <p>Spend an hour with the people who would own these deployments — the VP who runs demand planning, the officer accountable for the credit book, the medical director who signs off on trial design — and the objection is never about capability. They have watched the model write code, reason through a hard case, and pass exams their own analysts would sweat. The objection is about terms. <em>We cannot send our forecasts, our underwriting policy, our clinical protocols to a third party that turns around and calls our knowledge its moat.</em> The model is ready. The deal is not.</p>
+
+    <h2>The data says the blocker is governance, not intelligence</h2>
+
+    <p>This is not a handful of cautious anecdotes. When Deloitte surveyed thousands of director-to-C-suite leaders about what was holding back generative-AI deployment, the single largest barrier was not model quality — it was regulatory compliance, and it was <em>rising</em>.</p>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num">38%</div>
+        <div class="stat-label">name regulatory compliance the top barrier to GenAI deployment — up from 28% a year earlier (Deloitte)</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">69%</div>
+        <div class="stat-label">say standing up a full governance strategy will take more than a year (Deloitte)</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">Won't share</div>
+        <div class="stat-label">enterprises still won't send proprietary data to closed-model providers; control outweighs cost (a16z)</div>
+      </div>
+    </div>
+
+    <p>Andreessen Horowitz, surveying enterprise buyers, found the same wall from a different angle: companies "still aren't comfortable sharing their proprietary data with closed-source model providers out of regulatory or data security concerns — and companies whose IP is central to their business model are especially conservative." For these buyers, control and customization "far outweighed cost" as reasons to choose models they could own and run themselves. And when McKinsey asked which risks had actually caused harm, the answers that topped the list were inaccuracy, cybersecurity, and intellectual-property exposure — operational and governance risks, not "the model wasn't capable enough."</p>
+
+    <p>Read together, the message is consistent. The enterprise is not waiting for a smarter model. It is refusing a deal in which its most proprietary signal becomes a vendor's training data and its institutional knowledge becomes a vendor's lock-in.</p>
+
+    <h2>Why the standard deal is unsignable for a core workflow</h2>
+
+    <p>The prevailing platform deal asks the customer to send its operational data to the vendor's stack, run on the vendor's model, and accept that the improvements learned from its failures accrue to a system the vendor controls and can sell to everyone else — including its competitors. For an ops workflow — expense reports, routine support — that bargain is tolerable, because the work is commodity and being wrong is cheap.</p>
+
+    <p>For a core workflow it is unsignable. The whole reason a demand forecast or an underwriting policy is worth automating is that it encodes how the company competes. Handing that to a vendor on the standard terms is handing over the edge.</p>
+
+    <p class="pullquote">The master service agreement that would make it acceptable is the one most platforms <em>will not sign</em> — because their business depends on the opposite.</p>
+
+    <p>That MSA reads: <em>our data never trains your model, our eval set is ours, we can leave with everything, we can run this where our regulator requires.</em> The unsigned version of it is the real reason the deployment hasn't happened. Not the model.</p>
+
+    <h2>What "ready terms" actually look like</h2>
+
+    <p>The fix is to make the terms match what a core workflow requires, concretely, not aspirationally. Three commitments, each of which the standard platform deal violates:</p>
+
+    <ul>
+      <li><strong>Bring your own model, per workflow.</strong> The model is a swappable input the customer chooses — frontier API where it helps, a local open model where the data cannot leave the building. No workflow is married to a single vendor's weights.</li>
+      <li><strong>The customer owns the eval set and the improvement history.</strong> Every failure captured, every fix approved, every decision logged belongs to the customer and is exportable in an open format. The knowledge that compounds stays on the customer's side of the line. <em>You paid for the failure. You keep the lesson.</em></li>
+      <li><strong>It runs where compliance requires, and you can verify it.</strong> Cloud, hybrid, or fully local with no signal leaving the walls; an audit chain the customer can independently check; and source available under terms that open up over time, so the customer is never hostage to the vendor's continued existence.</li>
+    </ul>
+
+    <p>None of this is a feature list for its own sake. Each item is the direct answer to a specific clause in the MSA the buyer could not sign. The model was never the thing standing between a capable system and a deployed one. The terms were. Change the terms and the deployment that everyone agreed was "a year or two away" turns out to have been waiting on a signature, not a breakthrough.</p>
+
+    <div class="source-note">
+      Sources: <a href="https://www.deloitte.com/us/en/about/press-room/state-of-generative-ai.html" target="_blank" rel="noopener">Deloitte, <em>State of Generative AI in the Enterprise</em></a> (Q4 2024, n≈2,773 director-to-C-suite leaders) — regulatory compliance the top barrier at 38%, up from 28%; 69% say governance needs over a year. <a href="https://a16z.com/generative-ai-enterprise-2024/" target="_blank" rel="noopener">a16z (2024)</a> on enterprises declining to share proprietary data with closed providers. <a href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai" target="_blank" rel="noopener">McKinsey, <em>The State of AI</em></a> (2025) on the GenAI risks that have caused real harm.
+    </div>
+
+    <div class="end-cta">
+      <h3>Which of your core workflows is held up by an MSA, not a <em>model?</em></h3>
+      <p>Not a generic demo — a conversation about a process where your institutional knowledge is the edge, and the terms it would take to put an agent on it without giving that edge away.</p>
+      <a href="https://forms.gle/EgVikAcwzQwXszyUA" target="_blank" class="btn-primary">
+        Talk to us about your core workflow
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+</article>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <span>© 2026 ownEvo, Inc.</span>
+  <div class="footer-links">
+    <a href="/blog/">Writing</a>
+    <a href="/">Home</a>
+  </div>
+</footer>
+
+<script>
+(function() {
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', function() {
+    nav.classList.toggle('scrolled', window.scrollY > 32);
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
