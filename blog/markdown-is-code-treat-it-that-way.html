@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markdown is code. Treat it that way. — ownEvo</title>
+<meta name="description" content="The most consequential code in an agent system is its instruction file — and it's the only code nobody reviews, tests, diffs, or logs. Here's what fixing that takes.">
+<meta name="theme-color" content="#ffffff">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="ownEvo">
+<meta property="og:title" content="Markdown is code. Treat it that way.">
+<meta property="og:description" content="The most consequential code in an agent system is its instruction file — and it's the only code nobody reviews, tests, diffs, or logs.">
+<meta property="og:url" content="https://ownevo.ai/blog/markdown-is-code-treat-it-that-way.html">
+<meta property="og:image" content="https://ownevo.ai/apple-touch-icon.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Markdown is code. Treat it that way.">
+<meta name="twitter:description" content="The most consequential code in an agent system is its instruction file — and nobody reviews, tests, diffs, or logs it.">
+<meta name="twitter:image" content="https://ownevo.ai/apple-touch-icon.png">
+
+<link rel="icon" type="image/svg+xml" href="/logo-shield.svg">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SE1GLT6JSD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SE1GLT6JSD');
+</script>
+
+<style>
+  :root {
+    --bg:           #FFFFFF;
+    --surface:      #F7F8FA;
+    --surface-2:    #EEF1F5;
+    --ink:          #0B0E14;
+    --ink-2:        #3A4150;
+    --ink-3:        #6B7280;
+    --ink-4:        #9CA3AF;
+    --rule:         #E5E7EB;
+    --rule-strong:  #D1D5DB;
+    --accent:       #3b82f6;
+    --accent-deep:  #2563eb;
+    --accent-tint:  #eff6ff;
+    --accent-line:  rgba(59,130,246,0.5);
+    --accent-soft:  rgba(59,130,246,0.10);
+    --green:        #059669;
+    --red:          #DC2626;
+    --sans: 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+
+  /* ═══ NAV ═══ */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: rgba(255,255,255,0);
+    border-bottom: 1px solid transparent;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  nav.scrolled {
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-color: var(--rule);
+  }
+  .nav-logo {
+    font-family: var(--sans);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+  .nav-logo-mark { width: 30px; height: 30px; margin-right: 0.65rem; flex-shrink: 0; }
+  .nav-logo .logo-own { color: #475569; }
+  .nav-logo .logo-evo { color: var(--accent); font-style: italic; }
+  .nav-right { display: flex; align-items: center; gap: 1.1rem; }
+  .nav-link {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--ink-2);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.2s;
+    min-height: 44px;
+  }
+  .nav-link:hover { color: var(--ink); }
+  .nav-cta {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    border: 1px solid var(--ink);
+    padding: 0.55rem 1.2rem;
+    border-radius: 2px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .nav-cta:hover { background: var(--ink); color: var(--bg); }
+
+  /* ═══ ARTICLE ═══ */
+  .article { max-width: 720px; margin: 0 auto; padding: 9rem 1.5rem 2rem; }
+  .article-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.6rem;
+  }
+  .article-eyebrow .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--rule-strong); }
+  .article-eyebrow .meta { color: var(--ink-3); }
+
+  .article h1 {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: clamp(2.3rem, 5.5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .article h1 em { font-style: italic; color: var(--accent-deep); }
+
+  .article-dek {
+    font-family: var(--sans);
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--ink-2);
+    margin-top: 1.5rem;
+    max-width: 40rem;
+  }
+  .article-dek em { font-style: italic; color: var(--accent-deep); }
+
+  .article-rule { border: none; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
+
+  .prose { font-size: 1.12rem; line-height: 1.72; color: var(--ink-2); }
+  .prose p { margin: 0 0 1.5rem; }
+  .prose p strong { color: var(--ink); font-weight: 600; }
+  .prose em { font-style: italic; color: var(--accent-deep); }
+  .prose a { color: var(--accent-deep); text-decoration: none; border-bottom: 1px solid var(--accent-line); transition: border-color 0.15s; }
+  .prose a:hover { border-color: var(--accent-deep); }
+  .prose h2 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 1.55rem;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    line-height: 1.2;
+    margin: 3rem 0 1.1rem;
+  }
+  .prose h2 em { font-style: italic; color: var(--accent-deep); }
+  .prose code {
+    font-family: var(--mono);
+    font-size: 0.86em;
+    background: var(--surface-2);
+    padding: 0.12em 0.4em;
+    border-radius: 3px;
+    color: var(--ink);
+  }
+  .prose ul { margin: 0 0 1.5rem; padding-left: 0; list-style: none; }
+  .prose li { margin-bottom: 1rem; padding-left: 1.3rem; position: relative; }
+  .prose li::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 7px; height: 7px; background: var(--accent); border-radius: 1px; }
+  .prose li strong { color: var(--ink); font-weight: 600; }
+  .prose li em { font-style: italic; color: var(--accent-deep); }
+
+  .pullquote {
+    border-left: 2px solid var(--accent);
+    padding: 0.3rem 0 0.3rem 1.6rem;
+    margin: 2.5rem 0;
+    font-family: var(--sans);
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.32;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .pullquote em { font-style: italic; color: var(--accent-deep); }
+
+  .end-cta { border-top: 1px solid var(--rule); margin-top: 3.5rem; padding-top: 2.5rem; }
+  .end-cta h3 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 1.4rem;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+  .end-cta h3 em { font-style: italic; color: var(--accent-deep); }
+  .end-cta p { font-size: 1.05rem; line-height: 1.6; color: var(--ink-2); margin: 0.9rem 0 1.6rem; }
+  .btn-primary {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--accent);
+    border: none;
+    padding: 0.95rem 1.8rem;
+    border-radius: 2px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    cursor: pointer;
+  }
+  .btn-primary:hover { background: var(--accent-deep); transform: translateY(-1px); box-shadow: 0 8px 24px -10px rgba(59,130,246,0.55); }
+  .btn-primary svg { transition: transform 0.2s; }
+  .btn-primary:hover svg { transform: translateX(3px); }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    text-decoration: none;
+    margin-bottom: 2.5rem;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: var(--ink); }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 1.75rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--ink-3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 4rem;
+  }
+  footer a { color: var(--ink-3); text-decoration: none; transition: color 0.15s; }
+  footer a:hover { color: var(--ink); }
+  .footer-links { display: flex; gap: 2rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-right { gap: 0.75rem; }
+    .nav-link span { display: none; }
+    .article { padding-top: 7rem; }
+    footer { flex-direction: column; gap: 0.8rem; align-items: flex-start; padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <a href="/" class="nav-logo">
+    <svg class="nav-logo-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 1.75 L20.25 4.75 V12 C20.25 17 16.5 20.75 12 22.25 C7.5 20.75 3.75 17 3.75 12 V4.75 Z" style="fill: var(--accent)"/>
+      <circle cx="12" cy="12.5" r="3.2" stroke="#07090e" stroke-width="2"/>
+      <path d="M9.6 7 L12 4.5 L14.4 7 Z" fill="#07090e"/>
+    </svg>
+    <span class="logo-own">own</span><span class="logo-evo">Evo</span>
+  </a>
+  <div class="nav-right">
+    <a href="/blog/" class="nav-link"><span>Writing</span></a>
+    <a href="https://forms.gle/EgVikAcwzQwXszyUA" target="_blank" class="nav-cta">Talk to us</a>
+  </div>
+</nav>
+
+<!-- ═══ ARTICLE ═══ -->
+<article class="article">
+  <a href="/blog/" class="back-link">
+    <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4 3 8l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Writing
+  </a>
+
+  <div class="article-eyebrow">
+    <span>Thesis</span>
+    <span class="dot"></span>
+    <span class="meta">May 2026</span>
+  </div>
+
+  <h1>Markdown is code.<br>Treat it <em>that way.</em></h1>
+
+  <p class="article-dek">The most consequential lines in an agent system are the ones in its instruction file. They are also, almost universally, untested, unversioned, un-diffed, and edited by <em>whoever happens to have the chat window open.</em></p>
+
+  <hr class="article-rule">
+
+  <div class="prose">
+    <p>Every serious engineering organization has the same set of habits around code. Nothing ships without review. A test suite runs before merge. There is a rollback button. There is a log that says who changed what, when, and why. These are not nice-to-haves; they are the difference between a system you can operate and a system that operates you.</p>
+
+    <p>Now look at the file that actually governs how a production agent behaves — the instruction file, the system prompt, the markdown that says <code>forecast at SKU-week granularity, exclude promotional periods from the baseline, flag any week where the forecast moves more than 30% against last cycle.</code> That file is code. It is the most behaviorally significant code in the system, because it sits upstream of every decision the agent makes. And in most deployments it has none of the habits above. It is edited live, in a chat window, by whoever is closest to the problem that afternoon. No diff. No test. No second signature. No record.</p>
+
+    <p class="pullquote">We have professionalized every category of code we run — <em>except the one that matters most.</em></p>
+
+    <h2>Why this is worse than it sounds</h2>
+
+    <p>A bug in conventional code tends to fail loudly. A bad instruction edit fails quietly. Someone widens a rule — <em>exclude promotional periods</em> becomes <em>exclude promotional and holiday periods</em> — and the change looks reasonable, ships in a sentence, and silently degrades the forecast on the eight SKUs where holiday demand was the whole signal. Nobody reviewed it because it wasn't framed as a change. It was framed as a tweak to a text file.</p>
+
+    <p>The blast radius is also larger. A function touches one path. An instruction edit touches every future decision the agent makes, across every workflow that reads that file. In a core workflow — demand planning, credit recalibration, trial design — the cost of a quiet regression compounds for weeks before anyone traces it back to a one-line edit nobody remembers making.</p>
+
+    <p>And the people making these edits are frequently <em>not</em> the people who would catch the regression. The instruction encodes a domain judgment — what counts as a defensible forecast, which cases are traps, where the underwriter's experience says <em>don't trust the obvious answer.</em> But the edit is often made by whoever is wiring up the agent, who is not the underwriter and cannot know which clause is load-bearing.</p>
+
+    <h2>What treating it as code actually requires</h2>
+
+    <p>The fix is not "be more careful." It is to give instruction edits the same machinery every other kind of code already has.</p>
+
+    <ul>
+      <li><strong>A typed diff.</strong> Not "the prompt changed" but <em>this clause was added, this constraint was loosened, this example was removed</em> — rendered so a non-engineer can read exactly what is different and what it will change.</li>
+      <li><strong>A regression test before merge.</strong> The edit runs against the accumulated eval set — every failure the workflow has ever produced, turned into a case — and has to clear a gate before it can ship. No step forward that loses a step already gained.</li>
+      <li><strong>A two-party approval.</strong> The domain expert whose judgment the instruction encodes reads the proposed change in plain language and approves or rejects it. Their signature is the merge.</li>
+      <li><strong>An append-only history.</strong> Every edit, every approval, every rejection is written to a log that cannot be quietly rewritten — so six months later you can answer <em>who changed this, when, and what evidence said it was safe.</em></li>
+    </ul>
+
+    <p>This is exactly what GitHub did for source code, applied to the layer above the model. The point of the comparison is not branding. It is that the discipline already exists, is well understood, and has simply never been pointed at the instruction file.</p>
+
+    <h2>The regression gate is the part people skip</h2>
+
+    <p>Review and history are familiar. The piece that gets dropped is the test — and it is the piece that actually holds the line. An instruction edit can look like a clear improvement and still be a regression somewhere you weren't looking, because the workflow's failure modes are not all visible from the case in front of you.</p>
+
+    <p>So the gate runs the proposed edit against the whole accumulated eval set and returns more than a pass/fail. It distinguishes a true regression (rejected and logged), a no-improvement edit that would only bloat the eval set (rejected to keep the set honest), and a sandbox or execution error (escalated, never silently passed). In our demand-forecasting replay, every regressive proposal the loop generated was caught and rejected by the gate before it could reach the live instruction file.</p>
+
+    <h2>The bridge</h2>
+
+    <p>Treating markdown as code is the entry point to the whole improvement loop. Once the instruction file has a diff, a test, an approval, and a history, the obvious next questions follow on their own: where do the test cases come from, who writes the proposed edit, who signs off, and how do you prove later that nothing regressed. Those are the next posts. This is the premise they all rest on.</p>
+
+    <p>The instruction file is the highest-stakes code you run. Stop editing it in a chat window.</p>
+
+    <div class="end-cta">
+      <h3>What governs your agent today — a reviewed system, or a <em>chat window?</em></h3>
+      <p>Not a generic demo — a conversation about a core workflow where a one-line edit can quietly cost you, and what it takes to put a diff, a test, and a signature in front of every change.</p>
+      <a href="https://forms.gle/EgVikAcwzQwXszyUA" target="_blank" class="btn-primary">
+        Talk to us about your core workflow
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+</article>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <span>© 2026 ownEvo, Inc.</span>
+  <div class="footer-links">
+    <a href="/blog/">Writing</a>
+    <a href="/">Home</a>
+  </div>
+</footer>
+
+<script>
+(function() {
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', function() {
+    nav.classList.toggle('scrolled', window.scrollY > 32);
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
