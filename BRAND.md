@@ -285,7 +285,7 @@ parallel patterns that overlap.
 - Short paragraphs. Concrete examples from supply chain, finance, healthcare,
   legal — never abstract AI hype.
 - Prefer the concrete failure or decision over the abstract category.
-- Reference real numbers when proving (`+50.7%`, `95.2%`, `200 events`, etc.)
+- Reference real numbers when proving (`+11.8%`, `95.2%`, `200 events`, etc.)
   rather than relative claims.
 
 ### Forbidden
